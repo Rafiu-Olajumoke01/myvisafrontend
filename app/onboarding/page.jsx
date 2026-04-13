@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://127.0.0.1:8000/ws/calls/';
@@ -48,7 +48,7 @@ function UnlockStep({ step, state }) {
   );
 }
 
-export default function OnboardingPage() {
+function OnboardingPage() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const sessionId     = searchParams.get('session_id');
@@ -148,26 +148,17 @@ export default function OnboardingPage() {
         .ob-confetti { position:absolute; border-radius:2px; animation:obConfetti linear infinite; pointer-events:none; }
       `}</style>
 
-      {/* Ambient glows — brand color */}
       <div style={{ position:'absolute', top:'10%', left:'5%', width:400, height:400, borderRadius:'50%', background:'radial-gradient(circle,rgba(7,179,242,0.1) 0%,transparent 70%)', animation:'obGlow 4s ease-in-out infinite', pointerEvents:'none' }} />
       <div style={{ position:'absolute', bottom:'10%', right:'5%', width:300, height:300, borderRadius:'50%', background:'radial-gradient(circle,rgba(7,179,242,0.07) 0%,transparent 70%)', animation:'obGlow 4s ease-in-out infinite 2s', pointerEvents:'none' }} />
 
       <div style={{ width:'100%', maxWidth:440, position:'relative', zIndex:1 }}>
 
-        {/* ══ ONBOARDING PHASE ══ */}
         {phase === 'onboarding' && (
           <div className="ob-fade-in">
             <div style={{ textAlign:'center', marginBottom:24 }}>
               <span style={{ fontSize:11, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)' }}>✈️ &nbsp;MyVisa</span>
             </div>
-
-            <div style={{
-              background:'rgba(255,255,255,0.04)', border:'1px solid rgba(7,179,242,0.15)',
-              borderRadius:28, padding:'40px 32px',
-              backdropFilter:'blur(20px)',
-              boxShadow:'0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
-            }}>
-              {/* Rocket with spinning ring */}
+            <div style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(7,179,242,0.15)', borderRadius:28, padding:'40px 32px', backdropFilter:'blur(20px)', boxShadow:'0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
               <div style={{ display:'flex', justifyContent:'center', marginBottom:28 }}>
                 <div style={{ position:'relative', width:80, height:80 }}>
                   <div style={{ position:'absolute', inset:-12, borderRadius:'50%', border:'1.5px solid rgba(7,179,242,0.2)', animation:'obPulse 2s ease-out infinite' }} />
@@ -176,16 +167,13 @@ export default function OnboardingPage() {
                   <div style={{ position:'absolute', inset:-6, borderRadius:'50%', border:'2px solid transparent', borderTop:'2px solid #07b3f2', animation:'obSpin 1.8s linear infinite' }} />
                 </div>
               </div>
-
               <div style={{ textAlign:'center', marginBottom:6 }}>
                 <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:24, fontWeight:700, color:'#fff', lineHeight:1.2, marginBottom:8 }}>Onboarding</h1>
                 <p style={{ fontSize:13, color:'rgba(255,255,255,0.5)', lineHeight:1.65 }}>
                   <span style={{ color:'#7dd3fc', fontWeight:600 }}>{agentName}</span> is completing your profile and setting up your MyVisa account.
                 </p>
               </div>
-
               <div style={{ height:1, background:'rgba(255,255,255,0.07)', margin:'22px 0' }} />
-
               <div style={{ display:'flex', flexDirection:'column', gap:8, marginBottom:22 }}>
                 {ONBOARDING_STEPS.map((step, i) => {
                   const isDone = doneSteps.includes(i);
@@ -193,14 +181,12 @@ export default function OnboardingPage() {
                   return <UnlockStep key={step.id} step={step} state={isDone ? 'done' : isActive ? 'active' : 'pending'} />;
                 })}
               </div>
-
               <div style={{ background:'rgba(7,179,242,0.06)', border:'1px solid rgba(7,179,242,0.15)', borderRadius:14, padding:'11px 14px' }}>
                 <p style={{ fontSize:11, color:'rgba(255,255,255,0.35)', lineHeight:1.6, textAlign:'center' }}>
                   🔒 Keep this page open — you'll be redirected automatically when setup is complete.
                 </p>
               </div>
             </div>
-
             <div style={{ textAlign:'center', marginTop:14 }}>
               <span style={{ fontSize:10, fontWeight:700, color: wsStatus === 'open' ? '#4ade80' : '#fbbf24' }}>
                 {wsStatus === 'open' ? '● Connected — setting up your account' : '● Reconnecting...'}
@@ -209,7 +195,6 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* ══ WELCOME PHASE ══ */}
         {phase === 'welcome' && result && (
           <>
             {[...Array(18)].map((_,i) => (
@@ -222,41 +207,23 @@ export default function OnboardingPage() {
                 borderRadius: i%3===0 ? '50%' : '3px',
               }}/>
             ))}
-
             <div className="ob-fade-in">
               <div style={{ textAlign:'center', marginBottom:24 }}>
                 <span style={{ fontSize:11, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)' }}>✈️ &nbsp;MyVisa</span>
               </div>
-
-              <div style={{
-                background:'rgba(255,255,255,0.04)', border:'1px solid rgba(7,179,242,0.3)',
-                borderRadius:28, padding:'44px 32px',
-                backdropFilter:'blur(20px)',
-                boxShadow:'0 24px 60px rgba(0,0,0,0.4), 0 0 60px rgba(7,179,242,0.1), inset 0 1px 0 rgba(255,255,255,0.06)',
-                textAlign:'center',
-              }}>
-
+              <div style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(7,179,242,0.3)', borderRadius:28, padding:'44px 32px', backdropFilter:'blur(20px)', boxShadow:'0 24px 60px rgba(0,0,0,0.4), 0 0 60px rgba(7,179,242,0.1), inset 0 1px 0 rgba(255,255,255,0.06)', textAlign:'center' }}>
                 {welcomeStep >= 1 && (
                   <div className="ob-pop" style={{ display:'flex', justifyContent:'center', marginBottom:22 }}>
                     <div style={{ width:88, height:88, borderRadius:24, background:'linear-gradient(135deg,rgba(7,179,242,0.22),rgba(2,132,199,0.1))', border:'1.5px solid rgba(7,179,242,0.4)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:42, boxShadow:'0 8px 32px rgba(7,179,242,0.22)' }}>🎉</div>
                   </div>
                 )}
-
                 {welcomeStep >= 2 && (
                   <div className="ob-fade-up" style={{ marginBottom:6 }}>
-                    {/* ✅ "Welcome to MyVisa" */}
-                    <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:26, fontWeight:700, color:'#fff', lineHeight:1.2, marginBottom:6 }}>
-                      Welcome to MyVisa,
-                    </h1>
-                    <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:26, fontWeight:700, color:'#7dd3fc', lineHeight:1.2, marginBottom:14 }}>
-                      {result.applicant_name?.split(' ')[0] || 'there'}! ✈️
-                    </h1>
-                    <p style={{ fontSize:13, color:'rgba(255,255,255,0.5)', lineHeight:1.7 }}>
-                      Your account is fully set up. Chat, documents, and your full application are now unlocked.
-                    </p>
+                    <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:26, fontWeight:700, color:'#fff', lineHeight:1.2, marginBottom:6 }}>Welcome to MyVisa,</h1>
+                    <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:26, fontWeight:700, color:'#7dd3fc', lineHeight:1.2, marginBottom:14 }}>{result.applicant_name?.split(' ')[0] || 'there'}! ✈️</h1>
+                    <p style={{ fontSize:13, color:'rgba(255,255,255,0.5)', lineHeight:1.7 }}>Your account is fully set up. Chat, documents, and your full application are now unlocked.</p>
                   </div>
                 )}
-
                 {welcomeStep >= 3 && (
                   <div className="ob-fade-up" style={{ margin:'22px 0' }}>
                     <div style={{ height:1, background:'rgba(255,255,255,0.07)', marginBottom:16 }} />
@@ -273,7 +240,6 @@ export default function OnboardingPage() {
                         </div>
                       ))}
                     </div>
-
                     <div style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:16, padding:'15px 17px' }}>
                       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:9 }}>
                         <span style={{ fontSize:9, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)' }}>Readiness Score</span>
@@ -288,7 +254,6 @@ export default function OnboardingPage() {
                     </div>
                   </div>
                 )}
-
                 {welcomeStep >= 4 && (
                   <button onClick={() => router.push(applicationId ? `/application/${applicationId}` : '/dashboard')}
                     className="ob-fade-up"
@@ -304,5 +269,17 @@ export default function OnboardingPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f172a', color: 'white' }}>
+        Loading...
+      </div>
+    }>
+      <OnboardingPage />
+    </Suspense>
   );
 }
