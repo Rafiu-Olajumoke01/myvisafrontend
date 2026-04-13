@@ -7,31 +7,31 @@ const RAPIDAPI_KEY = 'b07cd121admshd8d29393e97d3f7p10cbb5jsn33338f7203f7';
 
 // ─── Country name → ISO 2-letter code ────────────────────────────────────────
 const COUNTRY_TO_CODE = {
-  "Afghanistan":"AF","Albania":"AL","Algeria":"DZ","Angola":"AO","Argentina":"AR",
-  "Armenia":"AM","Australia":"AU","Austria":"AT","Azerbaijan":"AZ","Bahrain":"BH",
-  "Bangladesh":"BD","Belarus":"BY","Belgium":"BE","Bolivia":"BO","Brazil":"BR",
-  "Bulgaria":"BG","Cambodia":"KH","Cameroon":"CM","Canada":"CA","Chile":"CL",
-  "China":"CN","Colombia":"CO","Croatia":"HR","Czech Republic":"CZ","Denmark":"DK",
-  "Ecuador":"EC","Egypt":"EG","Ethiopia":"ET","Finland":"FI","France":"FR",
-  "Germany":"DE","Ghana":"GH","Greece":"GR","Hungary":"HU","Iceland":"IS",
-  "India":"IN","Indonesia":"ID","Iran":"IR","Iraq":"IQ","Ireland":"IE",
-  "Israel":"IL","Italy":"IT","Jamaica":"JM","Japan":"JP","Jordan":"JO",
-  "Kazakhstan":"KZ","Kenya":"KE","Kuwait":"KW","Latvia":"LV","Lebanon":"LB",
-  "Lithuania":"LT","Luxembourg":"LU","Malaysia":"MY","Mexico":"MX","Moldova":"MD",
-  "Morocco":"MA","Mozambique":"MZ","Myanmar":"MM","Nepal":"NP","Netherlands":"NL",
-  "New Zealand":"NZ","Nigeria":"NG","Norway":"NO","Oman":"OM","Pakistan":"PK",
-  "Peru":"PE","Philippines":"PH","Poland":"PL","Portugal":"PT","Qatar":"QA",
-  "Romania":"RO","Russia":"RU","Rwanda":"RW","Saudi Arabia":"SA","Senegal":"SN",
-  "Serbia":"RS","Singapore":"SG","Slovakia":"SK","Slovenia":"SI","Somalia":"SO",
-  "South Africa":"ZA","South Korea":"KR","Spain":"ES","Sri Lanka":"LK",
-  "Sudan":"SD","Sweden":"SE","Switzerland":"CH","Syria":"SY","Taiwan":"TW",
-  "Tanzania":"TZ","Thailand":"TH","Togo":"TG","Tunisia":"TN","Turkey":"TR",
-  "Uganda":"UG","Ukraine":"UA","United Arab Emirates":"AE","United Kingdom":"GB",
-  "United States":"US","Uruguay":"UY","Uzbekistan":"UZ","Venezuela":"VE",
-  "Vietnam":"VN","Yemen":"YE","Zambia":"ZM","Zimbabwe":"ZW",
-  "USA":"US","U.S.A":"US","U.S":"US","United State":"US","United States of America":"US",
-  "UK":"GB","U.K":"GB","U.A.E":"AE","UAE":"AE","Korea":"KR","North Korea":"KP",
-  "Ivory Coast":"CI","Congo":"CG","DR Congo":"CD","Czech":"CZ","Holland":"NL",
+  "Afghanistan": "AF", "Albania": "AL", "Algeria": "DZ", "Angola": "AO", "Argentina": "AR",
+  "Armenia": "AM", "Australia": "AU", "Austria": "AT", "Azerbaijan": "AZ", "Bahrain": "BH",
+  "Bangladesh": "BD", "Belarus": "BY", "Belgium": "BE", "Bolivia": "BO", "Brazil": "BR",
+  "Bulgaria": "BG", "Cambodia": "KH", "Cameroon": "CM", "Canada": "CA", "Chile": "CL",
+  "China": "CN", "Colombia": "CO", "Croatia": "HR", "Czech Republic": "CZ", "Denmark": "DK",
+  "Ecuador": "EC", "Egypt": "EG", "Ethiopia": "ET", "Finland": "FI", "France": "FR",
+  "Germany": "DE", "Ghana": "GH", "Greece": "GR", "Hungary": "HU", "Iceland": "IS",
+  "India": "IN", "Indonesia": "ID", "Iran": "IR", "Iraq": "IQ", "Ireland": "IE",
+  "Israel": "IL", "Italy": "IT", "Jamaica": "JM", "Japan": "JP", "Jordan": "JO",
+  "Kazakhstan": "KZ", "Kenya": "KE", "Kuwait": "KW", "Latvia": "LV", "Lebanon": "LB",
+  "Lithuania": "LT", "Luxembourg": "LU", "Malaysia": "MY", "Mexico": "MX", "Moldova": "MD",
+  "Morocco": "MA", "Mozambique": "MZ", "Myanmar": "MM", "Nepal": "NP", "Netherlands": "NL",
+  "New Zealand": "NZ", "Nigeria": "NG", "Norway": "NO", "Oman": "OM", "Pakistan": "PK",
+  "Peru": "PE", "Philippines": "PH", "Poland": "PL", "Portugal": "PT", "Qatar": "QA",
+  "Romania": "RO", "Russia": "RU", "Rwanda": "RW", "Saudi Arabia": "SA", "Senegal": "SN",
+  "Serbia": "RS", "Singapore": "SG", "Slovakia": "SK", "Slovenia": "SI", "Somalia": "SO",
+  "South Africa": "ZA", "South Korea": "KR", "Spain": "ES", "Sri Lanka": "LK",
+  "Sudan": "SD", "Sweden": "SE", "Switzerland": "CH", "Syria": "SY", "Taiwan": "TW",
+  "Tanzania": "TZ", "Thailand": "TH", "Togo": "TG", "Tunisia": "TN", "Turkey": "TR",
+  "Uganda": "UG", "Ukraine": "UA", "United Arab Emirates": "AE", "United Kingdom": "GB",
+  "United States": "US", "Uruguay": "UY", "Uzbekistan": "UZ", "Venezuela": "VE",
+  "Vietnam": "VN", "Yemen": "YE", "Zambia": "ZM", "Zimbabwe": "ZW",
+  "USA": "US", "U.S.A": "US", "U.S": "US", "United State": "US", "United States of America": "US",
+  "UK": "GB", "U.K": "GB", "U.A.E": "AE", "UAE": "AE", "Korea": "KR", "North Korea": "KP",
+  "Ivory Coast": "CI", "Congo": "CG", "DR Congo": "CD", "Czech": "CZ", "Holland": "NL",
 };
 
 const fetchVisaMapForPassport = async (passportCountry) => {
@@ -171,10 +171,10 @@ function HeroImageSlider({ images, country }) {
       {images.length > 1 && (
         <>
           <button onClick={prevImage} className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm p-3 rounded-full transition-all opacity-0 group-hover:opacity-100 z-30 border border-white/20">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
           <button onClick={nextImage} className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 backdrop-blur-sm p-3 rounded-full transition-all opacity-0 group-hover:opacity-100 z-30 border border-white/20">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 18L15 12L9 6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 18L15 12L9 6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
         </>
       )}
@@ -459,7 +459,7 @@ function PackageDetailsPage() {
       try {
         const parsed = JSON.parse(savedUser);
         if (parsed.country) setUserCountry(parsed.country);
-      } catch (_) {}
+      } catch (_) { }
     }
   }, [packageId]);
 
@@ -536,14 +536,14 @@ function PackageDetailsPage() {
   const pageTitle = isStudent && packageData.degree_type && packageData.course
     ? `🎓 ${packageData.degree_type} in ${packageData.course}${packageData.university_name ? ` — ${packageData.university_name}` : ''}`
     : isMedical && packageData.hospital_name
-    ? `🏥 Treatment at ${packageData.hospital_name}`
-    : packageData.title || packageData.country;
+      ? `🏥 Treatment at ${packageData.hospital_name}`
+      : packageData.title || packageData.country;
 
   const pageSubtitle = isStudent
     ? `${packageData.course_city || packageData.location || ''}, ${packageData.country || ''}`.replace(/^, |, $/, '')
     : isMedical
-    ? `${packageData.hospital_city || ''}, ${packageData.country || ''}`.replace(/^, |, $/, '')
-    : packageData.location || packageData.country || '';
+      ? `${packageData.hospital_city || ''}, ${packageData.country || ''}`.replace(/^, |, $/, '')
+      : packageData.location || packageData.country || '';
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
