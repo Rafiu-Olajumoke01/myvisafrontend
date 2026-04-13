@@ -33,10 +33,10 @@ export default function DashboardPage() {
       if (!token) { router.push('/login'); return; }
 
       const [profileRes, appRes] = await Promise.all([
-        fetch('http://127.0.0.1:8000/api/auth/profile/', {
+        fetch('https://web-production-f50dc.up.railway.app/api/auth/profile/', {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        fetch('http://127.0.0.1:8000/api/applications/', {
+        fetch('https://web-production-f50dc.up.railway.app/api/applications/', {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);

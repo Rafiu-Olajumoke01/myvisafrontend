@@ -32,7 +32,7 @@ export default function PaymentPage() {
 
   const fetchApplication = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/applications/${id}/`, {
+      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/`, {
         headers: { 'Authorization': `Bearer ${token()}` },
       });
       if (res.ok) {
@@ -73,7 +73,7 @@ export default function PaymentPage() {
     try {
       const formData = new FormData();
       formData.append('proof', proofFile);
-      const res = await fetch(`http://127.0.0.1:8000/api/applications/${id}/payment/proof/`, {
+      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/payment/proof/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token()}` },
         body: formData,

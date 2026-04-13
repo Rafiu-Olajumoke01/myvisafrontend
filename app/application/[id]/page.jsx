@@ -415,7 +415,7 @@ export default function ApplicationDetailPage() {
 
   const fetchApplication = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/applications/${id}/`, { headers: { 'Authorization': `Bearer ${token()}` } });
+      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/`, { headers: { 'Authorization': `Bearer ${token()}` } });
       if (res.ok) {
         const data = await res.json();
         const app = data.application || data;
@@ -431,7 +431,7 @@ export default function ApplicationDetailPage() {
   const handleStart = async () => {
     setStarting(true);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/applications/${id}/start/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' } });
+      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/start/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' } });
       if (res.ok) { const data = await res.json(); setApplication(data.application || data); }
     } catch (e) { console.error(e); } finally { setStarting(false); }
   };
@@ -439,7 +439,7 @@ export default function ApplicationDetailPage() {
   const handleCancelMeeting = async () => {
     setActionLoading(true);
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/applications/${id}/meeting/cancel/`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' } });
+      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/meeting/cancel/`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' } });
       if (res.ok) { const data = await res.json(); setApplication(data.application || data); }
     } catch (e) { console.error(e); } finally { setActionLoading(false); setShowCancelModal(false); }
   };
@@ -447,7 +447,7 @@ export default function ApplicationDetailPage() {
   const handleCallRequest = async () => {
     setCallStatus('calling'); setMeetLink(''); setSessionId(null);
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/calls/request/', {
+      const res = await fetch('https://web-production-f50dc.up.railway.app/api/calls/request/', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ package: application?.package_title || 'Discovery Call' })
@@ -463,7 +463,7 @@ export default function ApplicationDetailPage() {
     try {
       for (const file of Array.from(files)) {
         const formData = new FormData(); formData.append('file', file);
-        const res = await fetch(`http://127.0.0.1:8000/api/applications/${id}/documents/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token()}` }, body: formData });
+        const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/documents/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token()}` }, body: formData });
         if (res.ok) { const data = await res.json(); setApplication(prev => ({ ...prev, documents: [...(prev.documents || []), data.document] })); }
       }
     } catch (e) { console.error(e); } finally { setUploadingFile(false); }
@@ -471,7 +471,7 @@ export default function ApplicationDetailPage() {
 
   const handleDeleteFile = async (docId) => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/applications/${id}/documents/${docId}/`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token()}` } });
+      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/documents/${docId}/`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token()}` } });
       if (res.ok) setApplication(prev => ({ ...prev, documents: prev.documents.filter(d => d.id !== docId) }));
     } catch (e) { console.error(e); }
   };

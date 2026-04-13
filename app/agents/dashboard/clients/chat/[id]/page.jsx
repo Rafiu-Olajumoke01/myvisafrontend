@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 
 const POLL_INTERVAL = 4000;
-const API_BASE = 'http://127.0.0.1:8000/api';
+const API_BASE = 'https://web-production-f50dc.up.railway.app/api';
 
 const GlobalStyles = () => (
   <style>{`

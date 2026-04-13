@@ -136,7 +136,7 @@ export default function SettingsPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) { router.push('/login'); return; }
-      const res = await fetch('http://127.0.0.1:8000/api/auth/profile/', {
+      const res = await fetch('https://web-production-f50dc.up.railway.app/api/auth/profile/', {
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       });
       if (res.ok) {
@@ -165,7 +165,7 @@ export default function SettingsPage() {
     setSaving(true); setSaveError(''); setSaveSuccess(false);
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch('http://127.0.0.1:8000/api/auth/profile/', {
+      const res = await fetch('https://web-production-f50dc.up.railway.app/api/auth/profile/', {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -32,7 +32,7 @@ export default function ApplyPage({ params }) {
 
   const fetchPackage = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/packages/${packageId}/`);
+      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/packages/${packageId}/`);
       if (res.ok) {
         const data = await res.json();
         setPackageData(data.package || data);
@@ -46,7 +46,7 @@ export default function ApplyPage({ params }) {
       const token = localStorage.getItem('access_token');
       if (!token) { router.push('/login'); return; }
 
-      const res = await fetch('http://127.0.0.1:8000/api/auth/profile/', {
+      const res = await fetch('https://web-production-f50dc.up.railway.app/api/auth/profile/', {
         headers: { 'Authorization': `Bearer ${token}` },
       });
 
@@ -86,7 +86,7 @@ export default function ApplyPage({ params }) {
         full_name: `${formData.first_name} ${formData.last_name}`.trim(),
         package: packageId,
       };
-      const res = await fetch('http://127.0.0.1:8000/api/applications/create/', {
+      const res = await fetch('https://web-production-f50dc.up.railway.app/api/applications/create/', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

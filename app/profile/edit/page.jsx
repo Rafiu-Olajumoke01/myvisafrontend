@@ -236,7 +236,7 @@ export default function VisaHistoryPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) { router.push('/login'); return; }
-      const res = await fetch('http://127.0.0.1:8000/api/applications/', {
+      const res = await fetch('https://web-production-f50dc.up.railway.app/api/applications/', {
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
       });
       if (res.ok) {
