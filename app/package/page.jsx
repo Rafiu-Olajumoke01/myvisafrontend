@@ -758,8 +758,8 @@ function PackagesContent() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingRoute, setPendingRoute] = useState(null);
 
-  const API_BASE      = 'http://localhost:8000/api/packages';
-  const BOOKMARKS_API = 'http://localhost:8000/api/bookmarks';
+  const API_BASE      = 'https://web-production-f50dc.up.railway.app/api/packages';
+  const BOOKMARKS_API = 'https://web-production-f50dc.up.railway.app/api/bookmarks';
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -795,7 +795,7 @@ function PackagesContent() {
         ...pkg,
         images: (pkg.images || []).map(img => ({
           ...img,
-          image: img.image?.startsWith('http') ? img.image : `http://localhost:8000${img.image}`
+          image: img.image?.startsWith('http') ? img.image : `https://web-production-f50dc.up.railway.app${img.image}`
         }))
       })));
     } catch { setPackages([]); }
