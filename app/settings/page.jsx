@@ -124,6 +124,7 @@ export default function SettingsPage() {
   const [saveError, setSaveError] = useState('');
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const stored = localStorage.getItem('user');
     if (!stored) { router.push('/login'); return; }
@@ -277,7 +278,7 @@ export default function SettingsPage() {
                     onChange={handleChange} disabled={saving} placeholder="Nigeria" />
                 </div>
                 <button type="submit" className="sp-btn-primary" disabled={saving}>
-                  {saving ? <><div className="sp-spinner" /> Saving…</> : 'Save Changes'}
+                  {saving ? <><div className="sp-spinner" /> Saving&hellip;</> : 'Save Changes'}
                 </button>
                 <div className="sp-alert sp-alert-info">
                   <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20" style={{ flexShrink: 0 }}><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/></svg>
@@ -303,7 +304,7 @@ export default function SettingsPage() {
           </div>
           <div className="sp-card-body">
             <p style={{ fontSize: 13, color: '#64748b', marginBottom: 18, lineHeight: 1.6 }}>
-              Need to change your password? We'll send a reset link to your registered email address.
+              Need to change your password? We&apos;ll send a reset link to your registered email address.
             </p>
             <Link href="/forgot-password" className="sp-btn-link">
               <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/></svg>
@@ -327,7 +328,7 @@ export default function SettingsPage() {
           </div>
           <div className="sp-card-body">
             <p style={{ fontSize: 13, color: '#64748b', marginBottom: 18, lineHeight: 1.6 }}>
-              You'll be signed out and redirected to the login page. Your data stays safe.
+              You&apos;ll be signed out and redirected to the login page. Your data stays safe.
             </p>
             <button className="sp-btn-outline-red" onClick={handleLogout}>
               <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
