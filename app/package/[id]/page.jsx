@@ -449,8 +449,8 @@ function PackageDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [userCountry, setUserCountry] = useState(null);
 
-  const API_BASE = 'http://localhost:8000/api/packages';
-  const BOOKMARKS_API = 'http://localhost:8000/api/bookmarks';
+  const API_BASE = 'https://web-production-f50dc.up.railway.app/api/packages';
+  const BOOKMARKS_API = 'https://web-production-f50dc.up.railway.app/api/bookmarks';
 
   useEffect(() => {
     fetchPackageDetails();
