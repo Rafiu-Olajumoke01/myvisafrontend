@@ -362,13 +362,21 @@ export default function PackagesManager() {
   const fetchPackages = async () => {
     try {
       setLoading(true); setError(null);
-      const res = await fetch(`${API_BASE}/admin/`, { headers: { 'Content-Type': 'application/json' } });
+      const res = await fetch(`${API_BASE}/admin/`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+      });
       if (!res.ok) throw new Error('Failed');
       const data = await res.json();
       let arr = Array.isArray(data) ? data : data.packages || data.results || [];
       setPackages(arr.map(pkg => ({
         ...pkg,
-        image: img.image.startsWith('http') ? img.image : `https://web-production-f50dc.up.railway.app${img.image}`
+        images: (pkg.images || []).map(img => ({
+          ...img,
+          image: img.image?.startsWith('http') ? img.image : `https://web-production-f50dc.up.railway.app${img.image}`
+        }))
       })));
     } catch (e) { setError('Unable to load packages.'); setPackages([]); }
     finally { setLoading(false); }
@@ -398,7 +406,13 @@ export default function PackagesManager() {
     e.preventDefault();
     if (imageFiles.length === 0) { alert('Please upload at least one image'); return; }
     try {
-      const res = await fetch(`${API_BASE}/admin/`, { method: 'POST', body: buildFormData(formData, imageFiles) });
+      const res = await fetch(`${API_BASE}/admin/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        },
+        body: buildFormData(formData, imageFiles)
+      });
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || 'Failed');
       await fetchPackages(); resetForm(); setShowCreateModal(false);
