@@ -4,35 +4,35 @@ import React, { useState, useEffect } from 'react';
 // ── Icons ──────────────────────────────────────────────────────
 const PlusIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-    <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+    <path d="M12 5V19M5 12H19" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
   </svg>
 );
 const EditIcon = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-    <path d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 const TrashIcon = () => (
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-    <path d="M3 6H5H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M19 6V20C19 21.1046 18.1046 22 17 22H7C5.89543 22 5 21.1046 5 20V6M8 6V4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M3 6H5H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M19 6V20C19 21.1046 18.1046 22 17 22H7C5.89543 22 5 21.1046 5 20V6M8 6V4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 const ImageIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-    <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
-    <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
-    <path d="M21 15L16 10L5 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" />
+    <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+    <path d="M21 15L16 10L5 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
 // ── Constants ──────────────────────────────────────────────────
 const VISA_CATEGORIES = [
-  { value: 'student',  label: 'Student',  emoji: '🎓', dot: '#7c3aed', bg: 'rgba(124,58,237,0.10)', text: '#7c3aed' },
-  { value: 'tourist',  label: 'Tourist',  emoji: '✈️', dot: '#0284c7', bg: 'rgba(2,132,199,0.10)',  text: '#0284c7' },
-  { value: 'business', label: 'Business', emoji: '🏢', dot: '#d97706', bg: 'rgba(217,119,6,0.10)',  text: '#d97706' },
-  { value: 'medical',  label: 'Medical',  emoji: '🏥', dot: '#dc2626', bg: 'rgba(220,38,38,0.10)',  text: '#dc2626' },
+  { value: 'student', label: 'Student', emoji: '🎓', dot: '#7c3aed', bg: 'rgba(124,58,237,0.10)', text: '#7c3aed' },
+  { value: 'tourist', label: 'Tourist', emoji: '✈️', dot: '#0284c7', bg: 'rgba(2,132,199,0.10)', text: '#0284c7' },
+  { value: 'business', label: 'Business', emoji: '🏢', dot: '#d97706', bg: 'rgba(217,119,6,0.10)', text: '#d97706' },
+  { value: 'medical', label: 'Medical', emoji: '🏥', dot: '#dc2626', bg: 'rgba(220,38,38,0.10)', text: '#dc2626' },
 ];
 const DEGREE_TYPES = ['BSc', 'BA', 'MSc', 'MA', 'MBA', 'PhD', 'HND', 'OND', 'Diploma', 'Certificate', 'Other'];
 const getCategoryInfo = (value) => VISA_CATEGORIES.find(c => c.value === value) || null;
@@ -199,7 +199,7 @@ function StudentFields({ formData, setFormData }) {
         const res = await fetch(`https://autocomplete.clearbit.com/v1/companies/suggest?query=${encodeURIComponent(formData.university_name)}`);
         const data = await res.json();
         if (data?.[0]?.logo) setFormData(f => ({ ...f, university_logo: data[0].logo }));
-      } catch (_) {}
+      } catch (_) { }
       setLogoLoading(false);
     }, 800);
     return () => clearTimeout(timer);
@@ -221,7 +221,7 @@ function StudentFields({ formData, setFormData }) {
           <div style={{ width: 46, height: 46, borderRadius: 12, border: '2px dashed #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', overflow: 'hidden' }}>
             {logoLoading ? <div style={{ width: 16, height: 16, border: '2px solid #07b3f2', borderTopColor: 'transparent', borderRadius: '50%', animation: 'pm-spin 0.7s linear infinite' }} />
               : formData.university_logo ? <img src={formData.university_logo} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 4 }} />
-              : <span style={{ fontSize: 20 }}>🏫</span>}
+                : <span style={{ fontSize: 20 }}>🏫</span>}
           </div>
           <span style={{ fontSize: 9, color: '#94a3b8', fontWeight: 600 }}>Auto logo</span>
         </div>
@@ -342,20 +342,20 @@ function MedicalFields({ formData, setFormData }) {
 
 // ── Main ───────────────────────────────────────────────────────
 export default function PackagesManager() {
-  const [packages, setPackages]         = useState([]);
-  const [loading, setLoading]           = useState(true);
-  const [error, setError]               = useState(null);
-  const [searchQuery, setSearchQuery]   = useState('');
+  const [packages, setPackages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showEditModal, setShowEditModal]     = useState(false);
-  const [editingPackage, setEditingPackage]   = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingPackage, setEditingPackage] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [deletingPackage, setDeletingPackage]     = useState(null);
-  const [formData, setFormData]   = useState(emptyFormData);
-  const [imageFiles, setImageFiles]     = useState([]);
+  const [deletingPackage, setDeletingPackage] = useState(null);
+  const [formData, setFormData] = useState(emptyFormData);
+  const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
 
-  const API_BASE = 'http://localhost:8000/api/packages';
+  const API_BASE = 'https://web-production-f50dc.up.railway.app/api/packages';
 
   useEffect(() => { fetchPackages(); }, []);
 
@@ -368,7 +368,7 @@ export default function PackagesManager() {
       let arr = Array.isArray(data) ? data : data.packages || data.results || [];
       setPackages(arr.map(pkg => ({
         ...pkg,
-        images: (pkg.images || []).map(img => ({ ...img, image: img.image.startsWith('http') ? img.image : `http://localhost:8000${img.image}` }))
+        image: img.image.startsWith('http') ? img.image : `https://web-production-f50dc.up.railway.app${img.image}`
       })));
     } catch (e) { setError('Unable to load packages.'); setPackages([]); }
     finally { setLoading(false); }
@@ -379,7 +379,7 @@ export default function PackagesManager() {
     if (files.length > 20) { alert('Maximum 20 images allowed'); return; }
     setImageFiles(files); setImagePreviews(files.map(f => URL.createObjectURL(f)));
   };
-  const removeImage = i => { setImageFiles(f => f.filter((_,idx)=>idx!==i)); setImagePreviews(p => p.filter((_,idx)=>idx!==i)); };
+  const removeImage = i => { setImageFiles(f => f.filter((_, idx) => idx !== i)); setImagePreviews(p => p.filter((_, idx) => idx !== i)); };
   const clearAllImages = () => { setImageFiles([]); setImagePreviews([]); };
 
   const buildFormData = (data, files) => {
@@ -435,10 +435,10 @@ export default function PackagesManager() {
   const filtered = packages.filter(pkg => {
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
-    return (pkg.country||'').toLowerCase().includes(q) || (pkg.title||'').toLowerCase().includes(q);
+    return (pkg.country || '').toLowerCase().includes(q) || (pkg.title || '').toLowerCase().includes(q);
   });
 
-  const catCounts = VISA_CATEGORIES.map(c => ({ ...c, count: packages.filter(p=>p.category===c.value).length }));
+  const catCounts = VISA_CATEGORIES.map(c => ({ ...c, count: packages.filter(p => p.category === c.value).length }));
 
   return (
     <div className="pm-root">
@@ -486,7 +486,7 @@ export default function PackagesManager() {
       {/* Loading */}
       {loading ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
-          {[...Array(6)].map((_,i) => <div key={i} className="pm-skeleton" style={{ height: 240, borderRadius: 18 }} />)}
+          {[...Array(6)].map((_, i) => <div key={i} className="pm-skeleton" style={{ height: 240, borderRadius: 18 }} />)}
         </div>
       ) : filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '56px 20px', background: 'white', borderRadius: 20, border: '1px solid #e2e8f0' }}>
@@ -502,8 +502,8 @@ export default function PackagesManager() {
             const pkgTitle = pkg.category === 'student' && pkg.degree_type && pkg.course
               ? `${pkg.degree_type} in ${pkg.course}`
               : pkg.category === 'medical' && pkg.hospital_name
-              ? `Treatment at ${pkg.hospital_name}`
-              : pkg.title || '—';
+                ? `Treatment at ${pkg.hospital_name}`
+                : pkg.title || '—';
             const pkgSub = pkg.course_city || pkg.hospital_city || pkg.country || pkg.location || '—';
 
             return (
@@ -538,9 +538,9 @@ export default function PackagesManager() {
                     {pkg.is_free
                       ? <span style={{ fontSize: 14, fontWeight: 800, color: '#059669' }}>FREE</span>
                       : <div>
-                          <div style={{ fontSize: 9, color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Fee</div>
-                          <span style={{ fontSize: 14, fontWeight: 800, color: '#07b3f2' }}>${pkg.price}</span>
-                        </div>
+                        <div style={{ fontSize: 9, color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Fee</div>
+                        <span style={{ fontSize: 14, fontWeight: 800, color: '#07b3f2' }}>${pkg.price}</span>
+                      </div>
                     }
                     {pkg.processing_time && <span style={{ fontSize: 10, color: '#94a3b8', fontWeight: 500 }}>{pkg.processing_time}</span>}
                   </div>
@@ -627,10 +627,10 @@ function PackageFormModal({ title, formData, setFormData, imageFiles, imagePrevi
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <Field label="Offer Title *">
-                <input className="pm-input" type="text" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g., Canada Student Visa" />
+                <input className="pm-input" type="text" required value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} placeholder="e.g., Canada Student Visa" />
               </Field>
               <Field label="Category *">
-                <select className="pm-select" required value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})}>
+                <select className="pm-select" required value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })}>
                   <option value="">— Select category —</option>
                   {VISA_CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.emoji} {c.label}</option>)}
                 </select>
@@ -638,7 +638,7 @@ function PackageFormModal({ title, formData, setFormData, imageFiles, imagePrevi
             </div>
 
             <Field label="Status">
-              <select className="pm-select" style={{ maxWidth: 200 }} value={formData.is_active} onChange={e => setFormData({...formData, is_active: e.target.value === 'true'})}>
+              <select className="pm-select" style={{ maxWidth: 200 }} value={formData.is_active} onChange={e => setFormData({ ...formData, is_active: e.target.value === 'true' })}>
                 <option value="true">✅ Active</option>
                 <option value="false">❌ Inactive</option>
               </select>
@@ -647,10 +647,10 @@ function PackageFormModal({ title, formData, setFormData, imageFiles, imagePrevi
             {cat && (
               <div className="pm-section">
                 <div className="pm-section-title">{catInfo?.emoji} {catInfo?.label} Details</div>
-                {cat === 'student'  && <StudentFields  formData={formData} setFormData={setFormData} />}
-                {cat === 'tourist'  && <TouristFields  formData={formData} setFormData={setFormData} />}
+                {cat === 'student' && <StudentFields formData={formData} setFormData={setFormData} />}
+                {cat === 'tourist' && <TouristFields formData={formData} setFormData={setFormData} />}
                 {cat === 'business' && <BusinessFields formData={formData} setFormData={setFormData} />}
-                {cat === 'medical'  && <MedicalFields  formData={formData} setFormData={setFormData} />}
+                {cat === 'medical' && <MedicalFields formData={formData} setFormData={setFormData} />}
               </div>
             )}
 
@@ -658,11 +658,11 @@ function PackageFormModal({ title, formData, setFormData, imageFiles, imagePrevi
             <div className="pm-section">
               <div className="pm-section-title">💰 Pricing</div>
               <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-                <button type="button" onClick={() => setFormData({...formData, is_free: false})}
+                <button type="button" onClick={() => setFormData({ ...formData, is_free: false })}
                   style={{ flex: 1, padding: '9px', borderRadius: 10, border: `2px solid ${!formData.is_free ? '#07b3f2' : '#e2e8f0'}`, background: !formData.is_free ? 'rgba(7,179,242,0.08)' : 'white', color: !formData.is_free ? '#0284c7' : '#64748b', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', transition: 'all 0.15s' }}>
                   💳 Paid Package
                 </button>
-                <button type="button" onClick={() => setFormData({...formData, is_free: true})}
+                <button type="button" onClick={() => setFormData({ ...formData, is_free: true })}
                   style={{ flex: 1, padding: '9px', borderRadius: 10, border: `2px solid ${formData.is_free ? '#10b981' : '#e2e8f0'}`, background: formData.is_free ? 'rgba(16,185,129,0.08)' : 'white', color: formData.is_free ? '#059669' : '#64748b', fontSize: 12, fontWeight: 700, cursor: 'pointer', fontFamily: 'DM Sans, sans-serif', transition: 'all 0.15s' }}>
                   🆓 Free Package
                 </button>
@@ -670,21 +670,21 @@ function PackageFormModal({ title, formData, setFormData, imageFiles, imagePrevi
               {!formData.is_free && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                   <Field label="Price (USD) *">
-                    <input className="pm-input" type="number" step="0.01" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="3500.00" />
+                    <input className="pm-input" type="number" step="0.01" required value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} placeholder="3500.00" />
                   </Field>
                   <Field label="Service Fee (USD)">
-                    <input className="pm-input" type="text" value={formData.service_fee} onChange={e => setFormData({...formData, service_fee: e.target.value})} placeholder="15" />
+                    <input className="pm-input" type="text" value={formData.service_fee} onChange={e => setFormData({ ...formData, service_fee: e.target.value })} placeholder="15" />
                   </Field>
                 </div>
               )}
             </div>
 
             <Field label="Description">
-              <textarea className="pm-input" rows={3} style={{ resize: 'none' }} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Package description..." />
+              <textarea className="pm-input" rows={3} style={{ resize: 'none' }} value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} placeholder="Package description..." />
             </Field>
 
             <Field label="Requirements (one per line)">
-              <textarea className="pm-input" rows={3} style={{ resize: 'none', fontFamily: 'monospace', fontSize: 12 }} value={formData.requirements} onChange={e => setFormData({...formData, requirements: e.target.value})} placeholder={"Valid passport\nLetter of acceptance\nProof of finances"} />
+              <textarea className="pm-input" rows={3} style={{ resize: 'none', fontFamily: 'monospace', fontSize: 12 }} value={formData.requirements} onChange={e => setFormData({ ...formData, requirements: e.target.value })} placeholder={"Valid passport\nLetter of acceptance\nProof of finances"} />
             </Field>
 
             {/* Image upload */}

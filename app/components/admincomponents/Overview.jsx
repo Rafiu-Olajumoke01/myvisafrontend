@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 
-const API = 'http://localhost:8000/api';
+const API = 'https://web-production-f50dc.up.railway.app/api';
 function authHeaders() {
   return { 'Authorization': `Bearer ${localStorage.getItem('access_token')}`, 'Content-Type': 'application/json' };
 }
