@@ -51,6 +51,12 @@ const emptyFormData = {
   hospital_name: '', hospital_city: '', medical_expectations: '',
 };
 
+const API_BASE = 'https://web-production-f50dc.up.railway.app/api/packages';
+
+const authHeaders = () => ({
+  'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+});
+
 // ── Styles ──────────────────────────────────────────────────────
 const GlobalStyles = () => (
   <style>{`
@@ -355,8 +361,6 @@ export default function PackagesManager() {
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
 
-  const API_BASE = 'https://web-production-f50dc.up.railway.app/api/packages';
-
   useEffect(() => { fetchPackages(); }, []);
 
   const fetchPackages = async () => {
@@ -365,7 +369,7 @@ export default function PackagesManager() {
       const res = await fetch(`${API_BASE}/admin/`, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+          ...authHeaders(),
         }
       });
       if (!res.ok) throw new Error('Failed');
@@ -408,9 +412,7 @@ export default function PackagesManager() {
     try {
       const res = await fetch(`${API_BASE}/admin/`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        },
+        headers: { ...authHeaders() },
         body: buildFormData(formData, imageFiles)
       });
       const result = await res.json();
@@ -422,7 +424,11 @@ export default function PackagesManager() {
   const handleUpdatePackage = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`${API_BASE}/admin/${editingPackage.id}/`, { method: 'PUT', body: buildFormData(formData, imageFiles) });
+      const res = await fetch(`${API_BASE}/admin/${editingPackage.id}/`, {
+        method: 'PUT',
+        headers: { ...authHeaders() },
+        body: buildFormData(formData, imageFiles)
+      });
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || 'Failed');
       await fetchPackages(); resetForm(); setShowEditModal(false); setEditingPackage(null);
@@ -431,7 +437,10 @@ export default function PackagesManager() {
 
   const handleDeletePackage = async () => {
     try {
-      const res = await fetch(`${API_BASE}/admin/${deletingPackage.id}/`, { method: 'DELETE' });
+      const res = await fetch(`${API_BASE}/admin/${deletingPackage.id}/`, {
+        method: 'DELETE',
+        headers: { ...authHeaders() },
+      });
       if (!res.ok) throw new Error('Failed');
       await fetchPackages(); setShowDeleteConfirm(false); setDeletingPackage(null);
     } catch (e) { alert('Failed to delete.'); }
@@ -522,13 +531,11 @@ export default function PackagesManager() {
 
             return (
               <div key={pkg.id} className="pm-card" style={{ animationDelay: `${i * 0.03}s` }}>
-                {/* Image */}
                 <div style={{ position: 'relative', height: 130, background: '#f1f5f9', flexShrink: 0 }}>
                   {pkg.images?.length > 0
                     ? <img src={pkg.images[0].image} alt={pkgTitle} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1' }}><ImageIcon /></div>
                   }
-                  {/* Overlays */}
                   <div style={{ position: 'absolute', top: 8, left: 8 }}>
                     {cat && <span className="pm-badge" style={{ background: 'rgba(255,255,255,0.92)', color: cat.text, backdropFilter: 'blur(4px)' }}>
                       <span className="pm-badge-dot" style={{ background: cat.dot }} />{cat.emoji} {cat.label}
@@ -541,7 +548,6 @@ export default function PackagesManager() {
                   </div>
                 </div>
 
-                {/* Body */}
                 <div style={{ padding: '14px 14px 12px', display: 'flex', flexDirection: 'column', gap: 6, flex: 1 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                     {cat?.emoji} {pkgTitle}
@@ -574,7 +580,6 @@ export default function PackagesManager() {
         </div>
       )}
 
-      {/* Create Modal */}
       {showCreateModal && (
         <PackageFormModal title="Create Package" formData={formData} setFormData={setFormData}
           imageFiles={imageFiles} imagePreviews={imagePreviews}
@@ -582,7 +587,6 @@ export default function PackagesManager() {
           onSubmit={handleCreatePackage} onClose={() => { setShowCreateModal(false); resetForm(); }} />
       )}
 
-      {/* Edit Modal */}
       {showEditModal && (
         <PackageFormModal title="Edit Package" formData={formData} setFormData={setFormData}
           imageFiles={imageFiles} imagePreviews={imagePreviews}
@@ -590,7 +594,6 @@ export default function PackagesManager() {
           onSubmit={handleUpdatePackage} isEdit onClose={() => { setShowEditModal(false); setEditingPackage(null); resetForm(); }} />
       )}
 
-      {/* Delete Confirm */}
       {showDeleteConfirm && deletingPackage && (
         <div className="pm-modal-overlay" onClick={e => e.target === e.currentTarget && setShowDeleteConfirm(false)}>
           <div className="pm-modal" style={{ maxWidth: 380, margin: 'auto', padding: '32px 28px', textAlign: 'center' }}>
@@ -629,13 +632,11 @@ function PackageFormModal({ title, formData, setFormData, imageFiles, imagePrevi
     <div className="pm-modal-overlay" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="pm-modal" style={{ margin: '24px auto', maxHeight: 'calc(100vh - 48px)', display: 'flex', flexDirection: 'column' }}>
 
-        {/* Header */}
         <div style={{ padding: '20px 24px 16px', borderBottom: '1px solid #f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
           <div style={{ fontFamily: 'Instrument Serif, serif', fontSize: 22, color: '#0a0f1e' }}>{title}</div>
           <button onClick={onClose} style={{ width: 34, height: 34, borderRadius: 9, border: '1.5px solid #e2e8f0', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: 14 }}>✕</button>
         </div>
 
-        {/* Body */}
         <div style={{ overflowY: 'auto', flex: 1, padding: '20px 24px' }}>
           <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
@@ -668,7 +669,6 @@ function PackageFormModal({ title, formData, setFormData, imageFiles, imagePrevi
               </div>
             )}
 
-            {/* Pricing */}
             <div className="pm-section">
               <div className="pm-section-title">💰 Pricing</div>
               <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
@@ -701,7 +701,6 @@ function PackageFormModal({ title, formData, setFormData, imageFiles, imagePrevi
               <textarea className="pm-input" rows={3} style={{ resize: 'none', fontFamily: 'monospace', fontSize: 12 }} value={formData.requirements} onChange={e => setFormData({ ...formData, requirements: e.target.value })} placeholder={"Valid passport\nLetter of acceptance\nProof of finances"} />
             </Field>
 
-            {/* Image upload */}
             <div>
               <label className="pm-label">Images {!isEdit && '*'} (max 20)</label>
               <div
@@ -738,7 +737,6 @@ function PackageFormModal({ title, formData, setFormData, imageFiles, imagePrevi
               )}
             </div>
 
-            {/* Footer */}
             <div style={{ display: 'flex', gap: 10, paddingTop: 8, borderTop: '1px solid #f1f5f9' }}>
               <button type="button" className="pm-btn-ghost" style={{ flex: 1, padding: '11px' }} onClick={onClose}>Cancel</button>
               <button type="submit" className="pm-btn-primary" style={{ flex: 2, padding: '11px' }}>
