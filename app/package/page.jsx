@@ -805,26 +805,26 @@ function PackagesContent() {
   const fetchBookmarks = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch(`${ BOOKMARKS_API } / `, { headers: { Authorization: `Bearer ${ token }` } });
+      const res = await fetch(`${BOOKMARKS_API}/`, { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
         setBookmarkedPackages(new Set((data.bookmarks || []).map(b => b.package.id)));
       }
-    } catch {}
+    } catch { }
   };
 
   const toggleBookmark = async (e, packageId) => {
     e.stopPropagation();
-    if (!isLoggedIn) { setPendingRoute(`/ package / ${ packageId }`); setShowAuthModal(true); return; }
+    if (!isLoggedIn) { setPendingRoute(`/package/${packageId}`); setShowAuthModal(true); return; }
     const isBookmarked = bookmarkedPackages.has(packageId);
     setBookmarkedPackages(prev => { const s = new Set(prev); isBookmarked ? s.delete(packageId) : s.add(packageId); return s; });
     setBookmarkLoading(prev => ({ ...prev, [packageId]: true }));
     try {
       const token = localStorage.getItem('access_token');
       if (isBookmarked) {
-        await fetch(`${ BOOKMARKS_API } / ${ packageId } / `, { method: 'DELETE', headers: { Authorization: `Bearer ${ token }` } });
+        await fetch(`${BOOKMARKS_API}/${packageId}/`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
       } else {
-        await fetch(`${ BOOKMARKS_API } / create / `, { method: 'POST', headers: { Authorization: `Bearer ${ token }`, 'Content-Type': 'application/json' }, body: JSON.stringify({ package_id: packageId }) });
+        await fetch(`${BOOKMARKS_API}/create/`, { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ package_id: packageId }) });
       }
     } catch {
       setBookmarkedPackages(prev => { const s = new Set(prev); isBookmarked ? s.add(packageId) : s.delete(packageId); return s; });
@@ -839,8 +839,8 @@ function PackagesContent() {
       .some(f => f?.toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
-  const handlePackageClick = (id) => router.push(`/ package / ${ id }`);
-  const handleGoToLogin = () => { setShowAuthModal(false); router.push(`/ login${ pendingRoute? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`); };
+  const handlePackageClick = (id) => router.push(`/package/${id}`);
+  const handleGoToLogin = () => { setShowAuthModal(false); router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`);};
 
   return (
     <div style={{ minHeight: '100vh', background: '#f0f2f5' }}>
@@ -897,7 +897,7 @@ function PackagesContent() {
         <div onClick={() => setShowAuthModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 16 }}>
           <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, padding: 28, maxWidth: 340, width: '100%', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
             <div style={{ width: 42, height: 42, borderRadius: 11, background: 'linear-gradient(135deg,#07b3f2,#0284c7)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 13 }}>
-              <svg width="19" height="19" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+              <svg width="19" height="19" fill="none" stroke="white" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" /></svg>
             </div>
             <h2 style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 19, fontWeight: 700, color: '#0f172a', marginBottom: 6 }}>Sign in to continue</h2>
             <p style={{ fontSize: 12, color: '#65676b', marginBottom: 16, lineHeight: 1.6, fontFamily: 'DM Sans, sans-serif' }}>Create a free account or log in to save packages and start your visa journey.</p>
