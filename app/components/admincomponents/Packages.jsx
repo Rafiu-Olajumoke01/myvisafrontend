@@ -27,7 +27,6 @@ const ImageIcon = () => (
   </svg>
 );
 
-// ── Constants ──────────────────────────────────────────────────
 const VISA_CATEGORIES = [
   { value: 'student', label: 'Student', emoji: '🎓', dot: '#7c3aed', bg: 'rgba(124,58,237,0.10)', text: '#7c3aed' },
   { value: 'tourist', label: 'Tourist', emoji: '✈️', dot: '#0284c7', bg: 'rgba(2,132,199,0.10)', text: '#0284c7' },
@@ -57,7 +56,6 @@ const authHeaders = () => ({
   'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
 });
 
-// ── Styles ──────────────────────────────────────────────────────
 const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
@@ -194,7 +192,6 @@ const Checkbox = ({ label, checked, onChange }) => (
   </label>
 );
 
-// ── Category Fields ────────────────────────────────────────────
 function StudentFields({ formData, setFormData }) {
   const [logoLoading, setLogoLoading] = useState(false);
   useEffect(() => {
@@ -346,7 +343,6 @@ function MedicalFields({ formData, setFormData }) {
   );
 }
 
-// ── Main ───────────────────────────────────────────────────────
 export default function PackagesManager() {
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -379,7 +375,7 @@ export default function PackagesManager() {
         ...pkg,
         images: (pkg.images || []).map(img => ({
           ...img,
-          image: img.image?.startsWith('http') ? img.image : `https://web-production-f50dc.up.railway.app${img.image}`
+          image: img.image || ''
         }))
       })));
     } catch (e) { setError('Unable to load packages.'); setPackages([]); }
@@ -467,7 +463,6 @@ export default function PackagesManager() {
     <div className="pm-root">
       <GlobalStyles />
 
-      {/* Header */}
       <div className="pm-fade pm-fade-1" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 22 }}>
         <div>
           <div style={{ fontFamily: 'Instrument Serif, serif', fontSize: 28, color: '#0a0f1e', lineHeight: 1.1 }}>Packages</div>
@@ -478,7 +473,6 @@ export default function PackagesManager() {
         </button>
       </div>
 
-      {/* Category pills */}
       <div className="pm-fade pm-fade-2" style={{ display: 'flex', gap: 8, marginBottom: 18, flexWrap: 'wrap' }}>
         {catCounts.map(c => (
           <div key={c.value} className="pm-badge" style={{ background: c.bg, color: c.text, padding: '5px 12px', fontSize: 11 }}>
@@ -488,13 +482,11 @@ export default function PackagesManager() {
         ))}
       </div>
 
-      {/* Search */}
       <div className="pm-fade pm-fade-2" style={{ marginBottom: 20 }}>
         <input className="pm-input" type="text" placeholder="🔍  Search by country or title..."
           value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
       </div>
 
-      {/* Error */}
       {error && (
         <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 14, padding: '14px 18px', display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
           <span style={{ fontSize: 18 }}>⚠️</span>
@@ -506,7 +498,6 @@ export default function PackagesManager() {
         </div>
       )}
 
-      {/* Loading */}
       {loading ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
           {[...Array(6)].map((_, i) => <div key={i} className="pm-skeleton" style={{ height: 240, borderRadius: 18 }} />)}
@@ -615,7 +606,6 @@ export default function PackagesManager() {
   );
 }
 
-// ── Form Modal ─────────────────────────────────────────────────
 function PackageFormModal({ title, formData, setFormData, imageFiles, imagePreviews, handleImageChange, removeImage, clearAllImages, onSubmit, onClose, isEdit = false }) {
   const [isDragging, setIsDragging] = useState(false);
 

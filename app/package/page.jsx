@@ -293,36 +293,36 @@ const GlobalStyles = () => (
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const getVisaPurpose = (cat) => {
   const c = (cat || '').toLowerCase();
-  if (c.includes('student'))  return 'Student Visa';
-  if (c.includes('work'))     return 'Work Visa';
-  if (c.includes('tourist'))  return 'Tourist Visa';
+  if (c.includes('student')) return 'Student Visa';
+  if (c.includes('work')) return 'Work Visa';
+  if (c.includes('tourist')) return 'Tourist Visa';
   if (c.includes('business')) return 'Business Visa';
-  if (c.includes('medical'))  return 'Medical Visa';
+  if (c.includes('medical')) return 'Medical Visa';
   return 'Visa Package';
 };
 const getVisaIcon = (cat) => {
   const c = (cat || '').toLowerCase();
-  if (c.includes('student'))  return '🎓';
-  if (c.includes('work'))     return '💼';
-  if (c.includes('tourist'))  return '✈️';
+  if (c.includes('student')) return '🎓';
+  if (c.includes('work')) return '💼';
+  if (c.includes('tourist')) return '✈️';
   if (c.includes('business')) return '📊';
-  if (c.includes('medical'))  return '🏥';
+  if (c.includes('medical')) return '🏥';
   return '📄';
 };
 const getCategoryColors = (cat) => {
   const c = (cat || '').toLowerCase();
-  if (c.includes('student'))  return { bg: '#ede9fe', color: '#7c3aed' };
-  if (c.includes('tourist'))  return { bg: '#e0f2fe', color: '#0284c7' };
+  if (c.includes('student')) return { bg: '#ede9fe', color: '#7c3aed' };
+  if (c.includes('tourist')) return { bg: '#e0f2fe', color: '#0284c7' };
   if (c.includes('business')) return { bg: '#fef3c7', color: '#d97706' };
-  if (c.includes('medical'))  return { bg: '#fee2e2', color: '#dc2626' };
+  if (c.includes('medical')) return { bg: '#fee2e2', color: '#dc2626' };
   return { bg: '#e0f2fe', color: '#07b3f2' };
 };
 const getMobileBadgeColor = (cat) => {
   const c = (cat || '').toLowerCase();
-  if (c.includes('student'))  return { color: '#c084fc', bg: 'rgba(192,132,252,0.18)', border: 'rgba(192,132,252,0.35)' };
-  if (c.includes('tourist'))  return { color: '#38bdf8', bg: 'rgba(56,189,248,0.18)',  border: 'rgba(56,189,248,0.35)' };
-  if (c.includes('business')) return { color: '#facc15', bg: 'rgba(250,204,21,0.18)',  border: 'rgba(250,204,21,0.35)' };
-  if (c.includes('medical'))  return { color: '#f87171', bg: 'rgba(248,113,113,0.18)', border: 'rgba(248,113,113,0.35)' };
+  if (c.includes('student')) return { color: '#c084fc', bg: 'rgba(192,132,252,0.18)', border: 'rgba(192,132,252,0.35)' };
+  if (c.includes('tourist')) return { color: '#38bdf8', bg: 'rgba(56,189,248,0.18)', border: 'rgba(56,189,248,0.35)' };
+  if (c.includes('business')) return { color: '#facc15', bg: 'rgba(250,204,21,0.18)', border: 'rgba(250,204,21,0.35)' };
+  if (c.includes('medical')) return { color: '#f87171', bg: 'rgba(248,113,113,0.18)', border: 'rgba(248,113,113,0.35)' };
   return { color: '#38bdf8', bg: 'rgba(56,189,248,0.18)', border: 'rgba(56,189,248,0.35)' };
 };
 const getCardTitle = (pkg) => {
@@ -393,8 +393,8 @@ function PackageCard({ pkg, index, isBookmarked, isBookmarkLoading, convertedFee
             {isBookmarkLoading
               ? <div style={{ width: 10, height: 10, border: '2px solid currentColor', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
               : <svg width="11" height="11" viewBox="0 0 24 24" fill={isBookmarked ? 'white' : 'none'} stroke={isBookmarked ? 'white' : '#65676b'} strokeWidth="2.2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/>
-                </svg>}
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+              </svg>}
           </button>
         </div>
 
@@ -402,8 +402,8 @@ function PackageCard({ pkg, index, isBookmarked, isBookmarkLoading, convertedFee
 
         <div className="pkg-card-location">
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
           </svg>
           {location}
         </div>
@@ -431,7 +431,7 @@ function PackageCard({ pkg, index, isBookmarked, isBookmarkLoading, convertedFee
           <button className="pkg-card-btn" onClick={e => { e.stopPropagation(); onPackageClick(pkg.id); }}>
             View
             <svg width="11" height="11" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
           </button>
         </div>
@@ -447,9 +447,9 @@ function SlimSidebar() {
   const [tooltip, setTooltip] = useState(null);
 
   const getActive = () => {
-    if (pathname?.startsWith('/bookmarks'))     return 'saved';
-    if (pathname?.startsWith('/dashboard'))     return 'myvisa';
-    if (pathname?.startsWith('/settings'))      return 'settings';
+    if (pathname?.startsWith('/bookmarks')) return 'saved';
+    if (pathname?.startsWith('/dashboard')) return 'myvisa';
+    if (pathname?.startsWith('/settings')) return 'settings';
     if (pathname?.startsWith('/notifications')) return 'alerts';
     return 'home';
   };
@@ -458,23 +458,23 @@ function SlimSidebar() {
   const items = [
     {
       key: 'home', label: 'Home', route: '/package',
-      icon: <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      icon: <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg>
     },
     {
       key: 'myvisa', label: 'My Visa', route: '/visa',
-      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
     },
     {
       key: 'saved', label: 'Saved', route: '/bookmarks',
-      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/></svg>
+      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg>
     },
     {
       key: 'alerts', label: 'Alerts', route: '/notifications', badge: true,
-      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"/></svg>
+      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
     },
     {
       key: 'settings', label: 'Settings', route: '/settings',
-      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.527-.878 3.31.905 2.432 2.432a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.878 1.527-.905 3.31-2.432 2.432a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.527.878-3.31-.905-2.432-2.432a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.878-1.527.905-3.31 2.432-2.432.996.574 2.296.07 2.573-1.066z"/><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.527-.878 3.31.905 2.432 2.432a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.878 1.527-.905 3.31-2.432 2.432a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.527.878-3.31-.905-2.432-2.432a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.878-1.527.905-3.31 2.432-2.432.996.574 2.296.07 2.573-1.066z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
     },
   ];
 
@@ -560,10 +560,10 @@ function RightPanel() {
         </div>
         <div className="rp-stat-grid">
           {[
-            { n: '98%',  l: 'Approval Rate', color: '#07b3f2' },
-            { n: '50+',  l: 'Countries',     color: '#7c3aed' },
-            { n: '2k+',  l: 'Applicants',    color: '#d97706' },
-            { n: '24h',  l: 'Support',       color: '#16a34a' },
+            { n: '98%', l: 'Approval Rate', color: '#07b3f2' },
+            { n: '50+', l: 'Countries', color: '#7c3aed' },
+            { n: '2k+', l: 'Applicants', color: '#d97706' },
+            { n: '24h', l: 'Support', color: '#16a34a' },
           ].map(s => (
             <div key={s.l} className="rp-stat-item">
               <div style={{ fontSize: 17, fontWeight: 700, color: s.color, fontFamily: 'Playfair Display, serif' }}>{s.n}</div>
@@ -612,8 +612,8 @@ function MobileSlide({ pkg, isActive, likedIds, onLikeToggle, onPackageClick }) 
   const feeDisplay = isStudent
     ? { text: 'Free to apply', color: '#4ade80' }
     : isTourist
-    ? { text: pkg.cost || '—', color: '#fbbf24' }
-    : { text: `${pkg.currency || 'NGN'} ${pkg.service_fee || '—'}`, color: '#07b3f2' };
+      ? { text: pkg.cost || '—', color: '#fbbf24' }
+      : { text: `${pkg.currency || 'NGN'} ${pkg.service_fee || '—'}`, color: '#07b3f2' };
 
   return (
     <div className={`mobile-slide${isActive ? ' active' : ''}`}>
@@ -624,27 +624,27 @@ function MobileSlide({ pkg, isActive, likedIds, onLikeToggle, onPackageClick }) 
           <span className="mobile-top-tab">Following</span>
           <span className="mobile-top-tab active">For You</span>
         </div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
       </div>
       <div className="mobile-right-actions">
         <div className="mobile-action-btn" onClick={() => onLikeToggle(pkg.id)}>
           <div className="mobile-action-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill={isLiked ? '#ff3b5c' : 'none'} stroke={isLiked ? '#ff3b5c' : 'white'} strokeWidth="1.8" style={{ transition: 'all 0.2s' }}>
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
           </div>
           <span className="mobile-action-label">Like</span>
         </div>
         <div className="mobile-action-btn">
-          <div className="mobile-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <div className="mobile-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg></div>
           <span className="mobile-action-label">Comment</span>
         </div>
         <div className="mobile-action-btn">
-          <div className="mobile-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+          <div className="mobile-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg></div>
           <span className="mobile-action-label">Share</span>
         </div>
         <div className="mobile-action-btn">
-          <div className="mobile-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/></svg></div>
+          <div className="mobile-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg></div>
           <span className="mobile-action-label">Save</span>
         </div>
       </div>
@@ -660,7 +660,7 @@ function MobileSlide({ pkg, isActive, likedIds, onLikeToggle, onPackageClick }) 
         <div className="mobile-cta-row">
           <button className="mobile-cta-primary" onClick={() => onPackageClick(pkg.id)}>
             View Package
-            <svg width="13" height="13" fill="none" stroke="white" viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+            <svg width="13" height="13" fill="none" stroke="white" viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
           </button>
           <button className="mobile-cta-ghost" style={{ color: feeDisplay.color }}>{feeDisplay.text}</button>
         </div>
@@ -716,24 +716,24 @@ function MobileFeed({ packages, onPackageClick }) {
       </div>
       <div className="mobile-bottom-nav">
         <div className="mobile-nav-item active">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
           <span className="mobile-nav-label">Home</span>
         </div>
         <div className="mobile-nav-item">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
           <span className="mobile-nav-label">Explore</span>
         </div>
         <div className="mobile-nav-item">
           <div style={{ width: 42, height: 28, background: '#07b3f2', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M12 5v14M5 12h14" /></svg>
           </div>
         </div>
         <div className="mobile-nav-item">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg>
           <span className="mobile-nav-label">Saved</span>
         </div>
         <div className="mobile-nav-item">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
           <span className="mobile-nav-label">Profile</span>
         </div>
       </div>
@@ -758,7 +758,7 @@ function PackagesContent() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingRoute, setPendingRoute] = useState(null);
 
-  const API_BASE      = 'https://web-production-f50dc.up.railway.app/api/packages';
+  const API_BASE = 'https://web-production-f50dc.up.railway.app/api/packages';
   const BOOKMARKS_API = 'https://web-production-f50dc.up.railway.app/api/bookmarks';
 
   useEffect(() => {
@@ -795,7 +795,7 @@ function PackagesContent() {
         ...pkg,
         images: (pkg.images || []).map(img => ({
           ...img,
-          image: img.image?.startsWith('http') ? img.image : `https://web-production-f50dc.up.railway.app${img.image}`
+          image: img.image?.startsWith('http') ? img.image : `https://res.cloudinary.com/dmbgrroos/${img.image}`
         }))
       })));
     } catch { setPackages([]); }
@@ -805,7 +805,7 @@ function PackagesContent() {
   const fetchBookmarks = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const res = await fetch(`${BOOKMARKS_API}/`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${ BOOKMARKS_API } / `, { headers: { Authorization: `Bearer ${ token }` } });
       if (res.ok) {
         const data = await res.json();
         setBookmarkedPackages(new Set((data.bookmarks || []).map(b => b.package.id)));
@@ -815,16 +815,16 @@ function PackagesContent() {
 
   const toggleBookmark = async (e, packageId) => {
     e.stopPropagation();
-    if (!isLoggedIn) { setPendingRoute(`/package/${packageId}`); setShowAuthModal(true); return; }
+    if (!isLoggedIn) { setPendingRoute(`/ package / ${ packageId }`); setShowAuthModal(true); return; }
     const isBookmarked = bookmarkedPackages.has(packageId);
     setBookmarkedPackages(prev => { const s = new Set(prev); isBookmarked ? s.delete(packageId) : s.add(packageId); return s; });
     setBookmarkLoading(prev => ({ ...prev, [packageId]: true }));
     try {
       const token = localStorage.getItem('access_token');
       if (isBookmarked) {
-        await fetch(`${BOOKMARKS_API}/${packageId}/`, { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } });
+        await fetch(`${ BOOKMARKS_API } / ${ packageId } / `, { method: 'DELETE', headers: { Authorization: `Bearer ${ token }` } });
       } else {
-        await fetch(`${BOOKMARKS_API}/create/`, { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ package_id: packageId }) });
+        await fetch(`${ BOOKMARKS_API } / create / `, { method: 'POST', headers: { Authorization: `Bearer ${ token }`, 'Content-Type': 'application/json' }, body: JSON.stringify({ package_id: packageId }) });
       }
     } catch {
       setBookmarkedPackages(prev => { const s = new Set(prev); isBookmarked ? s.add(packageId) : s.delete(packageId); return s; });
@@ -839,8 +839,8 @@ function PackagesContent() {
       .some(f => f?.toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
-  const handlePackageClick = (id) => router.push(`/package/${id}`);
-  const handleGoToLogin = () => { setShowAuthModal(false); router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`); };
+  const handlePackageClick = (id) => router.push(`/ package / ${ id }`);
+  const handleGoToLogin = () => { setShowAuthModal(false); router.push(`/ login${ pendingRoute? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`); };
 
   return (
     <div style={{ minHeight: '100vh', background: '#f0f2f5' }}>
@@ -917,7 +917,7 @@ export default function PackagesPage() {
     <Suspense fallback={
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 256 }}>
         <div style={{ width: 34, height: 34, border: '3px solid #e4e6ea', borderTopColor: '#07b3f2', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-        <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+        <style>{`@keyframes spin{to{ transform: rotate(360deg) } } `}</style>
       </div>
     }>
       <PackagesContent />
