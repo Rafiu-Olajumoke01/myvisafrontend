@@ -28,7 +28,7 @@ function LoginForm() {
     setError('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+      const response = await fetch('https://web-production-f50dc.up.railway.app/api/auth/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ function LoginForm() {
         </div>
 
         <div className="text-center mt-6">
-          <Link href="/packages" className="text-sm text-gray-600 hover:text-[#07b3f2]">
+          <Link href="/package" className="text-sm text-gray-600 hover:text-[#07b3f2]">
             ← Back to packages
           </Link>
         </div>
