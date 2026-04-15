@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'https://web-production-f50dc.up.railway.app/api';
 
 const GlobalStyles = () => (
   <style>{`
@@ -553,7 +553,7 @@ export default function AgentDashboard() {
   // ── WebSocket ──────────────────────────────────────────────────────────────
   useEffect(() => {
     const token = getToken();
-    const ws = new WebSocket(`ws://127.0.0.1:8000/ws/calls/?token=${token}`);
+    const ws = new WebSocket(`wss://web-production-f50dc.up.railway.app/ws/calls/?token=${token}`);
     wsRef.current = ws;
     ws.onopen    = () => console.log('WebSocket connected');
     ws.onmessage = (e) => {

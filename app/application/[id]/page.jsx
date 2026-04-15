@@ -374,7 +374,6 @@ export default function ApplicationDetailPage() {
         wsRef.current.onclose = null;
         wsRef.current.close();
       }
-      // ✅ CORRECT — points to your hosted Railway backend
       const ws = new WebSocket(`wss://web-production-f50dc.up.railway.app/ws/calls/?token=${accessToken}`);
       wsRef.current = ws;
       ws.onmessage = (e) => {
