@@ -19,8 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* This 40px padding is the secret sauce to align with your main content icons */
-  padding: 0 40px; 
+  padding: 0; /* REMOVED ALL PADDING */
   height: 60px;
 }
 
@@ -30,7 +29,7 @@
 }
 
 .vc-logo-container {
-  /* Matching your sidebar width exactly to ensure center alignment */
+  /* This width MUST match your .pkg-sidebar width (68px) */
   width: 68px; 
   display: flex;
   justify-content: center;
@@ -40,7 +39,7 @@
 
 .vc-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 700;
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
   -webkit-background-clip: text;
@@ -53,7 +52,7 @@
 .vc-search-wrap {
   position: relative;
   width: 280px;
-  margin-left: 20px;
+  margin-left: 10px; /* Just a tiny gap so search isn't touching the logo area */
 }
 
 .vc-search-input {
@@ -65,13 +64,6 @@
   background: #f7f8fa;
   font-size: 13px;
   outline: none;
-  transition: all 0.2s ease;
-}
-
-.vc-search-input:focus {
-  border-color: #07b3f2;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(7, 179, 242, 0.1);
 }
 
 .vc-search-icon {
@@ -83,11 +75,11 @@
   display: flex;
 }
 
-/* --- Auth Section --- */
 .vc-nav-auth {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
+  padding-right: 20px; /* Padding on the right only for the buttons */
 }
 
 .vc-btn-login {
@@ -97,48 +89,19 @@
   text-transform: uppercase;
   text-decoration: none;
   letter-spacing: 0.8px;
-  position: relative;
-}
-
-.vc-btn-login::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -4px;
-  left: 0;
-  background-color: #FF7F50;
-  transition: width 0.3s ease;
-}
-
-.vc-btn-login:hover::after {
-  width: 100%;
-}
-
-.vc-btn-login:hover {
-  color: #FF7F50;
 }
 
 .vc-btn-signup {
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
   color: white !important;
-  padding: 10px 22px;
+  padding: 8px 18px;
   border-radius: 10px;
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
-  transition: transform 0.2s ease;
-  box-shadow: 0 2px 8px rgba(7, 179, 242, 0.2);
 }
 
-.vc-btn-signup:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.05);
-}
-
-/* Mobile: Hide extra stuff to keep the logo and vital buttons visible */
-@media (max-width: 768px) {
-  .vc-search-wrap { display: none; }
-  .vc-navbar-inner { padding: 0 20px; }
-  .vc-logo-container { width: auto; justify-content: flex-start; }
+@media (max-width: 700px) {
+  .vc-search-wrap, .vc-nav-auth { display: none; }
+  .vc-logo-container { width: auto; padding-left: 15px; }
 }

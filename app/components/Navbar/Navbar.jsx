@@ -11,7 +11,6 @@ function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
 
-  // Check if search should be visible
   const showSearch = SEARCH_PAGES.some(p => pathname?.startsWith(p));
 
   useEffect(() => {
@@ -24,8 +23,8 @@ function Navbar() {
     <nav className={`vc-navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="vc-navbar-inner">
         
-        {/* Left Side: Logo & Search */}
         <div className="vc-nav-left">
+          {/* This div is the exact same width as your sidebar (68px) */}
           <div className="vc-logo-container">
             <Link href="/package" className="vc-logo">MyVisa</Link>
           </div>
@@ -48,7 +47,6 @@ function Navbar() {
           )}
         </div>
 
-        {/* Right Side: Auth buttons */}
         <div className="vc-nav-auth">
           <Link href="/login" className="vc-btn-login">Login</Link>
           <Link href="/signup" className="vc-btn-signup">Sign Up</Link>
