@@ -3,7 +3,7 @@
 .vc-navbar {
   position: sticky;
   top: 0;
-  z-index: 1000; /* Higher z-index to stay above the sidebar */
+  z-index: 1000;
   width: 100%;
   background: #ffffff;
   border-bottom: 1px solid #e8eaed;
@@ -19,27 +19,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0; /* Remove side padding to control it via child elements */
-  height: 60px; /* Matching the top: 60px of your sidebar */
+  padding: 0;
+  height: 60px; /* Matches your sidebar top offset */
 }
 
 .vc-nav-left {
   display: flex;
   align-items: center;
-  gap: 0; /* Let width handle the spacing */
+  gap: 0;
 }
 
 .vc-logo-container {
-  width: 68px; /* EXACT match to your .pkg-sidebar width */
+  width: 68px; /* Matching .pkg-sidebar width exactly */
   display: flex;
-  justify-content: center; /* Centers the logo text exactly like the icons */
+  justify-content: center;
   align-items: center;
   flex-shrink: 0;
+  /* Nudge: If it's still "remaining small", we adjust this padding 
+     to push the text slightly left or right to hit the pixel-perfect center */
+  padding-left: 2px; 
 }
 
 .vc-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 20px; /* Slightly smaller to fit the slim sidebar line better */
+  font-size: 19px; /* Slightly smaller for better vertical alignment with slim icons */
   font-weight: 700;
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
   -webkit-background-clip: text;
@@ -47,19 +50,20 @@
   background-clip: text;
   text-decoration: none;
   white-space: nowrap;
+  letter-spacing: -0.5px; /* Tightens the text to make the "center" more obvious */
 }
 
 .vc-search-wrap {
   position: relative;
-  width: 320px;
-  margin-left: 20px; /* Breathing room after the sidebar-aligned logo */
+  width: 300px;
+  margin-left: 10px; 
 }
 
 .vc-search-input {
   width: 100%;
-  height: 38px;
-  padding: 0 12px 0 40px;
-  border-radius: 10px; /* Matches your card style better */
+  height: 36px;
+  padding: 0 12px 0 38px;
+  border-radius: 10px;
   border: 1.5px solid #e8eaed;
   background: #f7f8fa;
   font-size: 13px;
@@ -73,28 +77,27 @@
 
 .vc-search-icon {
   position: absolute;
-  left: 14px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
   color: #94a3b8;
   display: flex;
 }
 
-/* --- Auth Section --- */
 .vc-nav-auth {
   display: flex;
   align-items: center;
   gap: 20px;
-  padding-right: 20px; /* Aligns with the right panel/main area padding */
+  padding-right: 20px;
 }
 
 .vc-btn-login {
   color: #475569;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
   text-transform: uppercase;
   text-decoration: none;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
   position: relative;
 }
 
@@ -120,15 +123,14 @@
 .vc-btn-signup {
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
   color: white !important;
-  padding: 8px 18px;
-  border-radius: 10px;
+  padding: 8px 16px;
+  border-radius: 8px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgba(7,179,242,0.25);
 }
 
 @media (max-width: 700px) {
   .vc-search-wrap, .vc-nav-auth { display: none; }
-  .vc-logo-container { width: auto; padding-left: 16px; }
+  .vc-logo-container { width: auto; padding-left: 15px; }
 }
