@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import './navbar.css';
 
-const SEARCH_PAGES = ['/package', '/packages'];
+const SEARCH_PAGES = ['/package', '/packages', '/visa'];
 
 function Navbar() {
   const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
 
+  // Check if search should be visible
   const showSearch = SEARCH_PAGES.some(p => pathname?.startsWith(p));
 
   useEffect(() => {
@@ -23,8 +24,8 @@ function Navbar() {
     <nav className={`vc-navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="vc-navbar-inner">
         
+        {/* Left Side: Logo & Search */}
         <div className="vc-nav-left">
-          {/* This container matches your 68px sidebar width */}
           <div className="vc-logo-container">
             <Link href="/package" className="vc-logo">MyVisa</Link>
           </div>
@@ -32,7 +33,7 @@ function Navbar() {
           {showSearch && (
             <div className="vc-search-wrap">
               <span className="vc-search-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
               </span>
@@ -47,6 +48,7 @@ function Navbar() {
           )}
         </div>
 
+        {/* Right Side: Auth buttons */}
         <div className="vc-nav-auth">
           <Link href="/login" className="vc-btn-login">Login</Link>
           <Link href="/signup" className="vc-btn-signup">Sign Up</Link>
