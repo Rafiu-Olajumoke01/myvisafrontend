@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import './nav.css'
+import './navbar.css';
 
 const SEARCH_PAGES = ['/package', '/packages'];
 
@@ -30,6 +30,8 @@ function Navbar() {
   return (
     <nav className={`vc-navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="vc-navbar-inner">
+        
+        {/* Left Side: Logo & Search */}
         <div className="vc-nav-left">
           <Link href="/package" className="vc-logo">MyVisa</Link>
 
@@ -43,7 +45,7 @@ function Navbar() {
               <input
                 className="vc-search-input"
                 type="text"
-                placeholder="Search country, course, hospital…"
+                placeholder="Search country..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
@@ -51,10 +53,12 @@ function Navbar() {
           )}
         </div>
 
+        {/* Right Side: Auth Links */}
         <div className="vc-nav-auth">
-          <Link href="/login" className="vc-btn-login">Sign In</Link>
+          <Link href="/login" className="vc-btn-login">Login</Link>
           <Link href="/signup" className="vc-btn-signup">Sign Up</Link>
         </div>
+
       </div>
     </nav>
   );
