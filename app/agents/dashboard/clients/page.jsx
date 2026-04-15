@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = 'https://web-production-f50dc.up.railway.app/api';
 
 const GlobalStyles = () => (
   <style>{`
