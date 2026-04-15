@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import './nav.css'
 
 const SEARCH_PAGES = ['/package', '/packages'];
 
@@ -27,84 +28,9 @@ function Navbar() {
   }, [searchQuery, showSearch]);
 
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap');
-
-        .vc-navbar {
-          position: sticky;
-          top: 0;
-          z-index: 50;
-          width: 100%;
-          background: rgba(255,255,255,0.97);
-          border-bottom: 1px solid #e8eaed;
-          transition: box-shadow 0.2s ease;
-          font-family: 'DM Sans', sans-serif;
-        }
-        .vc-navbar.scrolled {
-          box-shadow: 0 1px 12px rgba(0,0,0,0.07);
-        }
-        .vc-navbar-inner {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          padding: 14px 28px;
-        }
-        .vc-logo {
-          font-family: 'Playfair Display', serif;
-          font-size: 22px;
-          font-weight: 700;
-          background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          text-decoration: none;
-          letter-spacing: -0.3px;
-          flex-shrink: 0;
-        }
-        .vc-search-wrap {
-          position: relative;
-          width: 340px;
-          flex-shrink: 0;
-        }
-        .vc-search-input {
-          width: 100%;
-          height: 38px;
-          padding: 0 16px 0 40px;
-          border-radius: 999px;
-          border: 1.5px solid #e4e6ea;
-          background: #f7f8fa;
-          font-size: 13px;
-          font-family: 'DM Sans', sans-serif;
-          color: #050505;
-          outline: none;
-          transition: all 0.2s;
-        }
-        .vc-search-input::placeholder { color: #94a3b8; }
-        .vc-search-input:focus {
-          border-color: #07b3f2;
-          background: #fff;
-          box-shadow: 0 0 0 3px rgba(7,179,242,0.1);
-        }
-        .vc-search-icon {
-          position: absolute;
-          left: 14px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #94a3b8;
-          pointer-events: none;
-          display: flex;
-          align-items: center;
-        }
-
-        @media (max-width: 700px) {
-          .vc-navbar-inner { padding: 12px 16px; }
-          .vc-search-wrap { width: 100%; flex: 1; }
-        }
-      `}</style>
-
-      <nav className={`vc-navbar${scrolled ? ' scrolled' : ''}`}>
-        <div className="vc-navbar-inner">
+    <nav className={`vc-navbar ${scrolled ? 'scrolled' : ''}`}>
+      <div className="vc-navbar-inner">
+        <div className="vc-nav-left">
           <Link href="/package" className="vc-logo">MyVisa</Link>
 
           {showSearch && (
@@ -124,8 +50,13 @@ function Navbar() {
             </div>
           )}
         </div>
-      </nav>
-    </>
+
+        <div className="vc-nav-auth">
+          <Link href="/login" className="vc-btn-login">Sign In</Link>
+          <Link href="/signup" className="vc-btn-signup">Sign Up</Link>
+        </div>
+      </div>
+    </nav>
   );
 }
 
