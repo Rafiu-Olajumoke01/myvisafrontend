@@ -20,7 +20,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0;
-  height: 60px; /* Matches your sidebar top offset */
+  height: 60px;
 }
 
 .vc-nav-left {
@@ -30,19 +30,18 @@
 }
 
 .vc-logo-container {
-  width: 68px; /* Matching .pkg-sidebar width exactly */
+  width: 68px; /* Matching your sidebar width */
   display: flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  /* Nudge: If it's still "remaining small", we adjust this padding 
-     to push the text slightly left or right to hit the pixel-perfect center */
-  padding-left: 2px; 
+  /* THE FIX: Added 20px to push it away from the screen edge to match your sidebar's alignment */
+  margin-left: 20px; 
 }
 
 .vc-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 19px; /* Slightly smaller for better vertical alignment with slim icons */
+  font-size: 19px;
   font-weight: 700;
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
   -webkit-background-clip: text;
@@ -50,13 +49,14 @@
   background-clip: text;
   text-decoration: none;
   white-space: nowrap;
-  letter-spacing: -0.5px; /* Tightens the text to make the "center" more obvious */
+  letter-spacing: -0.5px;
 }
 
 .vc-search-wrap {
   position: relative;
   width: 300px;
-  margin-left: 10px; 
+  /* Adjusting this so it doesn't crowd the logo now that we pushed the logo right */
+  margin-left: 15px; 
 }
 
 .vc-search-input {
@@ -68,11 +68,6 @@
   background: #f7f8fa;
   font-size: 13px;
   outline: none;
-}
-
-.vc-search-input:focus {
-  border-color: #07b3f2;
-  background: #fff;
 }
 
 .vc-search-icon {
@@ -88,7 +83,8 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  padding-right: 20px;
+  /* Matching the 20px margin we gave the logo on the left */
+  padding-right: 20px; 
 }
 
 .vc-btn-login {
@@ -101,24 +97,7 @@
   position: relative;
 }
 
-.vc-btn-login::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -4px;
-  left: 0;
-  background-color: #FF7F50;
-  transition: width 0.3s ease;
-}
-
-.vc-btn-login:hover::after {
-  width: 100%;
-}
-
-.vc-btn-login:hover {
-  color: #FF7F50;
-}
+.vc-btn-login:hover { color: #FF7F50; }
 
 .vc-btn-signup {
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
@@ -132,5 +111,5 @@
 
 @media (max-width: 700px) {
   .vc-search-wrap, .vc-nav-auth { display: none; }
-  .vc-logo-container { width: auto; padding-left: 15px; }
+  .vc-logo-container { margin-left: 10px; width: auto; }
 }
