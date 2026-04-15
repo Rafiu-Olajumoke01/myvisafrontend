@@ -3,7 +3,7 @@
 .vc-navbar {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 1000; /* Higher z-index to stay above the sidebar */
   width: 100%;
   background: #ffffff;
   border-bottom: 1px solid #e8eaed;
@@ -18,47 +18,51 @@
 .vc-navbar-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between; 
-  /* Reduced padding so it starts further to the left */
-  padding: 0 20px; 
-  height: 70px;
-  /* Removed max-width and margin: 0 auto so it doesn't center itself */
-  width: 100%; 
+  justify-content: space-between;
+  padding: 0; /* Remove side padding to control it via child elements */
+  height: 60px; /* Matching the top: 60px of your sidebar */
 }
 
 .vc-nav-left {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 0; /* Let width handle the spacing */
+}
+
+.vc-logo-container {
+  width: 68px; /* EXACT match to your .pkg-sidebar width */
+  display: flex;
+  justify-content: center; /* Centers the logo text exactly like the icons */
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .vc-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 24px;
+  font-size: 20px; /* Slightly smaller to fit the slim sidebar line better */
   font-weight: 700;
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-decoration: none;
-  flex-shrink: 0;
-  /* This ensures the text starts exactly where the container starts */
-  margin-left: 0; 
+  white-space: nowrap;
 }
 
 .vc-search-wrap {
   position: relative;
-  width: 300px;
+  width: 320px;
+  margin-left: 20px; /* Breathing room after the sidebar-aligned logo */
 }
 
 .vc-search-input {
   width: 100%;
   height: 38px;
   padding: 0 12px 0 40px;
-  border-radius: 999px;
-  border: 1.5px solid #e4e6ea;
+  border-radius: 10px; /* Matches your card style better */
+  border: 1.5px solid #e8eaed;
   background: #f7f8fa;
-  font-size: 14px;
+  font-size: 13px;
   outline: none;
 }
 
@@ -81,6 +85,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  padding-right: 20px; /* Aligns with the right panel/main area padding */
 }
 
 .vc-btn-login {
@@ -89,7 +94,7 @@
   font-size: 13px;
   text-transform: uppercase;
   text-decoration: none;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   position: relative;
 }
 
@@ -115,19 +120,15 @@
 .vc-btn-signup {
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
   color: white !important;
-  padding: 9px 20px;
-  border-radius: 8px;
-  font-size: 14px;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 13px;
   font-weight: 600;
   text-decoration: none;
+  box-shadow: 0 2px 8px rgba(7,179,242,0.25);
 }
 
-.vc-btn-signup:hover {
-  filter: brightness(1.05);
-  transform: translateY(-1px);
-}
-
-@media (max-width: 768px) {
-  .vc-search-wrap { display: none; }
-  .vc-navbar-inner { padding: 0 15px; }
+@media (max-width: 700px) {
+  .vc-search-wrap, .vc-nav-auth { display: none; }
+  .vc-logo-container { width: auto; padding-left: 16px; }
 }

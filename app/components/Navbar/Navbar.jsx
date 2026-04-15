@@ -24,12 +24,15 @@ function Navbar() {
       <div className="vc-navbar-inner">
         
         <div className="vc-nav-left">
-          <Link href="/package" className="vc-logo">MyVisa</Link>
+          {/* This container matches your 68px sidebar width */}
+          <div className="vc-logo-container">
+            <Link href="/package" className="vc-logo">MyVisa</Link>
+          </div>
 
           {showSearch && (
             <div className="vc-search-wrap">
               <span className="vc-search-icon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                   <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
               </span>
