@@ -19,16 +19,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between; 
-  padding: 0 40px; /* Increased padding to move things away from the screen edge */
-  height: 70px; /* Consistent height */
-  max-width: 1300px; /* Prevents the logo and buttons from being too far apart on wide screens */
-  margin: 0 auto;
+  /* Reduced padding so it starts further to the left */
+  padding: 0 20px; 
+  height: 70px;
+  /* Removed max-width and margin: 0 auto so it doesn't center itself */
+  width: 100%; 
 }
 
 .vc-nav-left {
   display: flex;
   align-items: center;
-  gap: 30px; /* Space between logo and search bar */
+  gap: 25px;
 }
 
 .vc-logo {
@@ -41,24 +42,24 @@
   background-clip: text;
   text-decoration: none;
   flex-shrink: 0;
-  white-space: nowrap;
+  /* This ensures the text starts exactly where the container starts */
+  margin-left: 0; 
 }
 
 .vc-search-wrap {
   position: relative;
-  width: 320px;
+  width: 300px;
 }
 
 .vc-search-input {
   width: 100%;
-  height: 40px;
+  height: 38px;
   padding: 0 12px 0 40px;
   border-radius: 999px;
   border: 1.5px solid #e4e6ea;
   background: #f7f8fa;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
 }
 
 .vc-search-input:focus {
@@ -68,7 +69,7 @@
 
 .vc-search-icon {
   position: absolute;
-  left: 15px;
+  left: 14px;
   top: 50%;
   transform: translateY(-50%);
   color: #94a3b8;
@@ -79,7 +80,7 @@
 .vc-nav-auth {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
 }
 
 .vc-btn-login {
@@ -114,20 +115,19 @@
 .vc-btn-signup {
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
   color: white !important;
-  padding: 10px 22px;
+  padding: 9px 20px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-  transition: transform 0.2s;
 }
 
 .vc-btn-signup:hover {
-  transform: translateY(-1px);
   filter: brightness(1.05);
+  transform: translateY(-1px);
 }
 
-@media (max-width: 800px) {
-  .vc-navbar-inner { padding: 0 20px; }
+@media (max-width: 768px) {
   .vc-search-wrap { display: none; }
+  .vc-navbar-inner { padding: 0 15px; }
 }
