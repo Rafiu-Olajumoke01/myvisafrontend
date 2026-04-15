@@ -18,21 +18,22 @@
 .vc-navbar-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* This pushes Logo/Search to left and Auth to right */
-  padding: 12px 24px;
-  max-width: 1400px;
+  justify-content: space-between; 
+  padding: 0 40px; /* Increased padding to move things away from the screen edge */
+  height: 70px; /* Consistent height */
+  max-width: 1300px; /* Prevents the logo and buttons from being too far apart on wide screens */
   margin: 0 auto;
 }
 
 .vc-nav-left {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 30px; /* Space between logo and search bar */
 }
 
 .vc-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
   -webkit-background-clip: text;
@@ -40,27 +41,34 @@
   background-clip: text;
   text-decoration: none;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .vc-search-wrap {
   position: relative;
-  width: 280px;
+  width: 320px;
 }
 
 .vc-search-input {
   width: 100%;
-  height: 36px;
-  padding: 0 12px 0 35px;
+  height: 40px;
+  padding: 0 12px 0 40px;
   border-radius: 999px;
   border: 1.5px solid #e4e6ea;
   background: #f7f8fa;
-  font-size: 13px;
+  font-size: 14px;
   outline: none;
+  transition: border-color 0.2s;
+}
+
+.vc-search-input:focus {
+  border-color: #07b3f2;
+  background: #fff;
 }
 
 .vc-search-icon {
   position: absolute;
-  left: 12px;
+  left: 15px;
   top: 50%;
   transform: translateY(-50%);
   color: #94a3b8;
@@ -71,8 +79,7 @@
 .vc-nav-auth {
   display: flex;
   align-items: center;
-  gap: 15px;
-  flex-shrink: 0;
+  gap: 24px;
 }
 
 .vc-btn-login {
@@ -81,18 +88,16 @@
   font-size: 13px;
   text-transform: uppercase;
   text-decoration: none;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   position: relative;
-  padding: 4px 0;
 }
 
-/* Orange Hover Underline */
 .vc-btn-login::after {
   content: '';
   position: absolute;
   width: 0;
   height: 2px;
-  bottom: 0;
+  bottom: -4px;
   left: 0;
   background-color: #FF7F50;
   transition: width 0.3s ease;
@@ -109,21 +114,20 @@
 .vc-btn-signup {
   background: linear-gradient(135deg, #07b3f2 0%, #0284c7 100%);
   color: white !important;
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-size: 13px;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: transform 0.2s;
 }
 
 .vc-btn-signup:hover {
-  opacity: 0.9;
   transform: translateY(-1px);
+  filter: brightness(1.05);
 }
 
-/* Mobile adjustments */
-@media (max-width: 600px) {
-  .vc-search-wrap { display: none; } /* Hide search on small phones to keep buttons visible */
-  .vc-navbar-inner { padding: 12px 15px; }
+@media (max-width: 800px) {
+  .vc-navbar-inner { padding: 0 20px; }
+  .vc-search-wrap { display: none; }
 }

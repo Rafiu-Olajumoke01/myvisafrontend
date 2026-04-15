@@ -19,19 +19,10 @@ function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
-    if (!showSearch) return;
-    const params = new URLSearchParams(window.location.search);
-    searchQuery ? params.set('search', searchQuery) : params.delete('search');
-    const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
-    window.history.replaceState(null, '', newUrl);
-  }, [searchQuery, showSearch]);
-
   return (
     <nav className={`vc-navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="vc-navbar-inner">
         
-        {/* Left Side: Logo & Search */}
         <div className="vc-nav-left">
           <Link href="/package" className="vc-logo">MyVisa</Link>
 
@@ -53,7 +44,6 @@ function Navbar() {
           )}
         </div>
 
-        {/* Right Side: Auth Links */}
         <div className="vc-nav-auth">
           <Link href="/login" className="vc-btn-login">Login</Link>
           <Link href="/signup" className="vc-btn-signup">Sign Up</Link>
