@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0; /* REMOVED ALL PADDING */
+  padding: 0;
   height: 60px;
 }
 
@@ -29,8 +29,7 @@
 }
 
 .vc-logo-container {
-  /* This width MUST match your .pkg-sidebar width (68px) */
-  width: 68px; 
+  width: 68px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,7 +51,7 @@
 .vc-search-wrap {
   position: relative;
   width: 280px;
-  margin-left: 10px; /* Just a tiny gap so search isn't touching the logo area */
+  margin-left: 10px;
 }
 
 .vc-search-input {
@@ -79,7 +78,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  padding-right: 20px; /* Padding on the right only for the buttons */
+  padding-right: 20px;
 }
 
 .vc-btn-login {
@@ -102,6 +101,8 @@
 }
 
 @media (max-width: 700px) {
-  .vc-search-wrap, .vc-nav-auth { display: none; }
+  .vc-search-wrap { display: none; }
+  .vc-nav-auth { display: flex; padding-right: 12px; gap: 10px; }
   .vc-logo-container { width: auto; padding-left: 15px; }
+  .vc-logo img { width: 80px; height: auto; }
 }

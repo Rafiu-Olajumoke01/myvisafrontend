@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import './nav.css';
 
@@ -24,9 +25,17 @@ function Navbar() {
       <div className="vc-navbar-inner">
         
         <div className="vc-nav-left">
-          {/* This div is the exact same width as your sidebar (68px) */}
           <div className="vc-logo-container">
-            <Link href="/package" className="vc-logo">MyVisa</Link>
+            <Link href="/package" className="vc-logo">
+              <Image
+                src="/ingress.png"
+                alt="Ingress Logo"
+                width={110}
+                height={36}
+                style={{ objectFit: 'contain' }}
+                priority
+              />
+            </Link>
           </div>
 
           {showSearch && (
