@@ -291,30 +291,8 @@ const GlobalStyles = () => (
       font-family: 'DM Sans', sans-serif;
     }
     .mobile-top-tab.active { color: white; border-bottom-color: white; }
-    .mobile-right-actions {
-      position: absolute; right: 14px; bottom: 100px;
-      display: flex; flex-direction: column;
-      align-items: center; gap: 20px; z-index: 10;
-    }
-    .mobile-action-btn {
-      display: flex; flex-direction: column;
-      align-items: center; gap: 5px; cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .mobile-action-icon {
-      width: 46px; height: 46px; border-radius: 50%;
-      background: rgba(255,255,255,0.14);
-      backdrop-filter: blur(10px);
-      display: flex; align-items: center; justify-content: center;
-      border: 1px solid rgba(255,255,255,0.18);
-    }
-    .mobile-action-label {
-      font-size: 11px; color: white; font-weight: 500;
-      font-family: 'DM Sans', sans-serif;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-    }
     .mobile-pkg-info {
-      position: absolute; bottom: 0; left: 0; right: 64px;
+      position: absolute; bottom: 0; left: 0; right: 16px;
       padding: 0 16px;
       padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 88px);
       z-index: 10;
@@ -720,13 +698,12 @@ function RightPanel() {
 }
 
 // ─── Mobile TikTok Slide ──────────────────────────────────────────────────────
-function MobileSlide({ pkg, isActive, likedIds, onLikeToggle, onPackageClick }) {
+function MobileSlide({ pkg, isActive, onPackageClick }) {
   const icon = getVisaIcon(pkg.category);
   const purpose = getVisaPurpose(pkg.category);
   const badgeColor = getMobileBadgeColor(pkg.category);
   const isStudent = (pkg.category || '').toLowerCase() === 'student';
   const isTourist = (pkg.category || '').toLowerCase() === 'tourist';
-  const isLiked = likedIds.has(pkg.id);
   const bgImage = pkg.images?.[0]?.image || pkg.images?.[0] || '';
   const feeDisplay = isStudent
     ? { text: 'Free to apply', color: '#4ade80' }
@@ -744,28 +721,6 @@ function MobileSlide({ pkg, isActive, likedIds, onLikeToggle, onPackageClick }) 
           <span className="mobile-top-tab active">For You</span>
         </div>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
-      </div>
-      <div className="mobile-right-actions">
-        <div className="mobile-action-btn" onClick={() => onLikeToggle(pkg.id)}>
-          <div className="mobile-action-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill={isLiked ? '#ff3b5c' : 'none'} stroke={isLiked ? '#ff3b5c' : 'white'} strokeWidth="1.8" style={{ transition: 'all 0.2s' }}>
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-            </svg>
-          </div>
-          <span className="mobile-action-label">Like</span>
-        </div>
-        <div className="mobile-action-btn">
-          <div className="mobile-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg></div>
-          <span className="mobile-action-label">Comment</span>
-        </div>
-        <div className="mobile-action-btn">
-          <div className="mobile-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" /></svg></div>
-          <span className="mobile-action-label">Share</span>
-        </div>
-        <div className="mobile-action-btn">
-          <div className="mobile-action-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg></div>
-          <span className="mobile-action-label">Save</span>
-        </div>
       </div>
       <div className="mobile-pkg-info">
         <div className="mobile-pkg-badge" style={{ background: badgeColor.bg, color: badgeColor.color, border: `1px solid ${badgeColor.border}` }}>{icon} {purpose}</div>
@@ -791,7 +746,6 @@ function MobileSlide({ pkg, isActive, likedIds, onLikeToggle, onPackageClick }) 
 // ─── Mobile Feed ──────────────────────────────────────────────────────────────
 function MobileFeed({ packages, onPackageClick }) {
   const [current, setCurrent] = useState(0);
-  const [likedIds, setLikedIds] = useState(new Set());
   const trackRef = useRef(null);
   const wrapRef = useRef(null);
   const startYRef = useRef(0);
@@ -810,12 +764,6 @@ function MobileFeed({ packages, onPackageClick }) {
       trackRef.current.style.transform = `translateY(${-n * slideH()}px)`;
     }
   };
-
-  const toggleLike = (id) => setLikedIds(prev => {
-    const s = new Set(prev);
-    s.has(id) ? s.delete(id) : s.add(id);
-    return s;
-  });
 
   useEffect(() => {
     const el = wrapRef.current;
@@ -860,7 +808,6 @@ function MobileFeed({ packages, onPackageClick }) {
     };
   }, [packages.length]);
 
-  // Lock body scroll when mobile feed is visible
   useEffect(() => {
     const isMobile = window.innerWidth <= 700;
     if (isMobile) {
@@ -873,11 +820,13 @@ function MobileFeed({ packages, onPackageClick }) {
     };
   }, []);
 
+  if (!packages.length) return null;
+
   return (
     <div className="mobile-feed-wrap" ref={wrapRef}>
       <div className="mobile-feed-track" ref={trackRef}>
         {packages.map((pkg, i) => (
-          <MobileSlide key={pkg.id} pkg={pkg} isActive={i === current} likedIds={likedIds} onLikeToggle={toggleLike} onPackageClick={onPackageClick} />
+          <MobileSlide key={pkg.id} pkg={pkg} isActive={i === current} onPackageClick={onPackageClick} />
         ))}
       </div>
       <div className="mobile-prog-dots">
@@ -958,7 +907,6 @@ function PackagesContent() {
     finally { setLoadingRate(false); }
   };
 
-  // ── Fetch with auto-retry (3 attempts, 3s apart) ──
   const fetchPackages = async (retriesLeft = 3, isManual = false) => {
     try {
       if (isManual) { setRetrying(true); setFetchFailed(false); }
@@ -982,7 +930,6 @@ function PackagesContent() {
       setRetrying(false);
     } catch {
       if (retriesLeft > 1) {
-        // Auto retry after 3 seconds
         setTimeout(() => fetchPackages(retriesLeft - 1), 3000);
       } else {
         setPackages([]);
@@ -1040,10 +987,8 @@ function PackagesContent() {
     <div style={{ minHeight: '100vh', background: '#f0f2f5' }}>
       <GlobalStyles />
 
-      {/* Mobile TikTok feed */}
       <MobileFeed packages={filteredPackages} onPackageClick={handlePackageClick} />
 
-      {/* Desktop layout */}
       <div className="pkg-shell">
         <SlimSidebar />
 
@@ -1112,7 +1057,6 @@ function PackagesContent() {
         <RightPanel />
       </div>
 
-      {/* Auth modal */}
       {showAuthModal && (
         <div onClick={() => setShowAuthModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 16 }}>
           <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, padding: 28, maxWidth: 340, width: '100%', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
