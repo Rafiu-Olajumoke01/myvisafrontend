@@ -248,9 +248,33 @@ const GlobalStyles = () => (
     }
 
     /* ── Mobile TikTok Feed ── */
-    .mobile-feed-wrap { display: none; width: 100%; height: 100svh; overflow: hidden; position: relative; background: #000; }
-    .mobile-feed-track { display: flex; flex-direction: column; transition: transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94); will-change: transform; }
-    .mobile-slide { width: 100%; height: 100svh; flex-shrink: 0; position: relative; overflow: hidden; }
+    /* FIX 1: Use 100% of the parent height, not svh units, to avoid address-bar gap */
+    .mobile-feed-wrap {
+      display: none;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #000;
+      z-index: 100;
+    }
+    .mobile-feed-track {
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94);
+      will-change: transform;
+      height: 100%;
+    }
+    /* FIX 2: Each slide is exactly the wrapper height — use 100vh with position tricks */
+    .mobile-slide {
+      width: 100%;
+      height: 100vh;
+      min-height: 100vh;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
     .mobile-slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transform: scale(1.06); transition: transform 5s ease; }
     .mobile-slide.active .mobile-slide-bg { transform: scale(1); }
     .mobile-slide-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 22%, transparent 42%, rgba(0,0,0,0.55) 65%, rgba(0,0,0,0.9) 100%); }
@@ -678,42 +702,116 @@ function MobileFeed({ packages, onPackageClick }) {
   const startYRef = useRef(0);
   const dragDeltaRef = useRef(0);
   const draggingRef = useRef(false);
-  const slideH = () => wrapRef.current?.offsetHeight || window.innerHeight;
+  const animatingRef = useRef(false); // FIX 3: prevent overlapping transitions
+
+  // FIX 1 & 2: Always read height from the wrapper element itself
+  const slideH = () => wrapRef.current?.clientHeight || window.innerHeight;
+
+  // FIX 3: Infinite loop — wrap index using modulo
+  const totalSlides = packages.length;
+  const normalizeIndex = (n) => ((n % totalSlides) + totalSlides) % totalSlides;
 
   const goTo = (n) => {
-    if (n < 0 || n >= packages.length) return;
-    setCurrent(n);
+    if (totalSlides === 0 || animatingRef.current) return;
+    const next = normalizeIndex(n);
+    animatingRef.current = true;
+    setCurrent(next);
     if (trackRef.current) {
       trackRef.current.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)';
-      trackRef.current.style.transform = `translateY(${-n * slideH()}px)`;
+      trackRef.current.style.transform = `translateY(${-next * slideH()}px)`;
     }
+    // unlock after transition completes
+    setTimeout(() => { animatingRef.current = false; }, 450);
   };
-  const toggleLike = (id) => setLikedIds(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
+
+  const toggleLike = (id) => setLikedIds(prev => {
+    const s = new Set(prev);
+    s.has(id) ? s.delete(id) : s.add(id);
+    return s;
+  });
+
+  // Sync track position whenever current or packages change
+  useEffect(() => {
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'none';
+      trackRef.current.style.transform = `translateY(${-current * slideH()}px)`;
+    }
+  }, [packages.length]);
 
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-    const onTS = (e) => { startYRef.current = e.touches[0].clientY; draggingRef.current = true; if (trackRef.current) trackRef.current.style.transition = 'none'; };
-    const onTM = (e) => { if (!draggingRef.current) return; dragDeltaRef.current = e.touches[0].clientY - startYRef.current; if (trackRef.current) trackRef.current.style.transform = `translateY(${-current * slideH() + dragDeltaRef.current}px)`; };
-    const onTE = () => { draggingRef.current = false; if (trackRef.current) trackRef.current.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)'; if (dragDeltaRef.current < -60) goTo(current + 1); else if (dragDeltaRef.current > 60) goTo(current - 1); else if (trackRef.current) trackRef.current.style.transform = `translateY(${-current * slideH()}px)`; dragDeltaRef.current = 0; };
-    const onWheel = (e) => { e.preventDefault(); if (e.deltaY > 40) goTo(current + 1); else if (e.deltaY < -40) goTo(current - 1); };
+
+    const onTS = (e) => {
+      startYRef.current = e.touches[0].clientY;
+      draggingRef.current = true;
+      if (trackRef.current) trackRef.current.style.transition = 'none';
+    };
+
+    const onTM = (e) => {
+      if (!draggingRef.current) return;
+      dragDeltaRef.current = e.touches[0].clientY - startYRef.current;
+      if (trackRef.current)
+        trackRef.current.style.transform = `translateY(${-current * slideH() + dragDeltaRef.current}px)`;
+    };
+
+    const onTE = () => {
+      draggingRef.current = false;
+      if (trackRef.current)
+        trackRef.current.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)';
+      if (dragDeltaRef.current < -60) goTo(current + 1);
+      else if (dragDeltaRef.current > 60) goTo(current - 1);
+      else if (trackRef.current)
+        trackRef.current.style.transform = `translateY(${-current * slideH()}px)`;
+      dragDeltaRef.current = 0;
+    };
+
+    const onWheel = (e) => {
+      e.preventDefault();
+      if (e.deltaY > 40) goTo(current + 1);
+      else if (e.deltaY < -40) goTo(current - 1);
+    };
+
     el.addEventListener('touchstart', onTS, { passive: true });
     el.addEventListener('touchmove', onTM, { passive: true });
     el.addEventListener('touchend', onTE);
     el.addEventListener('wheel', onWheel, { passive: false });
-    return () => { el.removeEventListener('touchstart', onTS); el.removeEventListener('touchmove', onTM); el.removeEventListener('touchend', onTE); el.removeEventListener('wheel', onWheel); };
+    return () => {
+      el.removeEventListener('touchstart', onTS);
+      el.removeEventListener('touchmove', onTM);
+      el.removeEventListener('touchend', onTE);
+      el.removeEventListener('wheel', onWheel);
+    };
   }, [current, packages.length]);
+
+  if (totalSlides === 0) return null;
 
   return (
     <div className="mobile-feed-wrap" ref={wrapRef}>
       <div className="mobile-feed-track" ref={trackRef}>
         {packages.map((pkg, i) => (
-          <MobileSlide key={pkg.id} pkg={pkg} isActive={i === current} likedIds={likedIds} onLikeToggle={toggleLike} onPackageClick={onPackageClick} />
+          <MobileSlide
+            key={pkg.id}
+            pkg={pkg}
+            isActive={i === current}
+            likedIds={likedIds}
+            onLikeToggle={toggleLike}
+            onPackageClick={onPackageClick}
+          />
         ))}
       </div>
+
+      {/* Progress dots — only show up to 8 to avoid clutter */}
       <div className="mobile-prog-dots">
-        {packages.map((_, i) => <div key={i} className={`mobile-prog-dot${i === current ? ' active' : ''}`} style={{ height: i === current ? 22 : 6 }} />)}
+        {packages.slice(0, 8).map((_, i) => (
+          <div
+            key={i}
+            className={`mobile-prog-dot${i === current ? ' active' : ''}`}
+            style={{ height: i === current ? 22 : 6 }}
+          />
+        ))}
       </div>
+
       <div className="mobile-bottom-nav">
         <div className="mobile-nav-item active">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
@@ -785,21 +883,38 @@ function PackagesContent() {
     finally { setLoadingRate(false); }
   };
 
-  const fetchPackages = async () => {
+  // FIX: Retry logic for Railway cold starts
+  const fetchPackages = async (retries = 3, delay = 2000) => {
     try {
       setLoading(true);
       const res = await fetch(`${API_BASE}/`);
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error('Bad response');
       const data = await res.json();
-      setPackages((data.packages || []).map(pkg => ({
+      const pkgs = data.packages || [];
+
+      // Server woke up but returned empty — retry
+      if (pkgs.length === 0 && retries > 0) {
+        setTimeout(() => fetchPackages(retries - 1, delay), delay);
+        return;
+      }
+
+      setPackages(pkgs.map(pkg => ({
         ...pkg,
         images: (pkg.images || []).map(img => ({
           ...img,
           image: img.image?.startsWith('http') ? img.image : `https://res.cloudinary.com/dmbgrroos/${img.image}`
         }))
       })));
-    } catch { setPackages([]); }
-    finally { setLoading(false); }
+    } catch {
+      if (retries > 0) {
+        // Backend sleeping — wait and retry
+        setTimeout(() => fetchPackages(retries - 1, delay), delay);
+      } else {
+        setPackages([]);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchBookmarks = async () => {
@@ -840,7 +955,7 @@ function PackagesContent() {
   });
 
   const handlePackageClick = (id) => router.push(`/package/${id}`);
-  const handleGoToLogin = () => { setShowAuthModal(false); router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`);};
+  const handleGoToLogin = () => { setShowAuthModal(false); router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`); };
 
   return (
     <div style={{ minHeight: '100vh', background: '#f0f2f5' }}>
