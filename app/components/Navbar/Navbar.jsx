@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import './navbar.css';
+import './nav.css';
 
 const SEARCH_PAGES = ['/package', '/packages', '/visa'];
 
