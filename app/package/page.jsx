@@ -8,7 +8,9 @@ const SERVICE_FEE_USD = 15;
 const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; overflow-x: hidden; }
 
     .pkg-shell {
       display: flex;
@@ -49,26 +51,6 @@ const GlobalStyles = () => (
       width: 7px; height: 7px; border-radius: 50%;
       background: #ff3b5c; border: 1.5px solid #fff;
     }
-    .pkg-sidebar-tooltip {
-      position: fixed;
-      left: 76px;
-      background: #0f172a; color: #fff;
-      font-size: 11px; font-weight: 500;
-      padding: 5px 10px; border-radius: 7px;
-      white-space: nowrap; pointer-events: none;
-      opacity: 0; transition: opacity 0.15s;
-      font-family: 'DM Sans', sans-serif;
-      z-index: 9999;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.18);
-    }
-    .pkg-sidebar-tooltip::before {
-      content: '';
-      position: absolute; right: 100%; top: 50%;
-      transform: translateY(-50%);
-      border: 4px solid transparent;
-      border-right-color: #0f172a;
-    }
-    .pkg-sidebar-item:hover .pkg-sidebar-tooltip { opacity: 1; }
     .pkg-sidebar-divider {
       width: 28px; height: 1px;
       background: #e8eaed; margin: 6px 0;
@@ -247,37 +229,178 @@ const GlobalStyles = () => (
       .pkg-main { padding: 14px 14px 48px; }
     }
 
-    /* ── Mobile TikTok Feed ── */
-    .mobile-feed-wrap { display: none; width: 100%; height: 100svh; overflow: hidden; position: relative; background: #000; }
-    .mobile-feed-track { display: flex; flex-direction: column; transition: transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94); will-change: transform; }
-    .mobile-slide { width: 100%; height: 100svh; flex-shrink: 0; position: relative; overflow: hidden; }
-    .mobile-slide-bg { position: absolute; inset: 0; background-size: cover; background-position: center; transform: scale(1.06); transition: transform 5s ease; }
+    /* ── Mobile TikTok Feed — TRUE FULLSCREEN ── */
+    .mobile-feed-wrap {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background: #000;
+      z-index: 100;
+    }
+    .mobile-feed-track {
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94);
+      will-change: transform;
+      height: 100%;
+    }
+    .mobile-slide {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .mobile-slide-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.06);
+      transition: transform 5s ease;
+    }
     .mobile-slide.active .mobile-slide-bg { transform: scale(1); }
-    .mobile-slide-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 22%, transparent 42%, rgba(0,0,0,0.55) 65%, rgba(0,0,0,0.9) 100%); }
-    .mobile-top-bar { position: absolute; top: 0; left: 0; right: 0; padding: 16px 18px 0; display: flex; align-items: center; justify-content: space-between; z-index: 10; }
+    .mobile-slide-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.35) 0%,
+        transparent 20%,
+        transparent 40%,
+        rgba(0,0,0,0.5) 65%,
+        rgba(0,0,0,0.92) 100%
+      );
+    }
+    .mobile-top-bar {
+      position: absolute; top: 0; left: 0; right: 0;
+      padding: env(safe-area-inset-top, 16px) 18px 0;
+      padding-top: max(env(safe-area-inset-top), 16px);
+      display: flex; align-items: center; justify-content: space-between;
+      z-index: 10;
+    }
     .mobile-top-tabs { display: flex; gap: 18px; }
-    .mobile-top-tab { font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.5); cursor: pointer; padding-bottom: 5px; border-bottom: 2px solid transparent; font-family: 'DM Sans', sans-serif; }
+    .mobile-top-tab {
+      font-size: 15px; font-weight: 500;
+      color: rgba(255,255,255,0.5); cursor: pointer;
+      padding-bottom: 5px; border-bottom: 2px solid transparent;
+      font-family: 'DM Sans', sans-serif;
+    }
     .mobile-top-tab.active { color: white; border-bottom-color: white; }
-    .mobile-right-actions { position: absolute; right: 14px; bottom: 96px; display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 10; }
-    .mobile-action-btn { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-    .mobile-action-icon { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.14); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.18); }
-    .mobile-action-label { font-size: 11px; color: white; font-weight: 500; font-family: 'DM Sans', sans-serif; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
-    .mobile-pkg-info { position: absolute; bottom: 0; left: 0; right: 64px; padding: 0 16px 86px; z-index: 10; }
-    .mobile-pkg-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 9999px; font-size: 12px; font-weight: 600; margin-bottom: 9px; font-family: 'DM Sans', sans-serif; backdrop-filter: blur(8px); }
-    .mobile-pkg-title { font-size: 18px; font-weight: 700; color: white; line-height: 1.3; margin-bottom: 8px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); font-family: 'DM Sans', sans-serif; }
-    .mobile-pkg-desc { font-size: 13px; color: rgba(255,255,255,0.8); line-height: 1.55; margin-bottom: 10px; font-family: 'DM Sans', sans-serif; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .mobile-right-actions {
+      position: absolute; right: 14px; bottom: 100px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 20px; z-index: 10;
+    }
+    .mobile-action-btn {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 5px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-action-icon {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(255,255,255,0.14);
+      backdrop-filter: blur(10px);
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .mobile-action-label {
+      font-size: 11px; color: white; font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+    .mobile-pkg-info {
+      position: absolute; bottom: 0; left: 0; right: 64px;
+      padding: 0 16px;
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 88px);
+      z-index: 10;
+    }
+    .mobile-pkg-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 11px; border-radius: 9999px;
+      font-size: 12px; font-weight: 600; margin-bottom: 9px;
+      font-family: 'DM Sans', sans-serif;
+      backdrop-filter: blur(8px);
+    }
+    .mobile-pkg-title {
+      font-size: 18px; font-weight: 700; color: white;
+      line-height: 1.3; margin-bottom: 8px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      font-family: 'DM Sans', sans-serif;
+    }
+    .mobile-pkg-desc {
+      font-size: 13px; color: rgba(255,255,255,0.8);
+      line-height: 1.55; margin-bottom: 10px;
+      font-family: 'DM Sans', sans-serif;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
     .mobile-pkg-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-    .mobile-pkg-tag { font-size: 13px; color: rgba(255,255,255,0.7); font-family: 'DM Sans', sans-serif; font-weight: 500; }
+    .mobile-pkg-tag {
+      font-size: 13px; color: rgba(255,255,255,0.7);
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+    }
     .mobile-cta-row { display: flex; gap: 10px; align-items: center; }
-    .mobile-cta-primary { flex: 1; padding: 13px; border-radius: 10px; background: #07b3f2; color: white; font-size: 14px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; font-family: 'DM Sans', sans-serif; }
-    .mobile-cta-ghost { padding: 13px 16px; border-radius: 10px; background: rgba(255,255,255,0.12); color: white; font-size: 13px; font-weight: 600; border: 1px solid rgba(255,255,255,0.22); cursor: pointer; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
-    .mobile-bottom-nav { position: absolute; bottom: 0; left: 0; right: 0; height: 72px; background: rgba(0,0,0,0.55); backdrop-filter: blur(18px); border-top: 0.5px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-around; padding: 0 8px 8px; z-index: 20; }
-    .mobile-nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; opacity: 0.45; transition: opacity 0.2s; }
+    .mobile-cta-primary {
+      flex: 1; padding: 13px; border-radius: 10px;
+      background: #07b3f2; color: white;
+      font-size: 14px; font-weight: 700; border: none;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .mobile-cta-ghost {
+      padding: 13px 16px; border-radius: 10px;
+      background: rgba(255,255,255,0.12); color: white;
+      font-size: 13px; font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.22);
+      cursor: pointer; white-space: nowrap;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .mobile-bottom-nav {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: calc(env(safe-area-inset-bottom, 0px) + 64px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(18px);
+      border-top: 0.5px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center;
+      justify-content: space-around;
+      padding-left: 8px; padding-right: 8px;
+      z-index: 20;
+    }
+    .mobile-nav-item {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px;
+      cursor: pointer; opacity: 0.45; transition: opacity 0.2s;
+      padding-bottom: 4px;
+    }
     .mobile-nav-item.active { opacity: 1; }
-    .mobile-nav-label { font-size: 10px; color: white; font-weight: 500; font-family: 'DM Sans', sans-serif; }
-    .mobile-prog-dots { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 5px; z-index: 10; }
-    .mobile-prog-dot { width: 3px; border-radius: 9999px; background: rgba(255,255,255,0.3); transition: all 0.3s; }
+    .mobile-nav-label {
+      font-size: 10px; color: white; font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .mobile-prog-dots {
+      position: absolute; right: 5px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 5px; z-index: 10;
+    }
+    .mobile-prog-dot {
+      width: 3px; border-radius: 9999px;
+      background: rgba(255,255,255,0.3); transition: all 0.3s;
+    }
     .mobile-prog-dot.active { background: white; }
+
+    /* ── Retry banner ── */
+    .retry-banner {
+      grid-column: 1 / -1;
+      text-align: center; padding: 60px 20px;
+      background: #fff; border-radius: 14px; border: 1px solid #e8eaed;
+    }
 
     @media (max-width: 700px) {
       .pkg-shell { display: none !important; }
@@ -531,7 +654,6 @@ function SlimSidebar() {
 function RightPanel() {
   return (
     <aside className="pkg-right">
-      {/* Globe widget */}
       <div className="rp-card">
         <div className="rp-globe-wrap">
           <div style={{ position: 'relative', width: 110, height: 110, margin: '0 auto 12px' }}>
@@ -553,7 +675,6 @@ function RightPanel() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="rp-card">
         <div style={{ padding: '10px 12px 6px', borderBottom: '1px solid #e8eaed' }}>
           <p style={{ fontSize: 10, fontWeight: 700, color: '#65676b', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: 'DM Sans' }}>Our Track Record</p>
@@ -573,7 +694,6 @@ function RightPanel() {
         </div>
       </div>
 
-      {/* CTA */}
       <div style={{ borderRadius: 12, background: 'linear-gradient(135deg, #07b3f2, #0284c7)', padding: '16px 14px' }}>
         <div style={{ fontSize: 20, marginBottom: 7 }}>💬</div>
         <p style={{ fontSize: 13, fontWeight: 700, color: 'white', fontFamily: 'DM Sans', marginBottom: 4 }}>Not sure where to start?</p>
@@ -583,7 +703,6 @@ function RightPanel() {
         </button>
       </div>
 
-      {/* How it works */}
       <div className="rp-card" style={{ padding: '12px 14px 14px' }}>
         <p style={{ fontSize: 10, fontWeight: 700, color: '#65676b', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: 'DM Sans', marginBottom: 10, paddingBottom: 7, borderBottom: '1px solid #e8eaed' }}>How It Works</p>
         {['Browse & pick a package', 'Book a discovery call', 'Pay after your call', 'Get your consultant', 'Upload documents'].map((step, i, arr) => (
@@ -678,31 +797,81 @@ function MobileFeed({ packages, onPackageClick }) {
   const startYRef = useRef(0);
   const dragDeltaRef = useRef(0);
   const draggingRef = useRef(false);
+  const currentRef = useRef(0);
+
   const slideH = () => wrapRef.current?.offsetHeight || window.innerHeight;
 
   const goTo = (n) => {
     if (n < 0 || n >= packages.length) return;
+    currentRef.current = n;
     setCurrent(n);
     if (trackRef.current) {
       trackRef.current.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)';
       trackRef.current.style.transform = `translateY(${-n * slideH()}px)`;
     }
   };
-  const toggleLike = (id) => setLikedIds(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
+
+  const toggleLike = (id) => setLikedIds(prev => {
+    const s = new Set(prev);
+    s.has(id) ? s.delete(id) : s.add(id);
+    return s;
+  });
 
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-    const onTS = (e) => { startYRef.current = e.touches[0].clientY; draggingRef.current = true; if (trackRef.current) trackRef.current.style.transition = 'none'; };
-    const onTM = (e) => { if (!draggingRef.current) return; dragDeltaRef.current = e.touches[0].clientY - startYRef.current; if (trackRef.current) trackRef.current.style.transform = `translateY(${-current * slideH() + dragDeltaRef.current}px)`; };
-    const onTE = () => { draggingRef.current = false; if (trackRef.current) trackRef.current.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)'; if (dragDeltaRef.current < -60) goTo(current + 1); else if (dragDeltaRef.current > 60) goTo(current - 1); else if (trackRef.current) trackRef.current.style.transform = `translateY(${-current * slideH()}px)`; dragDeltaRef.current = 0; };
-    const onWheel = (e) => { e.preventDefault(); if (e.deltaY > 40) goTo(current + 1); else if (e.deltaY < -40) goTo(current - 1); };
+
+    const onTS = (e) => {
+      startYRef.current = e.touches[0].clientY;
+      draggingRef.current = true;
+      if (trackRef.current) trackRef.current.style.transition = 'none';
+    };
+    const onTM = (e) => {
+      if (!draggingRef.current) return;
+      dragDeltaRef.current = e.touches[0].clientY - startYRef.current;
+      if (trackRef.current)
+        trackRef.current.style.transform = `translateY(${-currentRef.current * slideH() + dragDeltaRef.current}px)`;
+    };
+    const onTE = () => {
+      draggingRef.current = false;
+      if (trackRef.current)
+        trackRef.current.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)';
+      if (dragDeltaRef.current < -50) goTo(currentRef.current + 1);
+      else if (dragDeltaRef.current > 50) goTo(currentRef.current - 1);
+      else if (trackRef.current)
+        trackRef.current.style.transform = `translateY(${-currentRef.current * slideH()}px)`;
+      dragDeltaRef.current = 0;
+    };
+    const onWheel = (e) => {
+      e.preventDefault();
+      if (e.deltaY > 40) goTo(currentRef.current + 1);
+      else if (e.deltaY < -40) goTo(currentRef.current - 1);
+    };
+
     el.addEventListener('touchstart', onTS, { passive: true });
     el.addEventListener('touchmove', onTM, { passive: true });
     el.addEventListener('touchend', onTE);
     el.addEventListener('wheel', onWheel, { passive: false });
-    return () => { el.removeEventListener('touchstart', onTS); el.removeEventListener('touchmove', onTM); el.removeEventListener('touchend', onTE); el.removeEventListener('wheel', onWheel); };
-  }, [current, packages.length]);
+    return () => {
+      el.removeEventListener('touchstart', onTS);
+      el.removeEventListener('touchmove', onTM);
+      el.removeEventListener('touchend', onTE);
+      el.removeEventListener('wheel', onWheel);
+    };
+  }, [packages.length]);
+
+  // Lock body scroll when mobile feed is visible
+  useEffect(() => {
+    const isMobile = window.innerWidth <= 700;
+    if (isMobile) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, []);
 
   return (
     <div className="mobile-feed-wrap" ref={wrapRef}>
@@ -712,7 +881,9 @@ function MobileFeed({ packages, onPackageClick }) {
         ))}
       </div>
       <div className="mobile-prog-dots">
-        {packages.map((_, i) => <div key={i} className={`mobile-prog-dot${i === current ? ' active' : ''}`} style={{ height: i === current ? 22 : 6 }} />)}
+        {packages.slice(0, 10).map((_, i) => (
+          <div key={i} className={`mobile-prog-dot${i === current ? ' active' : ''}`} style={{ height: i === current ? 22 : 6 }} />
+        ))}
       </div>
       <div className="mobile-bottom-nav">
         <div className="mobile-nav-item active">
@@ -749,6 +920,8 @@ function PackagesContent() {
 
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fetchFailed, setFetchFailed] = useState(false);
+  const [retrying, setRetrying] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [bookmarkedPackages, setBookmarkedPackages] = useState(new Set());
   const [bookmarkLoading, setBookmarkLoading] = useState({});
@@ -785,21 +958,39 @@ function PackagesContent() {
     finally { setLoadingRate(false); }
   };
 
-  const fetchPackages = async () => {
+  // ── Fetch with auto-retry (3 attempts, 3s apart) ──
+  const fetchPackages = async (retriesLeft = 3, isManual = false) => {
     try {
-      setLoading(true);
+      if (isManual) { setRetrying(true); setFetchFailed(false); }
+      if (retriesLeft === 3) setLoading(true);
+
       const res = await fetch(`${API_BASE}/`);
-      if (!res.ok) throw new Error();
+      if (!res.ok) throw new Error('not ok');
       const data = await res.json();
+
       setPackages((data.packages || []).map(pkg => ({
         ...pkg,
         images: (pkg.images || []).map(img => ({
           ...img,
-          image: img.image?.startsWith('http') ? img.image : `https://res.cloudinary.com/dmbgrroos/${img.image}`
+          image: img.image?.startsWith('http')
+            ? img.image
+            : `https://res.cloudinary.com/dmbgrroos/${img.image}`
         }))
       })));
-    } catch { setPackages([]); }
-    finally { setLoading(false); }
+      setFetchFailed(false);
+      setLoading(false);
+      setRetrying(false);
+    } catch {
+      if (retriesLeft > 1) {
+        // Auto retry after 3 seconds
+        setTimeout(() => fetchPackages(retriesLeft - 1), 3000);
+      } else {
+        setPackages([]);
+        setFetchFailed(true);
+        setLoading(false);
+        setRetrying(false);
+      }
+    }
   };
 
   const fetchBookmarks = async () => {
@@ -840,7 +1031,10 @@ function PackagesContent() {
   });
 
   const handlePackageClick = (id) => router.push(`/package/${id}`);
-  const handleGoToLogin = () => { setShowAuthModal(false); router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`);};
+  const handleGoToLogin = () => {
+    setShowAuthModal(false);
+    router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`);
+  };
 
   return (
     <div style={{ minHeight: '100vh', background: '#f0f2f5' }}>
@@ -867,6 +1061,32 @@ function PackagesContent() {
                   </div>
                 </div>
               ))
+            ) : fetchFailed ? (
+              <div className="retry-banner">
+                <div style={{ fontSize: 40, marginBottom: 12 }}>🌐</div>
+                <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', fontFamily: 'DM Sans, sans-serif', marginBottom: 6 }}>
+                  Unable to load packages
+                </p>
+                <p style={{ fontSize: 13, color: '#94a3b8', fontFamily: 'DM Sans, sans-serif', marginBottom: 18 }}>
+                  The server may be waking up. Please try again.
+                </p>
+                <button
+                  onClick={() => fetchPackages(3, true)}
+                  disabled={retrying}
+                  style={{
+                    padding: '10px 24px', borderRadius: 9, border: 'none',
+                    background: retrying ? '#e4e6ea' : 'linear-gradient(135deg,#07b3f2,#0284c7)',
+                    color: retrying ? '#94a3b8' : 'white',
+                    fontSize: 13, fontWeight: 700,
+                    fontFamily: 'DM Sans, sans-serif', cursor: retrying ? 'not-allowed' : 'pointer',
+                    display: 'inline-flex', alignItems: 'center', gap: 8,
+                  }}
+                >
+                  {retrying
+                    ? <><div style={{ width: 12, height: 12, border: '2px solid #94a3b8', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> Retrying...</>
+                    : '🔄 Try Again'}
+                </button>
+              </div>
             ) : filteredPackages.length === 0 ? (
               <div className="pkg-empty">
                 <div style={{ fontSize: 40, marginBottom: 12 }}>🌐</div>
