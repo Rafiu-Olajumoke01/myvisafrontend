@@ -23,15 +23,15 @@ function Navbar() {
   return (
     <nav className={`vc-navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="vc-navbar-inner">
-        
+
         <div className="vc-nav-left">
           <div className="vc-logo-container">
             <Link href="/package" className="vc-logo">
               <Image
                 src="/ingress.png"
                 alt="Ingress Logo"
-                width={110}
-                height={36}
+                width={250}   // was 110
+                height={92}   // was 36
                 style={{ objectFit: 'contain' }}
                 priority
               />
@@ -42,7 +42,7 @@ function Navbar() {
             <div className="vc-search-wrap">
               <span className="vc-search-icon">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                  <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
                 </svg>
               </span>
               <input
@@ -58,7 +58,7 @@ function Navbar() {
 
         <div className="vc-nav-auth">
           <Link href="/login" className="vc-btn-login">Login</Link>
-          <Link href="/signup" className="vc-btn-signup">Sign Up</Link>
+          {/* <Link href="/signup" className="vc-btn-signup">Sign Up</Link> */}
         </div>
 
       </div>

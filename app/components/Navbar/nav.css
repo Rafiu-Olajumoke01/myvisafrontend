@@ -29,13 +29,13 @@
 }
 
 .vc-logo-container {
-  width: 68px;
+  width: auto;        /* was 68px */
+  padding-left: 10px; /* add some breathing room from the edge */
   display: flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
 }
-
 .vc-logo {
   font-family: 'Playfair Display', serif;
   font-size: 20px;

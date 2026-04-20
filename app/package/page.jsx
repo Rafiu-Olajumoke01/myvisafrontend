@@ -317,11 +317,6 @@ const GlobalStyles = () => (
       display: -webkit-box; -webkit-line-clamp: 2;
       -webkit-box-orient: vertical; overflow: hidden;
     }
-    .mobile-pkg-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-    .mobile-pkg-tag {
-      font-size: 13px; color: rgba(255,255,255,0.7);
-      font-family: 'DM Sans', sans-serif; font-weight: 500;
-    }
     .mobile-cta-row { display: flex; gap: 10px; align-items: center; }
     .mobile-cta-primary {
       flex: 1; padding: 13px; border-radius: 10px;
@@ -725,12 +720,31 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
       <div className="mobile-pkg-info">
         <div className="mobile-pkg-badge" style={{ background: badgeColor.bg, color: badgeColor.color, border: `1px solid ${badgeColor.border}` }}>{icon} {purpose}</div>
         <div className="mobile-pkg-title">{getCardTitle(pkg)}</div>
-        <div className="mobile-pkg-desc">{pkg.description || pkg.course_description || `${purpose} package for ${pkg.country}`}</div>
-        <div className="mobile-pkg-tags">
-          {['#' + (pkg.country || '').replace(/\s/g, ''), '#VisaConnect', '#' + (pkg.category || 'Visa')].map((tag, i) => (
-            <span key={i} className="mobile-pkg-tag">{tag}</span>
-          ))}
+
+        {/* Bold description */}
+        <div className="mobile-pkg-desc" style={{ fontWeight: 700 }}>
+          {pkg.description || pkg.course_description || `${purpose} package for ${pkg.country}`}
         </div>
+
+        {/* Service provider line — replaces hashtags */}
+        <div style={{
+          fontSize: 12,
+          color: 'rgba(255,255,255,0.6)',
+          fontFamily: 'DM Sans, sans-serif',
+          marginBottom: 14,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 5,
+        }}>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+          </svg>
+          Service provided by{' '}
+          <span style={{ color: 'white', fontWeight: 600 }}>
+            {pkg.posted_by || pkg.agent_name || pkg.provider || pkg.consultant_name || 'Ingress'}
+          </span>
+        </div>
+
         <div className="mobile-cta-row">
           <button className="mobile-cta-primary" onClick={() => onPackageClick(pkg.id)}>
             View Package
@@ -834,6 +848,8 @@ function MobileFeed({ packages, onPackageClick }) {
           <div key={i} className={`mobile-prog-dot${i === current ? ' active' : ''}`} style={{ height: i === current ? 22 : 6 }} />
         ))}
       </div>
+
+      {/* Bottom nav — plus button removed */}
       <div className="mobile-bottom-nav">
         <div className="mobile-nav-item active">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
@@ -842,11 +858,6 @@ function MobileFeed({ packages, onPackageClick }) {
         <div className="mobile-nav-item">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
           <span className="mobile-nav-label">Explore</span>
-        </div>
-        <div className="mobile-nav-item">
-          <div style={{ width: 42, height: 28, background: '#07b3f2', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M12 5v14M5 12h14" /></svg>
-          </div>
         </div>
         <div className="mobile-nav-item">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg>
