@@ -4,21 +4,16 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
 const SERVICE_FEE_USD = 15;
 
-// ─── Global Styles ─────────────────────────────────────────────────────────────
 const GlobalStyles = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     html, body { height: 100%; overflow-x: hidden; }
-
     .pkg-shell {
       display: flex;
       min-height: calc(100vh - 60px);
       background: #f0f2f5;
     }
-
-    /* ── Slim sidebar ── */
     .pkg-sidebar {
       width: 68px;
       flex-shrink: 0;
@@ -55,15 +50,11 @@ const GlobalStyles = () => (
       width: 28px; height: 1px;
       background: #e8eaed; margin: 6px 0;
     }
-
-    /* ── Main area ── */
     .pkg-main {
       flex: 1;
       min-width: 0;
       padding: 20px 20px 48px;
     }
-
-    /* ── Cards grid ── */
     .pkg-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -71,8 +62,6 @@ const GlobalStyles = () => (
     }
     @media (max-width: 1100px) { .pkg-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 700px)  { .pkg-grid { grid-template-columns: 1fr; } }
-
-    /* ── Right panel ── */
     .pkg-right {
       width: 220px;
       flex-shrink: 0;
@@ -86,8 +75,6 @@ const GlobalStyles = () => (
       overflow-y: auto;
     }
     @media (max-width: 1200px) { .pkg-right { display: none; } }
-
-    /* ── Card ── */
     .pkg-card {
       background: #fff;
       border-radius: 14px;
@@ -178,8 +165,6 @@ const GlobalStyles = () => (
       border-radius: 999px; background: #dbeafe; color: #1d4ed8;
       border: 1px solid #93c5fd;
     }
-
-    /* ── Right panel widgets ── */
     .rp-card {
       background: #fff;
       border-radius: 12px;
@@ -200,7 +185,6 @@ const GlobalStyles = () => (
       background: #f8fafc; border-radius: 10px;
       border: 1px solid #f1f5f9;
     }
-
     @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
     @keyframes orbit  { from{transform:rotate(0deg) translateX(50px) rotate(0deg)}   to{transform:rotate(360deg) translateX(50px) rotate(-360deg)} }
     @keyframes orbit2 { from{transform:rotate(120deg) translateX(50px) rotate(-120deg)} to{transform:rotate(480deg) translateX(50px) rotate(-480deg)} }
@@ -209,7 +193,6 @@ const GlobalStyles = () => (
     @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
     @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     @keyframes spin { to{transform:rotate(360deg)} }
-
     .skeleton {
       background: linear-gradient(90deg,#f0f2f5 25%,#e4e6ea 50%,#f0f2f5 75%);
       background-size: 200% auto;
@@ -217,19 +200,15 @@ const GlobalStyles = () => (
       border-radius: 8px;
     }
     .card-appear { animation: fadeUp 0.3s ease both; }
-
     .pkg-empty {
       grid-column: 1 / -1;
       text-align: center; padding: 60px 20px;
       background: #fff; border-radius: 14px; border: 1px solid #e8eaed;
     }
-
     @media (max-width: 700px) {
       .pkg-sidebar { display: none; }
       .pkg-main { padding: 14px 14px 48px; }
     }
-
-    /* ── Mobile TikTok Feed — TRUE FULLSCREEN ── */
     .mobile-feed-wrap {
       display: none;
       position: fixed;
@@ -367,14 +346,11 @@ const GlobalStyles = () => (
       background: rgba(255,255,255,0.3); transition: all 0.3s;
     }
     .mobile-prog-dot.active { background: white; }
-
-    /* ── Retry banner ── */
     .retry-banner {
       grid-column: 1 / -1;
       text-align: center; padding: 60px 20px;
       background: #fff; border-radius: 14px; border: 1px solid #e8eaed;
     }
-
     @media (max-width: 700px) {
       .pkg-shell { display: none !important; }
       .mobile-feed-wrap { display: block !important; }
@@ -428,6 +404,27 @@ const getCardTitle = (pkg) => {
   return pkg.title || pkg.name || pkg.country;
 };
 
+// ─── getServiceId: safely pull a display ID from any package shape ─────────
+const getServiceId = (pkg) => {
+  
+  const candidates = [
+    pkg.service_id,
+    pkg.serviceId,
+    pkg.service_code,
+    pkg.ref_id,
+    pkg.reference_id,
+    pkg.package_id,
+  ];
+  for (const val of candidates) {
+    if (val !== undefined && val !== null && val !== '' && String(val) !== 'NaN') {
+      return String(val);
+    }
+  }
+  // Final fallback: use the package's own id prefixed with #
+  if (pkg.id !== undefined && pkg.id !== null) return `#${pkg.id}`;
+  return 'N/A';
+};
+
 // ─── Image Carousel ───────────────────────────────────────────────────────────
 function ImageCarousel({ images, country }) {
   const [idx, setIdx] = useState(0);
@@ -437,7 +434,6 @@ function ImageCarousel({ images, country }) {
     const t = setInterval(() => setIdx(p => (p + 1) % images.length), 4000);
     return () => clearInterval(t);
   }, [auto, images?.length]);
-
   if (!images?.length) return (
     <div className="pkg-card-img" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36 }}>🌍</div>
   );
@@ -472,7 +468,6 @@ function PackageCard({ pkg, index, isBookmarked, isBookmarkLoading, convertedFee
   const isTourist = (pkg.category || '').toLowerCase() === 'tourist';
   const colors = getCategoryColors(pkg.category);
   const location = pkg.course_city || pkg.hospital_city || pkg.country || '—';
-
   return (
     <div className="pkg-card card-appear" style={{ animationDelay: `${index * 50}ms` }} onClick={() => onPackageClick(pkg.id)}>
       <ImageCarousel images={pkg.images} country={pkg.country} />
@@ -493,9 +488,7 @@ function PackageCard({ pkg, index, isBookmarked, isBookmarkLoading, convertedFee
               </svg>}
           </button>
         </div>
-
         <h3 className="pkg-card-title">{getCardTitle(pkg)}</h3>
-
         <div className="pkg-card-location">
           <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2.2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -503,9 +496,7 @@ function PackageCard({ pkg, index, isBookmarked, isBookmarkLoading, convertedFee
           </svg>
           {location}
         </div>
-
         <div className="pkg-card-divider" />
-
         <div className="pkg-card-footer">
           <div>
             {isStudent ? (
@@ -519,7 +510,7 @@ function PackageCard({ pkg, index, isBookmarked, isBookmarkLoading, convertedFee
               <>
                 <div className="pkg-card-price-label">Service fee</div>
                 {loadingRate
-                  ? <span style={{ fontSize: 10, color: '#94a3b8', fontFamily: 'DM Sans' }}>Loading…</span>
+                  ? <span style={{ fontSize: 10, color: '#94a3b8', fontFamily: 'DM Sans' }}>Loading...</span>
                   : <div className="pkg-card-price-val">{userCurrency} {convertedFee}</div>}
               </>
             )}
@@ -541,7 +532,6 @@ function SlimSidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const [tooltip, setTooltip] = useState(null);
-
   const getActive = () => {
     if (pathname?.startsWith('/bookmarks')) return 'saved';
     if (pathname?.startsWith('/dashboard')) return 'myvisa';
@@ -550,7 +540,6 @@ function SlimSidebar() {
     return 'home';
   };
   const active = getActive();
-
   const items = [
     {
       key: 'home', label: 'Home', route: '/package',
@@ -573,12 +562,10 @@ function SlimSidebar() {
       icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.527-.878 3.31.905 2.432 2.432a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.878 1.527-.905 3.31-2.432 2.432a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.527.878-3.31-.905-2.432-2.432a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.878-1.527.905-3.31 2.432-2.432.996.574 2.296.07 2.573-1.066z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
     },
   ];
-
   const handleMouseEnter = (e, label) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setTooltip({ label, y: rect.top + rect.height / 2 });
   };
-
   return (
     <>
       {tooltip && (
@@ -647,7 +634,6 @@ function RightPanel() {
           <p style={{ fontSize: 11, color: '#0284c7', fontFamily: 'DM Sans', lineHeight: 1.5 }}>50+ countries. One platform.</p>
         </div>
       </div>
-
       <div className="rp-card">
         <div style={{ padding: '10px 12px 6px', borderBottom: '1px solid #e8eaed' }}>
           <p style={{ fontSize: 10, fontWeight: 700, color: '#65676b', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: 'DM Sans' }}>Our Track Record</p>
@@ -666,7 +652,6 @@ function RightPanel() {
           ))}
         </div>
       </div>
-
       <div style={{ borderRadius: 12, background: 'linear-gradient(135deg, #07b3f2, #0284c7)', padding: '16px 14px' }}>
         <div style={{ fontSize: 20, marginBottom: 7 }}>💬</div>
         <p style={{ fontSize: 13, fontWeight: 700, color: 'white', fontFamily: 'DM Sans', marginBottom: 4 }}>Not sure where to start?</p>
@@ -675,7 +660,6 @@ function RightPanel() {
           Book Free Call
         </button>
       </div>
-
       <div className="rp-card" style={{ padding: '12px 14px 14px' }}>
         <p style={{ fontSize: 10, fontWeight: 700, color: '#65676b', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: 'DM Sans', marginBottom: 10, paddingBottom: 7, borderBottom: '1px solid #e8eaed' }}>How It Works</p>
         {['Browse & pick a package', 'Book a discovery call', 'Pay after your call', 'Get your consultant', 'Upload documents'].map((step, i, arr) => (
@@ -706,6 +690,9 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
       ? { text: pkg.cost || '—', color: '#fbbf24' }
       : { text: `${pkg.currency || 'NGN'} ${pkg.service_fee || '—'}`, color: '#07b3f2' };
 
+  // ── FIXED: safely resolve service ID ──
+  const serviceId = getServiceId(pkg);
+
   return (
     <div className={`mobile-slide${isActive ? ' active' : ''}`}>
       <div className="mobile-slide-bg" style={{ backgroundImage: `url('${bgImage}')` }} />
@@ -720,13 +707,11 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
       <div className="mobile-pkg-info">
         <div className="mobile-pkg-badge" style={{ background: badgeColor.bg, color: badgeColor.color, border: `1px solid ${badgeColor.border}` }}>{icon} {purpose}</div>
         <div className="mobile-pkg-title">{getCardTitle(pkg)}</div>
-
-        {/* Bold description */}
         <div className="mobile-pkg-desc" style={{ fontWeight: 700 }}>
           {pkg.description || pkg.course_description || `${purpose} package for ${pkg.country}`}
         </div>
 
-        {/* Service provider line — replaces hashtags */}
+        {/* ── Service ID — uses getServiceId() so it never shows NaN ── */}
         <div style={{
           fontSize: 12,
           color: 'rgba(255,255,255,0.6)',
@@ -737,11 +722,12 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
           gap: 5,
         }}>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
           </svg>
-          Service provided by{' '}
-          <span style={{ color: 'white', fontWeight: 600 }}>
-            {pkg.posted_by || pkg.agent_name || pkg.provider || pkg.consultant_name || 'Ingress'}
+          Service ID:{' '}
+          <span style={{ color: 'white', fontWeight: 600, letterSpacing: '0.05em' }}>
+            {serviceId}
           </span>
         </div>
 
@@ -766,9 +752,7 @@ function MobileFeed({ packages, onPackageClick }) {
   const dragDeltaRef = useRef(0);
   const draggingRef = useRef(false);
   const currentRef = useRef(0);
-
   const slideH = () => wrapRef.current?.offsetHeight || window.innerHeight;
-
   const goTo = (n) => {
     if (n < 0 || n >= packages.length) return;
     currentRef.current = n;
@@ -778,11 +762,9 @@ function MobileFeed({ packages, onPackageClick }) {
       trackRef.current.style.transform = `translateY(${-n * slideH()}px)`;
     }
   };
-
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-
     const onTS = (e) => {
       startYRef.current = e.touches[0].clientY;
       draggingRef.current = true;
@@ -809,7 +791,6 @@ function MobileFeed({ packages, onPackageClick }) {
       if (e.deltaY > 40) goTo(currentRef.current + 1);
       else if (e.deltaY < -40) goTo(currentRef.current - 1);
     };
-
     el.addEventListener('touchstart', onTS, { passive: true });
     el.addEventListener('touchmove', onTM, { passive: true });
     el.addEventListener('touchend', onTE);
@@ -821,7 +802,6 @@ function MobileFeed({ packages, onPackageClick }) {
       el.removeEventListener('wheel', onWheel);
     };
   }, [packages.length]);
-
   useEffect(() => {
     const isMobile = window.innerWidth <= 700;
     if (isMobile) {
@@ -833,9 +813,7 @@ function MobileFeed({ packages, onPackageClick }) {
       document.documentElement.style.overflow = '';
     };
   }, []);
-
   if (!packages.length) return null;
-
   return (
     <div className="mobile-feed-wrap" ref={wrapRef}>
       <div className="mobile-feed-track" ref={trackRef}>
@@ -848,8 +826,6 @@ function MobileFeed({ packages, onPackageClick }) {
           <div key={i} className={`mobile-prog-dot${i === current ? ' active' : ''}`} style={{ height: i === current ? 22 : 6 }} />
         ))}
       </div>
-
-      {/* Bottom nav — plus button removed */}
       <div className="mobile-bottom-nav">
         <div className="mobile-nav-item active">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
@@ -877,7 +853,6 @@ function PackagesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
-
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchFailed, setFetchFailed] = useState(false);
@@ -890,10 +865,8 @@ function PackagesContent() {
   const [loadingRate, setLoadingRate] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingRoute, setPendingRoute] = useState(null);
-
   const API_BASE = 'https://web-production-f50dc.up.railway.app/api/packages';
   const BOOKMARKS_API = 'https://web-production-f50dc.up.railway.app/api/bookmarks';
-
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const token = localStorage.getItem('access_token');
@@ -901,9 +874,7 @@ function PackagesContent() {
     if (token) fetchBookmarks();
     detectCurrency();
   }, []);
-
   useEffect(() => { fetchPackages(); }, []);
-
   const detectCurrency = async () => {
     setLoadingRate(true);
     try {
@@ -917,16 +888,13 @@ function PackagesContent() {
     } catch { setConvertedFee(SERVICE_FEE_USD); setUserCurrency('USD'); }
     finally { setLoadingRate(false); }
   };
-
   const fetchPackages = async (retriesLeft = 3, isManual = false) => {
     try {
       if (isManual) { setRetrying(true); setFetchFailed(false); }
       if (retriesLeft === 3) setLoading(true);
-
       const res = await fetch(`${API_BASE}/`);
       if (!res.ok) throw new Error('not ok');
       const data = await res.json();
-
       setPackages((data.packages || []).map(pkg => ({
         ...pkg,
         images: (pkg.images || []).map(img => ({
@@ -950,7 +918,6 @@ function PackagesContent() {
       }
     }
   };
-
   const fetchBookmarks = async () => {
     try {
       const token = localStorage.getItem('access_token');
@@ -961,7 +928,6 @@ function PackagesContent() {
       }
     } catch { }
   };
-
   const toggleBookmark = async (e, packageId) => {
     e.stopPropagation();
     if (!isLoggedIn) { setPendingRoute(`/package/${packageId}`); setShowAuthModal(true); return; }
@@ -981,28 +947,22 @@ function PackagesContent() {
       setBookmarkLoading(prev => ({ ...prev, [packageId]: false }));
     }
   };
-
   const filteredPackages = packages.filter(pkg => {
     if (!searchQuery) return true;
     return [pkg.country, pkg.title, pkg.name, pkg.description, pkg.course, pkg.university_name, pkg.hospital_name]
       .some(f => f?.toLowerCase().includes(searchQuery.toLowerCase()));
   });
-
   const handlePackageClick = (id) => router.push(`/package/${id}`);
   const handleGoToLogin = () => {
     setShowAuthModal(false);
     router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`);
   };
-
   return (
     <div style={{ minHeight: '100vh', background: '#f0f2f5' }}>
       <GlobalStyles />
-
       <MobileFeed packages={filteredPackages} onPackageClick={handlePackageClick} />
-
       <div className="pkg-shell">
         <SlimSidebar />
-
         <main className="pkg-main">
           <div className="pkg-grid">
             {loading ? (
@@ -1064,10 +1024,8 @@ function PackagesContent() {
             )}
           </div>
         </main>
-
         <RightPanel />
       </div>
-
       {showAuthModal && (
         <div onClick={() => setShowAuthModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 16 }}>
           <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, padding: 28, maxWidth: 340, width: '100%', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
