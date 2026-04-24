@@ -5,222 +5,323 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const COUNTRIES = [
-  { name: "Afghanistan", code: "AF", currency: "AFN" },
-  { name: "Albania", code: "AL", currency: "ALL" },
-  { name: "Algeria", code: "DZ", currency: "DZD" },
-  { name: "Andorra", code: "AD", currency: "EUR" },
-  { name: "Angola", code: "AO", currency: "AOA" },
-  { name: "Antigua and Barbuda", code: "AG", currency: "XCD" },
-  { name: "Argentina", code: "AR", currency: "ARS" },
-  { name: "Armenia", code: "AM", currency: "AMD" },
-  { name: "Australia", code: "AU", currency: "AUD" },
-  { name: "Austria", code: "AT", currency: "EUR" },
-  { name: "Azerbaijan", code: "AZ", currency: "AZN" },
-  { name: "Bahamas", code: "BS", currency: "BSD" },
-  { name: "Bahrain", code: "BH", currency: "BHD" },
-  { name: "Bangladesh", code: "BD", currency: "BDT" },
-  { name: "Barbados", code: "BB", currency: "BBD" },
-  { name: "Belarus", code: "BY", currency: "BYN" },
-  { name: "Belgium", code: "BE", currency: "EUR" },
-  { name: "Belize", code: "BZ", currency: "BZD" },
-  { name: "Benin", code: "BJ", currency: "XOF" },
-  { name: "Bhutan", code: "BT", currency: "BTN" },
-  { name: "Bolivia", code: "BO", currency: "BOB" },
-  { name: "Bosnia and Herzegovina", code: "BA", currency: "BAM" },
-  { name: "Botswana", code: "BW", currency: "BWP" },
-  { name: "Brazil", code: "BR", currency: "BRL" },
-  { name: "Brunei", code: "BN", currency: "BND" },
-  { name: "Bulgaria", code: "BG", currency: "BGN" },
-  { name: "Burkina Faso", code: "BF", currency: "XOF" },
-  { name: "Burundi", code: "BI", currency: "BIF" },
-  { name: "Cabo Verde", code: "CV", currency: "CVE" },
-  { name: "Cambodia", code: "KH", currency: "KHR" },
-  { name: "Cameroon", code: "CM", currency: "XAF" },
-  { name: "Canada", code: "CA", currency: "CAD" },
-  { name: "Central African Republic", code: "CF", currency: "XAF" },
-  { name: "Chad", code: "TD", currency: "XAF" },
-  { name: "Chile", code: "CL", currency: "CLP" },
-  { name: "China", code: "CN", currency: "CNY" },
-  { name: "Colombia", code: "CO", currency: "COP" },
-  { name: "Comoros", code: "KM", currency: "KMF" },
-  { name: "Congo (DRC)", code: "CD", currency: "CDF" },
-  { name: "Congo (Republic)", code: "CG", currency: "XAF" },
-  { name: "Costa Rica", code: "CR", currency: "CRC" },
-  { name: "Croatia", code: "HR", currency: "EUR" },
-  { name: "Cuba", code: "CU", currency: "CUP" },
-  { name: "Cyprus", code: "CY", currency: "EUR" },
-  { name: "Czech Republic", code: "CZ", currency: "CZK" },
-  { name: "Denmark", code: "DK", currency: "DKK" },
-  { name: "Djibouti", code: "DJ", currency: "DJF" },
-  { name: "Dominica", code: "DM", currency: "XCD" },
-  { name: "Dominican Republic", code: "DO", currency: "DOP" },
-  { name: "Ecuador", code: "EC", currency: "USD" },
-  { name: "Egypt", code: "EG", currency: "EGP" },
-  { name: "El Salvador", code: "SV", currency: "USD" },
-  { name: "Equatorial Guinea", code: "GQ", currency: "XAF" },
-  { name: "Eritrea", code: "ER", currency: "ERN" },
-  { name: "Estonia", code: "EE", currency: "EUR" },
-  { name: "Eswatini", code: "SZ", currency: "SZL" },
-  { name: "Ethiopia", code: "ET", currency: "ETB" },
-  { name: "Fiji", code: "FJ", currency: "FJD" },
-  { name: "Finland", code: "FI", currency: "EUR" },
-  { name: "France", code: "FR", currency: "EUR" },
-  { name: "Gabon", code: "GA", currency: "XAF" },
-  { name: "Gambia", code: "GM", currency: "GMD" },
-  { name: "Georgia", code: "GE", currency: "GEL" },
-  { name: "Germany", code: "DE", currency: "EUR" },
-  { name: "Ghana", code: "GH", currency: "GHS" },
-  { name: "Greece", code: "GR", currency: "EUR" },
-  { name: "Grenada", code: "GD", currency: "XCD" },
-  { name: "Guatemala", code: "GT", currency: "GTQ" },
-  { name: "Guinea", code: "GN", currency: "GNF" },
-  { name: "Guinea-Bissau", code: "GW", currency: "XOF" },
-  { name: "Guyana", code: "GY", currency: "GYD" },
-  { name: "Haiti", code: "HT", currency: "HTG" },
-  { name: "Honduras", code: "HN", currency: "HNL" },
-  { name: "Hungary", code: "HU", currency: "HUF" },
-  { name: "Iceland", code: "IS", currency: "ISK" },
-  { name: "India", code: "IN", currency: "INR" },
-  { name: "Indonesia", code: "ID", currency: "IDR" },
-  { name: "Iran", code: "IR", currency: "IRR" },
-  { name: "Iraq", code: "IQ", currency: "IQD" },
-  { name: "Ireland", code: "IE", currency: "EUR" },
-  { name: "Israel", code: "IL", currency: "ILS" },
-  { name: "Italy", code: "IT", currency: "EUR" },
-  { name: "Jamaica", code: "JM", currency: "JMD" },
-  { name: "Japan", code: "JP", currency: "JPY" },
-  { name: "Jordan", code: "JO", currency: "JOD" },
-  { name: "Kazakhstan", code: "KZ", currency: "KZT" },
-  { name: "Kenya", code: "KE", currency: "KES" },
-  { name: "Kiribati", code: "KI", currency: "AUD" },
-  { name: "Kuwait", code: "KW", currency: "KWD" },
-  { name: "Kyrgyzstan", code: "KG", currency: "KGS" },
-  { name: "Laos", code: "LA", currency: "LAK" },
-  { name: "Latvia", code: "LV", currency: "EUR" },
-  { name: "Lebanon", code: "LB", currency: "LBP" },
-  { name: "Lesotho", code: "LS", currency: "LSL" },
-  { name: "Liberia", code: "LR", currency: "LRD" },
-  { name: "Libya", code: "LY", currency: "LYD" },
-  { name: "Liechtenstein", code: "LI", currency: "CHF" },
-  { name: "Lithuania", code: "LT", currency: "EUR" },
-  { name: "Luxembourg", code: "LU", currency: "EUR" },
-  { name: "Madagascar", code: "MG", currency: "MGA" },
-  { name: "Malawi", code: "MW", currency: "MWK" },
-  { name: "Malaysia", code: "MY", currency: "MYR" },
-  { name: "Maldives", code: "MV", currency: "MVR" },
-  { name: "Mali", code: "ML", currency: "XOF" },
-  { name: "Malta", code: "MT", currency: "EUR" },
-  { name: "Marshall Islands", code: "MH", currency: "USD" },
-  { name: "Mauritania", code: "MR", currency: "MRU" },
-  { name: "Mauritius", code: "MU", currency: "MUR" },
-  { name: "Mexico", code: "MX", currency: "MXN" },
-  { name: "Micronesia", code: "FM", currency: "USD" },
-  { name: "Moldova", code: "MD", currency: "MDL" },
-  { name: "Monaco", code: "MC", currency: "EUR" },
-  { name: "Mongolia", code: "MN", currency: "MNT" },
-  { name: "Montenegro", code: "ME", currency: "EUR" },
-  { name: "Morocco", code: "MA", currency: "MAD" },
-  { name: "Mozambique", code: "MZ", currency: "MZN" },
-  { name: "Myanmar", code: "MM", currency: "MMK" },
-  { name: "Namibia", code: "NA", currency: "NAD" },
-  { name: "Nauru", code: "NR", currency: "AUD" },
-  { name: "Nepal", code: "NP", currency: "NPR" },
-  { name: "Netherlands", code: "NL", currency: "EUR" },
-  { name: "New Zealand", code: "NZ", currency: "NZD" },
-  { name: "Nicaragua", code: "NI", currency: "NIO" },
-  { name: "Niger", code: "NE", currency: "XOF" },
-  { name: "Nigeria", code: "NG", currency: "NGN" },
-  { name: "North Korea", code: "KP", currency: "KPW" },
-  { name: "North Macedonia", code: "MK", currency: "MKD" },
-  { name: "Norway", code: "NO", currency: "NOK" },
-  { name: "Oman", code: "OM", currency: "OMR" },
-  { name: "Pakistan", code: "PK", currency: "PKR" },
-  { name: "Palau", code: "PW", currency: "USD" },
-  { name: "Palestine", code: "PS", currency: "ILS" },
-  { name: "Panama", code: "PA", currency: "PAB" },
-  { name: "Papua New Guinea", code: "PG", currency: "PGK" },
-  { name: "Paraguay", code: "PY", currency: "PYG" },
-  { name: "Peru", code: "PE", currency: "PEN" },
-  { name: "Philippines", code: "PH", currency: "PHP" },
-  { name: "Poland", code: "PL", currency: "PLN" },
-  { name: "Portugal", code: "PT", currency: "EUR" },
-  { name: "Qatar", code: "QA", currency: "QAR" },
-  { name: "Romania", code: "RO", currency: "RON" },
-  { name: "Russia", code: "RU", currency: "RUB" },
-  { name: "Rwanda", code: "RW", currency: "RWF" },
-  { name: "Saint Kitts and Nevis", code: "KN", currency: "XCD" },
-  { name: "Saint Lucia", code: "LC", currency: "XCD" },
-  { name: "Saint Vincent and the Grenadines", code: "VC", currency: "XCD" },
-  { name: "Samoa", code: "WS", currency: "WST" },
-  { name: "San Marino", code: "SM", currency: "EUR" },
-  { name: "Sao Tome and Principe", code: "ST", currency: "STN" },
-  { name: "Saudi Arabia", code: "SA", currency: "SAR" },
-  { name: "Senegal", code: "SN", currency: "XOF" },
-  { name: "Serbia", code: "RS", currency: "RSD" },
-  { name: "Seychelles", code: "SC", currency: "SCR" },
-  { name: "Sierra Leone", code: "SL", currency: "SLL" },
-  { name: "Singapore", code: "SG", currency: "SGD" },
-  { name: "Slovakia", code: "SK", currency: "EUR" },
-  { name: "Slovenia", code: "SI", currency: "EUR" },
-  { name: "Solomon Islands", code: "SB", currency: "SBD" },
-  { name: "Somalia", code: "SO", currency: "SOS" },
-  { name: "South Africa", code: "ZA", currency: "ZAR" },
-  { name: "South Korea", code: "KR", currency: "KRW" },
-  { name: "South Sudan", code: "SS", currency: "SSP" },
-  { name: "Spain", code: "ES", currency: "EUR" },
-  { name: "Sri Lanka", code: "LK", currency: "LKR" },
-  { name: "Sudan", code: "SD", currency: "SDG" },
-  { name: "Suriname", code: "SR", currency: "SRD" },
-  { name: "Sweden", code: "SE", currency: "SEK" },
-  { name: "Switzerland", code: "CH", currency: "CHF" },
-  { name: "Syria", code: "SY", currency: "SYP" },
-  { name: "Taiwan", code: "TW", currency: "TWD" },
-  { name: "Tajikistan", code: "TJ", currency: "TJS" },
-  { name: "Tanzania", code: "TZ", currency: "TZS" },
-  { name: "Thailand", code: "TH", currency: "THB" },
-  { name: "Timor-Leste", code: "TL", currency: "USD" },
-  { name: "Togo", code: "TG", currency: "XOF" },
-  { name: "Tonga", code: "TO", currency: "TOP" },
-  { name: "Trinidad and Tobago", code: "TT", currency: "TTD" },
-  { name: "Tunisia", code: "TN", currency: "TND" },
-  { name: "Turkey", code: "TR", currency: "TRY" },
-  { name: "Turkmenistan", code: "TM", currency: "TMT" },
-  { name: "Tuvalu", code: "TV", currency: "AUD" },
-  { name: "Uganda", code: "UG", currency: "UGX" },
-  { name: "Ukraine", code: "UA", currency: "UAH" },
-  { name: "United Arab Emirates", code: "AE", currency: "AED" },
-  { name: "United Kingdom", code: "GB", currency: "GBP" },
-  { name: "United States", code: "US", currency: "USD" },
-  { name: "Uruguay", code: "UY", currency: "UYU" },
-  { name: "Uzbekistan", code: "UZ", currency: "UZS" },
-  { name: "Vanuatu", code: "VU", currency: "VUV" },
-  { name: "Vatican City", code: "VA", currency: "EUR" },
-  { name: "Venezuela", code: "VE", currency: "VES" },
-  { name: "Vietnam", code: "VN", currency: "VND" },
-  { name: "Yemen", code: "YE", currency: "YER" },
-  { name: "Zambia", code: "ZM", currency: "ZMW" },
-  { name: "Zimbabwe", code: "ZW", currency: "ZWL" },
+  { name: "Afghanistan", code: "AF" }, { name: "Albania", code: "AL" },
+  { name: "Algeria", code: "DZ" }, { name: "Angola", code: "AO" },
+  { name: "Argentina", code: "AR" }, { name: "Australia", code: "AU" },
+  { name: "Austria", code: "AT" }, { name: "Bangladesh", code: "BD" },
+  { name: "Belgium", code: "BE" }, { name: "Brazil", code: "BR" },
+  { name: "Canada", code: "CA" }, { name: "Chile", code: "CL" },
+  { name: "China", code: "CN" }, { name: "Colombia", code: "CO" },
+  { name: "Czech Republic", code: "CZ" }, { name: "Denmark", code: "DK" },
+  { name: "Egypt", code: "EG" }, { name: "Ethiopia", code: "ET" },
+  { name: "Finland", code: "FI" }, { name: "France", code: "FR" },
+  { name: "Germany", code: "DE" }, { name: "Ghana", code: "GH" },
+  { name: "Greece", code: "GR" }, { name: "Hungary", code: "HU" },
+  { name: "India", code: "IN" }, { name: "Indonesia", code: "ID" },
+  { name: "Iran", code: "IR" }, { name: "Iraq", code: "IQ" },
+  { name: "Ireland", code: "IE" }, { name: "Israel", code: "IL" },
+  { name: "Italy", code: "IT" }, { name: "Jamaica", code: "JM" },
+  { name: "Japan", code: "JP" }, { name: "Jordan", code: "JO" },
+  { name: "Kenya", code: "KE" }, { name: "Kuwait", code: "KW" },
+  { name: "Lebanon", code: "LB" }, { name: "Malaysia", code: "MY" },
+  { name: "Mexico", code: "MX" }, { name: "Morocco", code: "MA" },
+  { name: "Netherlands", code: "NL" }, { name: "New Zealand", code: "NZ" },
+  { name: "Nigeria", code: "NG" }, { name: "Norway", code: "NO" },
+  { name: "Pakistan", code: "PK" }, { name: "Philippines", code: "PH" },
+  { name: "Poland", code: "PL" }, { name: "Portugal", code: "PT" },
+  { name: "Qatar", code: "QA" }, { name: "Romania", code: "RO" },
+  { name: "Russia", code: "RU" }, { name: "Saudi Arabia", code: "SA" },
+  { name: "Senegal", code: "SN" }, { name: "Singapore", code: "SG" },
+  { name: "South Africa", code: "ZA" }, { name: "South Korea", code: "KR" },
+  { name: "Spain", code: "ES" }, { name: "Sweden", code: "SE" },
+  { name: "Switzerland", code: "CH" }, { name: "Tanzania", code: "TZ" },
+  { name: "Thailand", code: "TH" }, { name: "Tunisia", code: "TN" },
+  { name: "Turkey", code: "TR" }, { name: "Uganda", code: "UG" },
+  { name: "Ukraine", code: "UA" }, { name: "United Arab Emirates", code: "AE" },
+  { name: "United Kingdom", code: "GB" }, { name: "United States", code: "US" },
+  { name: "Venezuela", code: "VE" }, { name: "Vietnam", code: "VN" },
+  { name: "Zimbabwe", code: "ZW" },
 ];
 
-function SignupPage() {
+const styles = `
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: 'DM Sans', sans-serif; }
+
+  .signup-root {
+    display: flex;
+    min-height: 100vh;
+    background: #0a0e1a;
+  }
+
+  /* ── LEFT PANEL ── */
+  .signup-left {
+    position: relative;
+    flex: 0 0 50%;
+    min-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .signup-left-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.72);
+  }
+  .signup-left-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(7, 14, 35, 0.15) 0%,
+      rgba(7, 14, 35, 0.1) 40%,
+      rgba(7, 14, 35, 0.75) 80%,
+      rgba(7, 14, 35, 0.95) 100%
+    );
+  }
+  .signup-left-content {
+    position: relative;
+    z-index: 2;
+    padding: 48px 44px;
+  }
+  .signup-left-logo { display: none; }
+  .signup-left-tagline {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 600;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 14px;
+    letter-spacing: -0.5px;
+  }
+  .signup-left-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+    max-width: 320px;
+    margin-bottom: 28px;
+  }
+  .signup-left-stats {
+    display: flex;
+    gap: 28px;
+  }
+  .signup-left-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .signup-left-stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #07b3f2;
+  }
+  .signup-left-stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── RIGHT PANEL ── */
+  .signup-right {
+    flex: 1;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 60px;
+    overflow-y: auto;
+    max-height: 100vh;
+  }
+  .signup-right-header {
+    margin-bottom: 28px;
+  }
+  .signup-right-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #0a0e1a;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  .signup-right-sub {
+    font-size: 13px;
+    color: #94a3b8;
+  }
+  .signup-right-sub a {
+    color: #07b3f2;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  /* ── FORM ── */
+  .sg-form { display: flex; flex-direction: column; gap: 14px; }
+  .sg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sg-field { display: flex; flex-direction: column; gap: 5px; }
+  .sg-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #374151;
+    letter-spacing: 0.02em;
+  }
+  .sg-input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #e8eaed;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: #0a0e1a;
+    background: #fafafa;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .sg-input:focus {
+    border-color: #07b3f2;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(7,179,242,0.1);
+  }
+  .sg-input::placeholder { color: #c1c9d2; }
+  .sg-input:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .sg-pw-wrap { position: relative; }
+  .sg-pw-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #94a3b8;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+  }
+  .sg-pw-toggle:hover { color: #07b3f2; }
+
+  /* country dropdown */
+  .sg-country-wrap { position: relative; }
+  .sg-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: white;
+    border: 1.5px solid #e8eaed;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 50;
+  }
+  .sg-dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 9px 14px;
+    text-align: left;
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    color: #374151;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .sg-dropdown-item:hover { background: #f0f9ff; color: #07b3f2; }
+
+  /* error */
+  .sg-error {
+    padding: 11px 14px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    font-size: 12.5px;
+    color: #dc2626;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* submit button */
+  .sg-submit {
+    width: 100%;
+    padding: 13px;
+    background: #07b3f2;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .sg-submit:hover:not(:disabled) { background: #0291c8; transform: translateY(-1px); }
+  .sg-submit:disabled { background: #b0d9f0; cursor: not-allowed; }
+
+  .sg-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0;
+  }
+  .sg-divider-line { flex: 1; height: 1px; background: #e8eaed; }
+  .sg-divider-text { font-size: 11px; color: #94a3b8; }
+
+  .sg-login-link {
+    text-align: center;
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  .sg-login-link a {
+    color: #07b3f2;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sg-spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @media (max-width: 900px) {
+    .signup-left { display: none; }
+    .signup-right { width: 100%; padding: 32px 24px; }
+  }
+`;
+
+export default function SignupPage() {
   const router = useRouter();
-  const [role, setRole] = useState('user'); // 👈 new
   const [formData, setFormData] = useState({
-    username: '',
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    nationality: '',
-    password: '',
-    confirmPassword: '',
+    username: '', first_name: '', last_name: '',
+    email: '', phone: '', nationality: '',
+    password: '', confirmPassword: '',
   });
   const [countrySearch, setCountrySearch] = useState('');
-  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPw, setShowPw] = useState(false);
+  const [showCpw, setShowCpw] = useState(false);
 
-  const filteredCountries = COUNTRIES.filter(c =>
+  const filtered = COUNTRIES.filter(c =>
     c.name.toLowerCase().includes(countrySearch.toLowerCase())
   );
 
@@ -232,278 +333,197 @@ function SignupPage() {
   const handleCountrySelect = (country) => {
     setFormData({ ...formData, nationality: country.name });
     setCountrySearch(country.name);
-    setShowCountryDropdown(false);
+    setShowDropdown(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
-    if (!formData.nationality) {
-      setError('Please select your nationality/citizenship country.');
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match!');
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long.');
-      setLoading(false);
-      return;
-    }
-
+    if (!formData.nationality) { setError('Please select your nationality.'); setLoading(false); return; }
+    if (formData.password !== formData.confirmPassword) { setError('Passwords do not match.'); setLoading(false); return; }
+    if (formData.password.length < 8) { setError('Password must be at least 8 characters.'); setLoading(false); return; }
     try {
-      const response = await fetch('https://web-production-f50dc.up.railway.app/api/auth/register/', {
+      const res = await fetch('https://web-production-f50dc.up.railway.app/api/auth/register/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          first_name: formData.first_name,
-          last_name: formData.last_name,
-          phone: formData.phone,
-          country: formData.nationality,
-          password: formData.password,
-          password2: formData.confirmPassword,
-          role: role, // 👈 send role to backend
+          username: formData.username, email: formData.email,
+          first_name: formData.first_name, last_name: formData.last_name,
+          phone: formData.phone, country: formData.nationality,
+          password: formData.password, password2: formData.confirmPassword,
         }),
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
+      const data = await res.json();
+      if (res.ok) {
         localStorage.setItem('access_token', data.tokens.access);
         localStorage.setItem('refresh_token', data.tokens.refresh);
         localStorage.setItem('user', JSON.stringify(data.user));
-
-        // 👈 redirect based on role
-        if (data.user.role === 'agent') {
-          router.push('/agents/pending');
-        } else {
-          const intendedPackage = localStorage.getItem('intendedPackage');
-          if (intendedPackage) {
-            router.push(`/apply/${intendedPackage}`);
-            localStorage.removeItem('intendedPackage');
-          } else {
-            router.push('/package');
-          }
-        }
+        const intended = localStorage.getItem('intendedPackage');
+        if (intended) { router.push(`/apply/${intended}`); localStorage.removeItem('intendedPackage'); }
+        else router.push('/package');
       } else {
-        if (data.username)   setError(data.username[0]);
-        else if (data.email) setError(data.email[0]);
-        else if (data.password) setError(data.password[0]);
-        else setError(data.error || 'Registration failed. Please try again.');
+        setError(data.username?.[0] || data.email?.[0] || data.password?.[0] || data.error || 'Registration failed. Please try again.');
       }
-    } catch (err) {
-      console.error('Registration error:', err);
-      setError('Network error. Please check your connection and try again.');
+    } catch {
+      setError('Network error. Please check your connection.');
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6 py-12">
-      <div className="w-full max-w-2xl">
+  const EyeIcon = () => (
+    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    </svg>
+  );
 
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-[#07b3f2] to-[#0891c7] bg-clip-text text-transparent">
-            MyVisa
-          </h1>
-          <p className="text-gray-600 mt-2">Create your account</p>
+  const EyeOffIcon = () => (
+    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+    </svg>
+  );
+
+  return (
+    <>
+      <style>{styles}</style>
+      <div className="signup-root">
+
+        {/* ── LEFT: plane photo ── */}
+        <div className="signup-left">
+          <img
+            src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1200&q=80"
+            alt="Airplane above clouds"
+            className="signup-left-img"
+          />
+          <div className="signup-left-overlay" />
+          <div className="signup-left-logo">
+            Ingress<span>.</span>
+          </div>
+          <div className="signup-left-content">
+            <h2 className="signup-left-tagline">
+              Your journey<br />starts here.
+            </h2>
+            <p className="signup-left-sub">
+              Join thousands of travelers getting their visas approved faster with verified service providers on Ingress.
+            </p>
+            <div className="signup-left-stats">
+              <div className="signup-left-stat">
+                <span className="signup-left-stat-num">50+</span>
+                <span className="signup-left-stat-label">Countries</span>
+              </div>
+              <div className="signup-left-stat">
+                <span className="signup-left-stat-num">98%</span>
+                <span className="signup-left-stat-label">Approval rate</span>
+              </div>
+              <div className="signup-left-stat">
+                <span className="signup-left-stat-num">2k+</span>
+                <span className="signup-left-stat-label">Applicants</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-sm p-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Sign Up</h2>
-
-          {/* ── Role Toggle ── */}
-          <div className="flex gap-3 mb-6 p-1 bg-gray-100 rounded-xl">
-            <button
-              type="button"
-              onClick={() => setRole('user')}
-              className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                role === 'user'
-                  ? 'bg-white text-[#07b3f2] shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}>
-              👤 I am a User
-            </button>
-            <button
-              type="button"
-              onClick={() => setRole('agent')}
-              className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all ${
-                role === 'agent'
-                  ? 'bg-white text-[#07b3f2] shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}>
-              🎧 I am an Agent
-            </button>
+        {/* ── RIGHT: form ── */}
+        <div className="signup-right">
+          <div className="signup-right-header">
+            <h1 className="signup-right-title">Create your account</h1>
+            <p className="signup-right-sub">
+              Already have one? <Link href="/login">Sign in</Link>
+            </p>
           </div>
 
           {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600 flex items-center gap-2">
-                <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                </svg>
-                {error}
-              </p>
+            <div className="sg-error" style={{ marginBottom: 14 }}>
+              <svg width="15" height="15" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+              {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-
-            {/* Row 1: First Name + Last Name */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
-                <input
-                  type="text" name="first_name" value={formData.first_name}
-                  onChange={handleChange} required disabled={loading} placeholder="John"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#07b3f2]/20 focus:border-[#07b3f2] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
-                />
+          <form className="sg-form" onSubmit={handleSubmit}>
+            <div className="sg-row">
+              <div className="sg-field">
+                <label className="sg-label">First name</label>
+                <input className="sg-input" type="text" name="first_name" value={formData.first_name} onChange={handleChange} placeholder="John" required disabled={loading} />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-                <input
-                  type="text" name="last_name" value={formData.last_name}
-                  onChange={handleChange} required disabled={loading} placeholder="Doe"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#07b3f2]/20 focus:border-[#07b3f2] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
-                />
+              <div className="sg-field">
+                <label className="sg-label">Last name</label>
+                <input className="sg-input" type="text" name="last_name" value={formData.last_name} onChange={handleChange} placeholder="Doe" required disabled={loading} />
               </div>
             </div>
 
-            {/* Row 2: Username */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
-              <input
-                type="text" name="username" value={formData.username}
-                onChange={handleChange} required disabled={loading} placeholder="johndoe"
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#07b3f2]/20 focus:border-[#07b3f2] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
-              />
+            <div className="sg-field">
+              <label className="sg-label">Username</label>
+              <input className="sg-input" type="text" name="username" value={formData.username} onChange={handleChange} placeholder="johndoe" required disabled={loading} />
             </div>
 
-            {/* Row 3: Email + Phone */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                <input
-                  type="email" name="email" value={formData.email}
-                  onChange={handleChange} required disabled={loading} placeholder="you@example.com"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#07b3f2]/20 focus:border-[#07b3f2] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
-                />
+            <div className="sg-row">
+              <div className="sg-field">
+                <label className="sg-label">Email address</label>
+                <input className="sg-input" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="you@email.com" required disabled={loading} />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-                <input
-                  type="tel" name="phone" value={formData.phone}
-                  onChange={handleChange} required disabled={loading} placeholder="+234 801 234 5678"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#07b3f2]/20 focus:border-[#07b3f2] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
-                />
+              <div className="sg-field">
+                <label className="sg-label">Phone number</label>
+                <input className="sg-input" type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="+234 801 234 5678" required disabled={loading} />
               </div>
             </div>
 
-            {/* Row 4: Nationality */}
-            <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nationality / Citizenship <span className="text-red-500">*</span>
-              </label>
-              <p className="text-xs text-gray-400 mb-2">
-                This helps us show whether you need a visa for each destination
-              </p>
-              <div className="relative">
+            <div className="sg-field">
+              <label className="sg-label">Nationality</label>
+              <div className="sg-country-wrap">
                 <input
+                  className="sg-input"
                   type="text"
                   value={countrySearch}
-                  onChange={(e) => { setCountrySearch(e.target.value); setShowCountryDropdown(true); }}
-                  onFocus={() => setShowCountryDropdown(true)}
-                  onBlur={() => setTimeout(() => setShowCountryDropdown(false), 200)}
+                  onChange={e => { setCountrySearch(e.target.value); setShowDropdown(true); }}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                  placeholder="Search country..."
                   disabled={loading}
-                  placeholder="Search your country (e.g. Nigeria, Ghana...)"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#07b3f2]/20 focus:border-[#07b3f2] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
                 />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              </div>
-              {showCountryDropdown && filteredCountries.length > 0 && (
-                <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-xl mt-1 max-h-52 overflow-y-auto">
-                  {filteredCountries.map((country) => (
-                    <button key={country.code} type="button" onMouseDown={() => handleCountrySelect(country)}
-                      className="w-full text-left px-4 py-2.5 hover:bg-[#07b3f2]/10 transition-colors flex items-center gap-3">
-                      <span className="text-sm font-medium text-gray-800">{country.name}</span>
-                      <span className="text-xs text-gray-400 ml-auto">{country.currency}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-              {showCountryDropdown && filteredCountries.length === 0 && (
-                <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-xl mt-1 px-4 py-3">
-                  <p className="text-sm text-gray-400">No country found</p>
-                </div>
-              )}
-            </div>
-
-            {/* Row 5: Password + Confirm */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                <input
-                  type="password" name="password" value={formData.password}
-                  onChange={handleChange} required disabled={loading} placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#07b3f2]/20 focus:border-[#07b3f2] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
-                />
-                <p className="text-xs text-gray-500 mt-1">At least 8 characters</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-                <input
-                  type="password" name="confirmPassword" value={formData.confirmPassword}
-                  onChange={handleChange} required disabled={loading} placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#07b3f2]/20 focus:border-[#07b3f2] transition-all disabled:bg-gray-50 disabled:cursor-not-allowed"
-                />
+                {showDropdown && filtered.length > 0 && (
+                  <div className="sg-dropdown">
+                    {filtered.map(c => (
+                      <button key={c.code} type="button" className="sg-dropdown-item" onMouseDown={() => handleCountrySelect(c)}>
+                        {c.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Submit */}
-            <button type="submit" disabled={loading}
-              className="w-full bg-[#07b3f2] text-white py-3 rounded-lg font-medium hover:bg-[#0891c7] transition-all mt-6 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-              {loading ? (
-                <>
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Creating account...
-                </>
-              ) : `Create ${role === 'agent' ? 'Agent' : ''} Account`}
+            <div className="sg-row">
+              <div className="sg-field">
+                <label className="sg-label">Password</label>
+                <div className="sg-pw-wrap">
+                  <input className="sg-input" style={{ paddingRight: 40 }} type={showPw ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} placeholder="••••••••" required disabled={loading} />
+                  <button type="button" className="sg-pw-toggle" onClick={() => setShowPw(!showPw)}>{showPw ? <EyeOffIcon /> : <EyeIcon />}</button>
+                </div>
+              </div>
+              <div className="sg-field">
+                <label className="sg-label">Confirm password</label>
+                <div className="sg-pw-wrap">
+                  <input className="sg-input" style={{ paddingRight: 40 }} type={showCpw ? 'text' : 'password'} name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="••••••••" required disabled={loading} />
+                  <button type="button" className="sg-pw-toggle" onClick={() => setShowCpw(!showCpw)}>{showCpw ? <EyeOffIcon /> : <EyeIcon />}</button>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" className="sg-submit" disabled={loading}>
+              {loading ? <><div className="sg-spinner" /> Creating account...</> : 'Create Account →'}
             </button>
           </form>
 
-          <div className="text-center mt-6">
-            <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link href="/login" className="text-[#07b3f2] font-medium hover:underline">Login</Link>
-            </p>
-          </div>
+          <p className="sg-login-link" style={{ marginTop: 20 }}>
+            Already have an account? <Link href="/login">Sign in</Link>
+          </p>
         </div>
 
-        <div className="text-center mt-6">
-          <Link href="/" className="text-sm text-gray-600 hover:text-[#07b3f2]">← Back to packages</Link>
-        </div>
       </div>
-    </div>
+    </>
   );
 }
-
-export default SignupPage;
