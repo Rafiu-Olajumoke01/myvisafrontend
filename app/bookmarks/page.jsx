@@ -1,535 +1,355 @@
 'use client';
-
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Navbar from './../components/Navbar/Navbar';
 
-const GlobalStyles = () => (
-  <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    .notif-page {
-      min-height: 100vh;
-      background: #f0f4f8;
-      font-family: 'DM Sans', sans-serif;
-      padding: 0 0 60px;
-    }
-
-    .notif-hero {
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #0284c7 100%);
-      padding: 40px 24px 60px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .notif-hero::before {
-      content: '';
-      position: absolute;
-      top: -60px; right: -60px;
-      width: 280px; height: 280px;
-      border-radius: 50%;
-      background: rgba(7,179,242,0.08);
-      pointer-events: none;
-    }
-
-    .notif-hero::after {
-      content: '';
-      position: absolute;
-      bottom: -40px; left: 30%;
-      width: 180px; height: 180px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.04);
-      pointer-events: none;
-    }
-
-    .notif-hero-inner {
-      max-width: 780px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    .notif-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: rgba(255,255,255,0.6);
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      margin-bottom: 20px;
-      transition: color 0.2s;
-      background: none;
-      border: none;
-      padding: 0;
-    }
-    .notif-back:hover { color: white; }
-
-    .notif-hero-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .notif-hero-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      font-weight: 700;
-      color: white;
-      line-height: 1.2;
-      margin-bottom: 6px;
-    }
-
-    .notif-hero-sub {
-      font-size: 13px;
-      color: rgba(255,255,255,0.55);
-      font-weight: 400;
-    }
-
-    .notif-badge {
-      background: #ef4444;
-      color: white;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      animation: pulse 2s ease-in-out infinite;
-      flex-shrink: 0;
-      margin-top: 6px;
-    }
-
-    .notif-mark-all {
-      padding: 10px 18px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-      background: rgba(255,255,255,0.08);
-      color: white;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: background 0.2s;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .notif-mark-all:hover { background: rgba(255,255,255,0.15); }
-
-    .notif-filters-wrap {
-      max-width: 780px;
-      margin: -20px auto 0;
-      padding: 0 24px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .notif-filters {
-      display: flex;
-      gap: 8px;
-      background: white;
-      padding: 6px;
-      border-radius: 14px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
-
-    .notif-filter-btn {
-      flex: 1;
-      padding: 9px 12px;
-      border-radius: 10px;
-      border: none;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.2s;
-      color: #94a3b8;
-      background: transparent;
-    }
-    .notif-filter-btn.active {
-      background: linear-gradient(135deg, #07b3f2, #0284c7);
-      color: white;
-      box-shadow: 0 2px 8px rgba(7,179,242,0.3);
-    }
-
-    .notif-body {
-      max-width: 780px;
-      margin: 24px auto 0;
-      padding: 0 24px;
-    }
-
-    .notif-section-label {
-      font-size: 10px;
-      font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 10px;
-      padding-left: 2px;
-    }
-
-    .notif-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-
-    .notif-card {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 16px;
-      border-radius: 14px;
-      background: white;
-      border: 1px solid #e8edf2;
-      cursor: pointer;
-      transition: box-shadow 0.2s, transform 0.2s;
-      animation: fadeUp 0.3s ease both;
-      position: relative;
-      overflow: hidden;
-    }
-    .notif-card:hover {
-      box-shadow: 0 6px 20px rgba(0,0,0,0.07);
-      transform: translateY(-1px);
-    }
-    .notif-card.unread {
-      background: #f0f9ff;
-      border-color: #bae6fd;
-    }
-    .notif-card.unread::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: linear-gradient(to bottom, #07b3f2, #0284c7);
-      border-radius: 3px 0 0 3px;
-    }
-
-    .notif-icon-wrap {
-      width: 42px; height: 42px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .notif-card-content { flex: 1; min-width: 0; }
-
-    .notif-card-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: #0f172a;
-      margin-bottom: 3px;
-      line-height: 1.4;
-    }
-
-    .notif-card-msg {
-      font-size: 12px;
-      color: #64748b;
-      line-height: 1.5;
-      margin-bottom: 6px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .notif-card-time {
-      font-size: 10px;
-      color: #94a3b8;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .notif-unread-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: #07b3f2;
-      flex-shrink: 0;
-      margin-top: 4px;
-      box-shadow: 0 0 0 3px rgba(7,179,242,0.15);
-    }
-
-    .notif-empty {
-      text-align: center;
-      padding: 60px 20px;
-      background: white;
-      border-radius: 16px;
-      border: 1px solid #e8edf2;
-    }
-
-    .notif-empty-icon {
-      width: 64px; height: 64px;
-      background: #f0f9ff;
-      border-radius: 20px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px;
-      margin: 0 auto 16px;
-    }
-
-    .notif-loading {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 14px;
-      background: #f0f4f8;
-    }
-
-    .notif-spinner {
-      width: 36px; height: 36px;
-      border: 3px solid #e5e7eb;
-      border-top-color: #07b3f2;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @media (max-width: 600px) {
-      .notif-hero { padding: 32px 16px 52px; }
-      .notif-hero-title { font-size: 24px; }
-      .notif-filters-wrap { padding: 0 16px; }
-      .notif-body { padding: 0 16px; }
-      .notif-hero-top { flex-wrap: wrap; }
-    }
-  `}</style>
+// ─── Bottom Nav Icons ──────────────────────────────────────────────────────────
+const HomeIcon = ({ active }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill={active ? 'currentColor' : 'none'}
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+    />
+  </svg>
 );
 
-const ICONS = {
-  sp_application_received: { emoji: '📥', bg: '#eff6ff', color: '#3b82f6' },
-  sp_call_scheduled:       { emoji: '📅', bg: '#f0fdf4', color: '#22c55e' },
-  sp_approved:             { emoji: '✅', bg: '#f0fdf4', color: '#16a34a' },
-  sp_rejected:             { emoji: '❌', bg: '#fef2f2', color: '#ef4444' },
-  call_request:            { emoji: '📞', bg: '#faf5ff', color: '#9333ea' },
-  call_accepted:           { emoji: '📲', bg: '#f0fdf4', color: '#22c55e' },
-  call_declined:           { emoji: '🚫', bg: '#fef2f2', color: '#ef4444' },
-  call_completed:          { emoji: '✔️', bg: '#f0fdf4', color: '#16a34a' },
-  package_application:     { emoji: '📦', bg: '#fff7ed', color: '#ea580c' },
-  application_status_update: { emoji: '🔔', bg: '#e0f7fe', color: '#07b3f2' },
-};
+const MyVisaIcon = ({ active }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill={active ? 'currentColor' : 'none'}
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+    />
+  </svg>
+);
 
-const DEFAULT_ICON = { emoji: '🔔', bg: '#e0f7fe', color: '#07b3f2' };
+const SavedIcon = ({ active }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill={active ? 'currentColor' : 'none'}
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+    />
+  </svg>
+);
 
-function timeAgo(dateStr) {
-  const diff = (Date.now() - new Date(dateStr)) / 1000;
-  if (diff < 60) return 'Just now';
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
-  return new Date(dateStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-}
+const ProfileIcon = ({ active }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill={active ? 'currentColor' : 'none'}
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+    className="w-6 h-6"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+    />
+  </svg>
+);
 
-function groupByDate(notifications) {
-  const groups = {};
-  notifications.forEach(n => {
-    const d = new Date(n.created_at);
-    const today = new Date();
-    const yesterday = new Date(); yesterday.setDate(today.getDate() - 1);
-    let label;
-    if (d.toDateString() === today.toDateString()) label = 'Today';
-    else if (d.toDateString() === yesterday.toDateString()) label = 'Yesterday';
-    else label = d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
-    if (!groups[label]) groups[label] = [];
-    groups[label].push(n);
-  });
-  return groups;
-}
+const TrashIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+    <path d="M3 6H5H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M19 6V20C19 21.1046 18.1046 22 17 22H7C5.89543 22 5 21.1046 5 20V6M8 6V4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+  </svg>
+);
 
-export default function NotificationsPage() {
+const BookmarkIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+    />
+  </svg>
+);
+
+function BookmarksPage() {
   const router = useRouter();
-  const [notifications, setNotifications] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [filter, setFilter] = useState('all');
+  const [activeTab, setActiveTab] = useState('saved');
+  const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState(null);
 
-  useEffect(() => { fetchNotifications(); }, []);
+  const API = 'https://web-production-f50dc.up.railway.app/api/bookmarks/'
 
-  const fetchNotifications = async () => {
+  useEffect(() => {
+    fetchBookmarks();
+  }, []);
+
+  const fetchBookmarks = async () => {
     try {
+      setLoading(true);
       const token = localStorage.getItem('access_token');
-      const res = await fetch('https://web-production-f50dc.up.railway.app/api/notifications/', {
-        headers: { Authorization: `Bearer ${token}` },
+      
+      if (!token) {
+        router.push('/login?redirect=/bookmarks');
+        return;
+      }
+
+      const response = await fetch(`${BOOKMARKS_API}/`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
-      const data = await res.json();
-      setNotifications(data.notifications || []);
-      setUnreadCount(data.unread_count || 0);
-    } catch (err) {
-      console.error(err);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push('/login?redirect=/bookmarks');
+          return;
+        }
+        throw new Error('Failed to fetch bookmarks');
+      }
+
+      const data = await response.json();
+      console.log('📚 Bookmarks:', data);
+
+      // Convert image URLs to full paths
+      const bookmarksWithFullUrls = (data.bookmarks || []).map(bookmark => ({
+        ...bookmark,
+        package: {
+          ...bookmark.package,
+          images: (bookmark.package.images || []).map(img => ({
+            ...img,
+            image: img.image.startsWith('http') 
+              ? img.image 
+              : `http://localhost:8000${img.image}`
+          }))
+        }
+      }));
+
+      setBookmarks(bookmarksWithFullUrls);
+    } catch (error) {
+      console.error('❌ Error fetching bookmarks:', error);
+      alert('Failed to load saved packages');
     } finally {
       setLoading(false);
     }
   };
 
-  const markAsRead = async (id) => {
+  const handleRemoveBookmark = async (packageId) => {
     try {
+      setDeletingId(packageId);
       const token = localStorage.getItem('access_token');
-      await fetch(`https://web-production-f50dc.up.railway.app/api/notifications/${id}/read/`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
-      setUnreadCount(prev => Math.max(prev - 1, 0));
-    } catch (err) { console.error(err); }
-  };
 
-  const markAllRead = async () => {
-    try {
-      const token = localStorage.getItem('access_token');
-      await fetch('https://web-production-f50dc.up.railway.app/api/notifications/read-all/', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await fetch(`${BOOKMARKS_API}/${packageId}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
       });
-      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
-      setUnreadCount(0);
-    } catch (err) { console.error(err); }
-  };
 
-  const handleClick = (n) => {
-    if (!n.is_read) markAsRead(n.id);
-    if (n.data?.application_id) { router.push(`/application/${n.data.application_id}`); return; }
-    if (n.data?.session_id) { router.push(`/calls/${n.data.session_id}`); return; }
-    if (['sp_application_received', 'sp_call_scheduled', 'sp_approved', 'sp_rejected'].includes(n.type)) {
-      router.push('/dashboard'); return;
+      if (!response.ok) throw new Error('Failed to remove bookmark');
+
+      // Remove from UI
+      setBookmarks(prev => prev.filter(b => b.package.id !== packageId));
+      
+    } catch (error) {
+      console.error('❌ Error removing bookmark:', error);
+      alert('Failed to remove bookmark');
+    } finally {
+      setDeletingId(null);
     }
   };
 
-  const filtered = filter === 'all'
-    ? notifications
-    : filter === 'unread'
-    ? notifications.filter(n => !n.is_read)
-    : notifications.filter(n => n.is_read);
+  const handlePackageClick = (packageId) => {
+    router.push(`/package/${packageId}`);
+  };
 
-  const grouped = groupByDate(filtered);
+  const navItems = [
+    { key: 'home', label: 'Home', icon: HomeIcon, route: '/package' },
+    { key: 'myvisa', label: 'My Visa', icon: MyVisaIcon, route: '/applications' },
+    { key: 'saved', label: 'Saved', icon: SavedIcon, route: '/bookmarks' },
+    { key: 'profile', label: 'Profile', icon: ProfileIcon, route: '/dashboard' },
+  ];
 
-  if (loading) {
-    return (
-      <>
-        <GlobalStyles />
-        <div className="notif-loading">
-          <div className="notif-spinner" />
-          <span style={{ fontSize: 13, color: '#94a3b8', fontFamily: 'DM Sans, sans-serif' }}>Loading notifications...</span>
-        </div>
-      </>
-    );
-  }
+  const handleNavClick = (item) => {
+    setActiveTab(item.key);
+    router.push(item.route);
+  };
 
   return (
-    <>
-      <GlobalStyles />
-      <div className="notif-page">
+    <div className="min-h-screen bg-gray-50 pb-20">
+      {/* Header */}
 
-        {/* ── HERO ── */}
-        <div className="notif-hero">
-          <div className="notif-hero-inner">
-            <button className="notif-back" onClick={() => router.back()}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-              Back
-            </button>
-            <div className="notif-hero-top">
-              <div>
-                <h1 className="notif-hero-title">Notifications</h1>
-                <p className="notif-hero-sub">Stay updated with your visa journey</p>
-                {unreadCount > 0 && (
-                  <div className="notif-badge" style={{ marginTop: 10 }}>
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" /></svg>
-                    {unreadCount} unread
-                  </div>
-                )}
-              </div>
-              {unreadCount > 0 && (
-                <button className="notif-mark-all" onClick={markAllRead}>
-                  Mark all read
-                </button>
-              )}
+      <main className="w-full px-6 pt-6">
+        <div className="max-w-7xl mx-auto">
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
-          </div>
-        </div>
-
-        {/* ── FILTER TABS ── */}
-        <div className="notif-filters-wrap">
-          <div className="notif-filters">
-            {[
-              { key: 'all', label: `All  ${notifications.length > 0 ? `(${notifications.length})` : ''}` },
-              { key: 'unread', label: `Unread ${unreadCount > 0 ? `(${unreadCount})` : ''}` },
-              { key: 'read', label: 'Read' },
-            ].map(f => (
-              <button
-                key={f.key}
-                className={`notif-filter-btn${filter === f.key ? ' active' : ''}`}
-                onClick={() => setFilter(f.key)}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* ── NOTIFICATIONS LIST ── */}
-        <div className="notif-body">
-          {filtered.length === 0 ? (
-            <div className="notif-empty" style={{ marginTop: 24 }}>
-              <div className="notif-empty-icon">🎉</div>
-              <h3 style={{ fontSize: 16, fontWeight: 700, color: '#0f172a', marginBottom: 6, fontFamily: 'Playfair Display, serif' }}>
-                {filter === 'unread' ? 'All caught up!' : 'No notifications'}
-              </h3>
-              <p style={{ fontSize: 13, color: '#94a3b8' }}>
-                {filter === 'unread' ? 'No unread notifications right now.' : 'Nothing here yet — check back soon.'}
+          ) : bookmarks.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-400">
+                <BookmarkIcon />
+              </div>
+              <p className="text-gray-900 text-xl font-bold mb-2">No saved packages yet</p>
+              <p className="text-gray-500 mb-6">
+                Start exploring and save packages you're interested in!
               </p>
+              <button
+                onClick={() => router.push('/package')}
+                className="bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+              >
+                Browse Packages
+              </button>
             </div>
           ) : (
-            Object.entries(grouped).map(([label, items]) => (
-              <div key={label}>
-                <div className="notif-section-label" style={{ marginTop: 20 }}>{label}</div>
-                <div className="notif-list">
-                  {items.map((n, i) => {
-                    const iconConfig = ICONS[n.type] || DEFAULT_ICON;
-                    return (
-                      <div
-                        key={n.id}
-                        className={`notif-card${!n.is_read ? ' unread' : ''}`}
-                        style={{ animationDelay: `${i * 40}ms` }}
-                        onClick={() => handleClick(n)}
-                      >
-                        <div
-                          className="notif-icon-wrap"
-                          style={{ background: iconConfig.bg }}
-                        >
-                          {iconConfig.emoji}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {bookmarks.map((bookmark) => {
+                const pkg = bookmark.package;
+                const isDeleting = deletingId === pkg.id;
+                
+                return (
+                  <div
+                    key={bookmark.id}
+                    className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
+                  >
+                    {/* Package Image */}
+                    <div 
+                      onClick={() => handlePackageClick(pkg.id)}
+                      className="relative h-48 overflow-hidden cursor-pointer"
+                    >
+                      {pkg.images && pkg.images.length > 0 ? (
+                        <img
+                          src={pkg.images[0].image}
+                          alt={pkg.country}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                          <p className="text-gray-400">No image</p>
                         </div>
-                        <div className="notif-card-content">
-                          <div className="notif-card-title">{n.title}</div>
-                          <div className="notif-card-msg">{n.message}</div>
-                          <div className="notif-card-time">
-                            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <circle cx="12" cy="12" r="10" />
-                              <path d="M12 6v6l4 2" />
-                            </svg>
-                            {timeAgo(n.created_at)}
-                          </div>
+                      )}
+                      
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+                      {/* Image count */}
+                      {pkg.images && pkg.images.length > 1 && (
+                        <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-lg">
+                          <span className="text-white text-xs font-bold">
+                            {pkg.images.length} images
+                          </span>
                         </div>
-                        {!n.is_read && <div className="notif-unread-dot" />}
+                      )}
+                    </div>
+
+                    {/* Package Info */}
+                    <div className="p-4">
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">
+                        {pkg.country}
+                      </h3>
+                      <p className="text-sm text-gray-500 mb-3">{pkg.visa_type}</p>
+                      
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-2xl font-black text-blue-600">
+                          ${pkg.price}
+                        </p>
+                        <p className="text-xs text-gray-400">{pkg.processing_time}</p>
                       </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))
+
+                      {/* Actions */}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handlePackageClick(pkg.id)}
+                          className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold text-sm hover:bg-blue-700 transition-colors"
+                        >
+                          View Details
+                        </button>
+                        <button
+                          onClick={() => handleRemoveBookmark(pkg.id)}
+                          disabled={isDeleting}
+                          className="bg-red-50 text-red-600 p-2 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
+                        >
+                          {isDeleting ? (
+                            <div className="w-5 h-5 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <TrashIcon />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Saved date */}
+                    <div className="px-4 pb-3">
+                      <p className="text-xs text-gray-400">
+                        Saved {new Date(bookmark.created_at).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
+      </main>
 
-      </div>
-    </>
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+        <div className="max-w-md mx-auto px-4">
+          <div className="flex items-center justify-around py-2">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.key;
+              return (
+                <button
+                  key={item.key}
+                  onClick={() => handleNavClick(item)}
+                  className="flex flex-col items-center justify-center gap-1 px-4 py-1 rounded-xl transition-all duration-200 active:scale-95"
+                >
+                  <div className={isActive ? 'text-blue-600' : 'text-gray-400'}>
+                    <Icon active={isActive} />
+                  </div>
+                  <span
+                    className={`text-xs font-medium ${
+                      isActive ? 'text-blue-600' : 'text-gray-500'
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                  {isActive && (
+                    <div className="absolute -bottom-0.5 w-12 h-1 bg-blue-600 rounded-t-full" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </nav>
+    </div>
   );
 }
+
+export default BookmarksPage;
