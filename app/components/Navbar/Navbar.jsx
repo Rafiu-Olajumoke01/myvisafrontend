@@ -13,6 +13,7 @@ function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState(null);
+  const [mounted, setMounted] = useState(false); // ← add this
 
   const showSearch = SEARCH_PAGES.some(p => pathname?.startsWith(p));
 
@@ -23,6 +24,7 @@ function Navbar() {
   }, []);
 
   useEffect(() => {
+    setMounted(true); // ← add this
     try {
       const stored = localStorage.getItem('user');
       if (stored) setUser(JSON.parse(stored));
@@ -72,9 +74,7 @@ function Navbar() {
         </div>
 
         <div className="vc-nav-auth">
-          <Link href="/login" className="vc-btn-login">Login</Link>
-
-          {user ? (
+          {!mounted ? null : user ? (
             <div
               className="vc-avatar"
               onClick={() => router.push('/dashboard')}
@@ -87,7 +87,7 @@ function Navbar() {
               />
             </div>
           ) : (
-            <Link href="/signup" className="vc-btn-signup">Sign Up</Link>
+            <Link href="/login" className="vc-btn-login">Login</Link>
           )}
         </div>
 

@@ -406,7 +406,7 @@ const getCardTitle = (pkg) => {
 
 // ─── getServiceId: safely pull a display ID from any package shape ─────────
 const getServiceId = (pkg) => {
-  
+
   const candidates = [
     pkg.service_id,
     pkg.serviceId,
@@ -722,8 +722,8 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
           gap: 5,
         }}>
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="2" y="7" width="20" height="14" rx="2"/>
-            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+            <rect x="2" y="7" width="20" height="14" rx="2" />
+            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
           </svg>
           Service ID:{' '}
           <span style={{ color: 'white', fontWeight: 600, letterSpacing: '0.05em' }}>
@@ -831,9 +831,9 @@ function MobileFeed({ packages, onPackageClick }) {
           <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
           <span className="mobile-nav-label">Home</span>
         </div>
-        <div className="mobile-nav-item">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
-          <span className="mobile-nav-label">Explore</span>
+        <div className="mobile-nav-item" onClick={() => router.push('/visa')}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+          <span className="mobile-nav-label">My Visa</span>
         </div>
         <div className="mobile-nav-item">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg>
