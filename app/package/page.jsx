@@ -330,6 +330,8 @@ const GlobalStyles = () => (
       align-items: center; gap: 4px;
       cursor: pointer; opacity: 0.45; transition: opacity 0.2s;
       padding-bottom: 4px;
+      background: none; border: none;
+      -webkit-tap-highlight-color: transparent;
     }
     .mobile-nav-item.active { opacity: 1; }
     .mobile-nav-label {
@@ -404,9 +406,7 @@ const getCardTitle = (pkg) => {
   return pkg.title || pkg.name || pkg.country;
 };
 
-// ─── getServiceId: safely pull a display ID from any package shape ─────────
 const getServiceId = (pkg) => {
-
   const candidates = [
     pkg.service_id,
     pkg.serviceId,
@@ -420,7 +420,6 @@ const getServiceId = (pkg) => {
       return String(val);
     }
   }
-  // Final fallback: use the package's own id prefixed with #
   if (pkg.id !== undefined && pkg.id !== null) return `#${pkg.id}`;
   return 'N/A';
 };
@@ -690,7 +689,6 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
       ? { text: pkg.cost || '—', color: '#fbbf24' }
       : { text: `${pkg.currency || 'NGN'} ${pkg.service_fee || '—'}`, color: '#07b3f2' };
 
-  // ── FIXED: safely resolve service ID ──
   const serviceId = getServiceId(pkg);
 
   return (
@@ -710,8 +708,6 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
         <div className="mobile-pkg-desc" style={{ fontWeight: 700 }}>
           {pkg.description || pkg.course_description || `${purpose} package for ${pkg.country}`}
         </div>
-
-        {/* ── Service ID — uses getServiceId() so it never shows NaN ── */}
         <div style={{
           fontSize: 12,
           color: 'rgba(255,255,255,0.6)',
@@ -730,7 +726,6 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
             {serviceId}
           </span>
         </div>
-
         <div className="mobile-cta-row">
           <button className="mobile-cta-primary" onClick={() => onPackageClick(pkg.id)}>
             View Package
@@ -745,6 +740,7 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
 
 // ─── Mobile Feed ──────────────────────────────────────────────────────────────
 function MobileFeed({ packages, onPackageClick }) {
+  const router = useRouter(); // ← FIXED: router now properly instantiated here
   const [current, setCurrent] = useState(0);
   const trackRef = useRef(null);
   const wrapRef = useRef(null);
@@ -752,7 +748,9 @@ function MobileFeed({ packages, onPackageClick }) {
   const dragDeltaRef = useRef(0);
   const draggingRef = useRef(false);
   const currentRef = useRef(0);
+
   const slideH = () => wrapRef.current?.offsetHeight || window.innerHeight;
+
   const goTo = (n) => {
     if (n < 0 || n >= packages.length) return;
     currentRef.current = n;
@@ -762,6 +760,7 @@ function MobileFeed({ packages, onPackageClick }) {
       trackRef.current.style.transform = `translateY(${-n * slideH()}px)`;
     }
   };
+
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
@@ -802,6 +801,7 @@ function MobileFeed({ packages, onPackageClick }) {
       el.removeEventListener('wheel', onWheel);
     };
   }, [packages.length]);
+
   useEffect(() => {
     const isMobile = window.innerWidth <= 700;
     if (isMobile) {
@@ -813,7 +813,9 @@ function MobileFeed({ packages, onPackageClick }) {
       document.documentElement.style.overflow = '';
     };
   }, []);
+
   if (!packages.length) return null;
+
   return (
     <div className="mobile-feed-wrap" ref={wrapRef}>
       <div className="mobile-feed-track" ref={trackRef}>
@@ -826,21 +828,48 @@ function MobileFeed({ packages, onPackageClick }) {
           <div key={i} className={`mobile-prog-dot${i === current ? ' active' : ''}`} style={{ height: i === current ? 22 : 6 }} />
         ))}
       </div>
+
+      {/* ─── FIXED: all 4 nav items now have onClick handlers ─── */}
       <div className="mobile-bottom-nav">
-        <div className="mobile-nav-item active">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
+        <div
+          className="mobile-nav-item active"
+          onClick={() => router.push('/package')}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
           <span className="mobile-nav-label">Home</span>
         </div>
-        <div className="mobile-nav-item" onClick={() => router.push('/visa')}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+
+        <div
+          className="mobile-nav-item"
+          onClick={() => router.push('/visa')}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+          </svg>
           <span className="mobile-nav-label">My Visa</span>
         </div>
-        <div className="mobile-nav-item">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg>
+
+        <div
+          className="mobile-nav-item"
+          onClick={() => router.push('/bookmarks')}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+            <path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+          </svg>
           <span className="mobile-nav-label">Saved</span>
         </div>
-        <div className="mobile-nav-item">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+
+        <div
+          className="mobile-nav-item"
+          onClick={() => router.push('/settings')}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
           <span className="mobile-nav-label">Profile</span>
         </div>
       </div>
@@ -865,8 +894,10 @@ function PackagesContent() {
   const [loadingRate, setLoadingRate] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingRoute, setPendingRoute] = useState(null);
+
   const API_BASE = 'https://web-production-f50dc.up.railway.app/api/packages';
   const BOOKMARKS_API = 'https://web-production-f50dc.up.railway.app/api/bookmarks';
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const token = localStorage.getItem('access_token');
@@ -874,7 +905,9 @@ function PackagesContent() {
     if (token) fetchBookmarks();
     detectCurrency();
   }, []);
+
   useEffect(() => { fetchPackages(); }, []);
+
   const detectCurrency = async () => {
     setLoadingRate(true);
     try {
@@ -888,6 +921,7 @@ function PackagesContent() {
     } catch { setConvertedFee(SERVICE_FEE_USD); setUserCurrency('USD'); }
     finally { setLoadingRate(false); }
   };
+
   const fetchPackages = async (retriesLeft = 3, isManual = false) => {
     try {
       if (isManual) { setRetrying(true); setFetchFailed(false); }
@@ -918,6 +952,7 @@ function PackagesContent() {
       }
     }
   };
+
   const fetchBookmarks = async () => {
     try {
       const token = localStorage.getItem('access_token');
@@ -928,6 +963,7 @@ function PackagesContent() {
       }
     } catch { }
   };
+
   const toggleBookmark = async (e, packageId) => {
     e.stopPropagation();
     if (!isLoggedIn) { setPendingRoute(`/package/${packageId}`); setShowAuthModal(true); return; }
@@ -947,16 +983,20 @@ function PackagesContent() {
       setBookmarkLoading(prev => ({ ...prev, [packageId]: false }));
     }
   };
+
   const filteredPackages = packages.filter(pkg => {
     if (!searchQuery) return true;
     return [pkg.country, pkg.title, pkg.name, pkg.description, pkg.course, pkg.university_name, pkg.hospital_name]
       .some(f => f?.toLowerCase().includes(searchQuery.toLowerCase()));
   });
+
   const handlePackageClick = (id) => router.push(`/package/${id}`);
+
   const handleGoToLogin = () => {
     setShowAuthModal(false);
     router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`);
   };
+
   return (
     <div style={{ minHeight: '100vh', background: '#f0f2f5' }}>
       <GlobalStyles />
@@ -1026,6 +1066,7 @@ function PackagesContent() {
         </main>
         <RightPanel />
       </div>
+
       {showAuthModal && (
         <div onClick={() => setShowAuthModal(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50, padding: 16 }}>
           <div onClick={e => e.stopPropagation()} style={{ background: 'white', borderRadius: 20, padding: 28, maxWidth: 340, width: '100%', boxShadow: '0 24px 60px rgba(0,0,0,0.2)' }}>
