@@ -2,6 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 
+const API_BASE = 'https://web-production-f50dc.up.railway.app/api';
+const CHAT_POLL_INTERVAL = 4000;
+
 // ─── Circular Progress ────────────────────────────────────────────────────────
 function CircularProgress({ percent }) {
   const r = 40, circ = 2 * Math.PI * r;
@@ -331,6 +334,142 @@ function CollapsibleSection({ title, subtitle, badge, children, defaultOpen = fa
   );
 }
 
+// ─── Inline Chat Panel ────────────────────────────────────────────────────────
+function InlineChatPanel({ applicationId, consultantName, onOpenFullChat }) {
+  const [messages, setMessages] = useState([]);
+  const [inputValue, setInputValue] = useState('');
+  const [sending, setSending] = useState(false);
+  const [chatLoading, setChatLoading] = useState(true);
+  const messagesEndRef = useRef(null);
+  const pollRef = useRef(null);
+  const lastMsgIdRef = useRef(null);
+  const token = () => localStorage.getItem('access_token');
+
+  // ✅ Fetch real messages from backend
+  const fetchMessages = async (initial = false) => {
+    try {
+      const res = await fetch(`${API_BASE}/applications/${applicationId}/messages/`, {
+        headers: { 'Authorization': `Bearer ${token()}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const msgs = data.messages || data;
+        setMessages(msgs);
+        if (initial) setChatLoading(false);
+        const latestId = msgs[msgs.length - 1]?.id;
+        if (latestId !== lastMsgIdRef.current) {
+          lastMsgIdRef.current = latestId;
+          setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+        }
+      } else if (initial) setChatLoading(false);
+    } catch { if (initial) setChatLoading(false); }
+  };
+
+  useEffect(() => {
+    fetchMessages(true);
+    pollRef.current = setInterval(() => fetchMessages(false), CHAT_POLL_INTERVAL);
+    return () => clearInterval(pollRef.current);
+  }, [applicationId]);
+
+  const sendMessage = async () => {
+    if (!inputValue.trim() || sending) return;
+    const text = inputValue.trim();
+    setInputValue('');
+    setSending(true);
+
+    // ✅ Temp message uses 'client' role so it appears on the right
+    const tempMsg = { id: `temp-${Date.now()}`, content: text, sender_role: 'client', created_at: new Date().toISOString(), is_temp: true };
+    setMessages(prev => [...prev, tempMsg]);
+    setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+
+    try {
+      const res = await fetch(`${API_BASE}/applications/${applicationId}/messages/`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' },
+        // ✅ Fixed: was 'message', backend expects 'content'
+        body: JSON.stringify({ content: text }),
+      });
+      if (res.ok) await fetchMessages(false);
+    } catch (e) { console.error(e); }
+    finally { setSending(false); }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  };
+
+  // ✅ Fixed: 'client' is the user sending, should appear on the right
+  const isOwn = (msg) => msg.sender_role === 'client';
+  const providerInitials = consultantName ? consultantName.split(' ').map(n => n[0]).join('').toUpperCase() : '?';
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Messages area */}
+      <div className="overflow-y-auto space-y-2 pr-1 mb-3" style={{ maxHeight: '260px', minHeight: '160px' }}>
+        {chatLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="w-5 h-5 border-2 border-[#07b3f2]/20 border-t-[#07b3f2] rounded-full animate-spin" />
+          </div>
+        ) : messages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center text-center py-8 gap-2">
+            <span className="text-2xl">💬</span>
+            <p className="text-xs font-bold text-gray-500">No messages yet</p>
+            <p className="text-[10px] text-gray-400 leading-relaxed max-w-[200px]">Send a message to start the conversation with your consultant.</p>
+          </div>
+        ) : (
+          messages.map(msg => {
+            const own = isOwn(msg);
+            return (
+              <div key={msg.id} className={`flex gap-2 items-end ${own ? 'flex-row-reverse' : 'flex-row'}`}>
+                {!own && (
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#07b3f2] to-[#055fa3] flex items-center justify-center text-white text-[9px] font-bold flex-shrink-0">
+                    {providerInitials}
+                  </div>
+                )}
+                <div
+                  className={`max-w-[75%] px-3 py-2 rounded-2xl text-xs leading-relaxed ${own ? 'bg-[#07b3f2] text-white rounded-tr-sm' : 'bg-[#f0f2f5] text-gray-700 rounded-tl-sm'}`}
+                  style={{ opacity: msg.is_temp ? 0.6 : 1 }}
+                >
+                  {msg.content}
+                  {msg.is_temp && <span className="text-[9px] opacity-60 ml-1">Sending...</span>}
+                </div>
+              </div>
+            );
+          })
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input area */}
+      <div className="flex items-center gap-2 bg-[#f0f2f5] rounded-2xl px-3 py-2 flex-shrink-0">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={e => setInputValue(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Type a message..."
+          className="flex-1 bg-transparent text-xs text-gray-700 placeholder-gray-400 outline-none"
+        />
+        <button
+          onClick={sendMessage}
+          disabled={!inputValue.trim() || sending}
+          className="w-7 h-7 rounded-xl bg-[#07b3f2] text-white flex items-center justify-center disabled:opacity-40 transition-all hover:bg-[#0596cf] flex-shrink-0"
+        >
+          {sending
+            ? <div className="w-3 h-3 border border-white/40 border-t-white rounded-full animate-spin" />
+            : <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+          }
+        </button>
+      </div>
+
+      {/* Open full chat link */}
+      <button onClick={onOpenFullChat} className="mt-2 text-[10px] text-[#07b3f2] font-bold text-center hover:underline flex-shrink-0">
+        Open full conversation →
+      </button>
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ApplicationDetailPage() {
   const router = useRouter();
@@ -415,7 +554,7 @@ export default function ApplicationDetailPage() {
 
   const fetchApplication = async () => {
     try {
-      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/`, { headers: { 'Authorization': `Bearer ${token()}` } });
+      const res = await fetch(`${API_BASE}/applications/${id}/`, { headers: { 'Authorization': `Bearer ${token()}` } });
       if (res.ok) {
         const data = await res.json();
         const app = data.application || data;
@@ -431,7 +570,7 @@ export default function ApplicationDetailPage() {
   const handleStart = async () => {
     setStarting(true);
     try {
-      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/start/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' } });
+      const res = await fetch(`${API_BASE}/applications/${id}/start/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' } });
       if (res.ok) { const data = await res.json(); setApplication(data.application || data); }
     } catch (e) { console.error(e); } finally { setStarting(false); }
   };
@@ -439,7 +578,7 @@ export default function ApplicationDetailPage() {
   const handleCancelMeeting = async () => {
     setActionLoading(true);
     try {
-      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/meeting/cancel/`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' } });
+      const res = await fetch(`${API_BASE}/applications/${id}/meeting/cancel/`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' } });
       if (res.ok) { const data = await res.json(); setApplication(data.application || data); }
     } catch (e) { console.error(e); } finally { setActionLoading(false); setShowCancelModal(false); }
   };
@@ -463,7 +602,7 @@ export default function ApplicationDetailPage() {
     try {
       for (const file of Array.from(files)) {
         const formData = new FormData(); formData.append('file', file);
-        const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/documents/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token()}` }, body: formData });
+        const res = await fetch(`${API_BASE}/applications/${id}/documents/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token()}` }, body: formData });
         if (res.ok) { const data = await res.json(); setApplication(prev => ({ ...prev, documents: [...(prev.documents || []), data.document] })); }
       }
     } catch (e) { console.error(e); } finally { setUploadingFile(false); }
@@ -471,7 +610,7 @@ export default function ApplicationDetailPage() {
 
   const handleDeleteFile = async (docId) => {
     try {
-      const res = await fetch(`https://web-production-f50dc.up.railway.app/api/applications/${id}/documents/${docId}/`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token()}` } });
+      const res = await fetch(`${API_BASE}/applications/${id}/documents/${docId}/`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token()}` } });
       if (res.ok) setApplication(prev => ({ ...prev, documents: prev.documents.filter(d => d.id !== docId) }));
     } catch (e) { console.error(e); }
   };
@@ -497,12 +636,9 @@ export default function ApplicationDetailPage() {
 
   const progress = calcProgress();
   const status = application?.status || 'not_started';
-  const meetingStatus = application?.meeting_status || 'scheduled';
-  const cancelsLeft = application?.cancellations_left ?? 3;
   const documents = application?.documents || [];
   const isPaid = application?.is_paid || false;
-  const step2ShouldPulse = status === 'started' && meetingStatus !== 'completed';
-  const meetingDone = meetingStatus === 'completed' || chatUnlocked;
+  const step2ShouldPulse = status === 'started';
 
   return (
     <div className="min-h-screen bg-[#f0f2f5]" style={{ fontFamily: "'DM Sans',sans-serif" }}>
@@ -535,7 +671,7 @@ export default function ApplicationDetailPage() {
         <RejectionScreen applicantName={evalResult?.applicant_name || ''} onBack={() => { setPhase('idle'); fetchApplication(); }} />
       )}
 
-      {/* ── DESKTOP LAYOUT (lg+): original fixed-height design ── */}
+      {/* ── DESKTOP LAYOUT (lg+) ── */}
       <div className="hidden lg:flex h-screen overflow-hidden flex-col px-6 py-4 gap-4">
         {/* Row 1 */}
         <div className="flex items-center gap-6 flex-shrink-0">
@@ -546,6 +682,16 @@ export default function ApplicationDetailPage() {
           <div className="flex-1 bg-white rounded-2xl px-6 py-3 border border-gray-100 shadow-sm">
             <StepTimeline status={status} />
           </div>
+
+          <button
+            onClick={handleCallRequest}
+            disabled={callStatus === 'calling'}
+            className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 text-gray-500 text-[11px] font-semibold rounded-xl hover:border-[#07b3f2]/40 hover:text-[#07b3f2] hover:bg-[#f0f9ff] transition-all shadow-sm disabled:opacity-50"
+          >
+            <span className="text-xs">📞</span>
+            {callStatus === 'calling' ? 'Connecting...' : 'Call Customer Care'}
+          </button>
+
           {!isPaid
             ? <button onClick={() => router.push(`/application/${id}/payment`)} className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 bg-white border border-[#07b3f2]/30 text-[#07b3f2] text-xs font-bold rounded-xl hover:bg-[#07b3f2] hover:text-white transition-all shadow-sm">Make Payment →</button>
             : <div className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 bg-green-50 border border-green-200 text-green-600 text-xs font-bold rounded-xl">✓ Payment Confirmed</div>
@@ -564,8 +710,7 @@ export default function ApplicationDetailPage() {
               <CircularProgress percent={progress} />
               <p className="text-[11px] text-gray-400 mt-1 leading-snug px-2">
                 {status === 'not_started' && <span className="font-bold text-gray-600">Click Start Application to begin your visa journey</span>}
-                {status === 'started' && !isPaid && 'Attend your discovery call, then complete payment'}
-                {status === 'started' && isPaid && 'Upload your documents and chat with your consultant'}
+                {status === 'started' && 'Upload your documents and chat with your consultant'}
                 {status === 'processing' && 'Your application is under review by our team'}
                 {status === 'completed' && 'Congratulations! Your visa is ready'}
               </p>
@@ -574,7 +719,7 @@ export default function ApplicationDetailPage() {
                   {starting ? <><div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />Starting...</> : 'Start Application'}
                 </button>
               )}
-              {isPaid && <button onClick={() => router.push(`/application/${id}/chat`)} className="mt-3 w-full py-2.5 bg-gradient-to-r from-[#07b3f2] to-[#055fa3] text-white text-xs font-bold rounded-2xl hover:opacity-90 transition-all shadow-lg shadow-[#07b3f2]/25">Open Chat with Consultant</button>}
+              {isPaid && <button onClick={() => router.push(`/application/${id}/chat`)} className="mt-3 w-full py-2.5 bg-gradient-to-r from-[#07b3f2] to-[#055fa3] text-white text-xs font-bold rounded-2xl hover:opacity-90 transition-all shadow-lg shadow-[#07b3f2]/25">Open Full Chat</button>}
               {status === 'processing' && <div className="mt-3 w-full py-2 bg-amber-50 rounded-2xl text-center"><p className="text-xs font-bold text-amber-600">Under Review</p><p className="text-[10px] text-amber-500 mt-0.5">Our team is processing your application</p></div>}
               {status === 'completed' && <div className="mt-3 w-full py-2 bg-green-50 rounded-2xl text-center"><p className="text-xs font-bold text-green-600">Visa Approved!</p></div>}
             </div>
@@ -598,7 +743,7 @@ export default function ApplicationDetailPage() {
                     </div>
                   </div>
                   <div className="bg-[#f0f2f5] rounded-2xl p-3">
-                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1">Discovery Meeting</p>
+                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1">Meeting Date</p>
                     <p className="text-xs font-bold text-gray-800">{formatDate(application?.meeting_date)}</p>
                     {application?.meeting_time && <p className="text-[10px] text-gray-500 mt-0.5">{application.meeting_time}</p>}
                   </div>
@@ -619,113 +764,30 @@ export default function ApplicationDetailPage() {
             </div>
           </div>
 
-          {/* Col 2 */}
+          {/* Col 2 — Inline Chat (Step 2) */}
           <div className="col-span-4 overflow-y-auto min-h-0 pb-1">
-            <div className={`bg-white rounded-3xl p-5 shadow-sm flex flex-col gap-4 h-full transition-all duration-300 ${meetingDone ? 'border border-[#07b3f2]/20' : step2ShouldPulse ? 'step2-pulse' : 'border border-gray-100'}`}>
-              {meetingDone ? (
-                <>
-                  <div className="flex items-start justify-between flex-shrink-0">
-                    <div>
-                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Step 2</p>
-                      <h3 className="text-base font-black text-gray-900">Messages</h3>
-                      <p className="text-[11px] text-gray-400 mt-0.5">Continue with your consultant</p>
-                    </div>
-                    <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-[#e0f2fe] text-[#0284c7] flex-shrink-0">
-                      {chatUnlocked && meetingStatus !== 'completed' ? 'Chat Unlocked ✓' : 'Call Completed ✓'}
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-center justify-center flex-1 bg-[#f0f2f5] rounded-2xl p-6 text-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#07b3f2] to-[#0284c7] flex items-center justify-center text-white text-2xl shadow-lg shadow-[#07b3f2]/25">💬</div>
-                    <div>
-                      <p className="text-sm font-bold text-gray-800">{application?.consultant_name || 'Your Consultant'}</p>
-                      <p className="text-[11px] text-gray-500 mt-1.5 leading-relaxed">
-                        {chatUnlocked && meetingStatus !== 'completed'
-                          ? 'Your consultant has unlocked the chat for you. Start messaging to continue your visa journey.'
-                          : 'Your discovery call is complete. Continue chatting with your consultant to move your visa journey forward.'}
-                      </p>
-                    </div>
-                    <button onClick={() => router.push(`/application/${id}/chat`)} className="w-full py-2.5 bg-[#07b3f2] text-white text-xs font-bold rounded-2xl hover:bg-[#0596cf] transition-all shadow-lg shadow-[#07b3f2]/20">Open Messages →</button>
-                    <div className="w-full bg-white rounded-2xl px-4 py-3 border border-gray-100">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Next steps</p>
-                      {['Complete payment to proceed', 'Upload required documents', 'Stay in touch with your consultant'].map((s, i) => (
-                        <div key={i} className="flex items-start gap-2 mb-1.5">
-                          <span className="text-[#07b3f2] text-xs mt-0.5 flex-shrink-0">→</span>
-                          <p className="text-[11px] text-gray-600">{s}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-start justify-between flex-shrink-0">
-                    <div>
-                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Step 2</p>
-                      <h3 className="text-base font-black text-gray-900">Discovery Call</h3>
-                      <p className="text-[11px] text-gray-400 mt-0.5">30-min video call with your consultant</p>
-                    </div>
-                    {status !== 'not_started' && (
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold flex-shrink-0 ${step2ShouldPulse ? 'step2-badge-pulse' : ''} ${meetingStatus === 'scheduled' ? 'bg-[#e0f2fe] text-[#07b3f2]' : meetingStatus === 'cancelled' ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-600'}`}>
-                        {meetingStatus === 'scheduled' ? 'Scheduled' : meetingStatus === 'cancelled' ? 'Cancelled' : 'Completed'}
-                      </span>
-                    )}
-                  </div>
-                  {status === 'not_started' ? (
-                    <div className="flex flex-col items-center justify-center text-center flex-1 bg-[#f0f2f5] rounded-2xl p-6">
-                      <p className="text-sm font-bold text-gray-500">No meeting scheduled yet</p>
-                      <p className="text-xs text-gray-400 mt-2 leading-relaxed">Start your application first to get a consultant and meeting scheduled.</p>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="bg-[#f0f2f5] rounded-2xl p-4 flex items-center justify-between gap-3 flex-shrink-0">
-                        <div>
-                          <p className="text-sm font-bold text-gray-800">{formatDate(application?.meeting_date)}</p>
-                          {application?.meeting_time && <p className="text-xs text-gray-500 mt-0.5">{application.meeting_time} · 30 mins</p>}
-                          <p className="text-[10px] text-gray-400 mt-0.5">with {application?.consultant_name || 'Consultant'}</p>
-                        </div>
-                        {!application?.meeting_date && (
-                          <button onClick={handleCallRequest} disabled={callStatus === 'calling'} className="flex-shrink-0 px-4 py-2 bg-[#07b3f2] text-white text-xs font-bold rounded-xl hover:bg-[#0596cf] transition-all shadow-md shadow-[#07b3f2]/20 flex items-center gap-1.5 disabled:opacity-60">
-                            {callStatus === 'calling' ? <><div className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />Connecting...</> : '📞 Make a Free Call'}
-                          </button>
-                        )}
-                        {meetingStatus === 'scheduled' && application?.meeting_date && (
-                          <a href={application?.meeting_link || application?.meeting_url || '#'} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 px-4 py-2 bg-[#07b3f2] text-white text-xs font-bold rounded-xl hover:bg-[#0596cf] transition-all shadow-md shadow-[#07b3f2]/20">Join Call →</a>
-                        )}
-                        {meetingStatus === 'cancelled' && (
-                          <button onClick={() => setApplication(prev => ({ ...prev, meeting_status: 'scheduled' }))} className="flex-shrink-0 px-4 py-2 bg-[#07b3f2] text-white text-xs font-bold rounded-xl hover:bg-[#0596cf] transition-all">Reschedule</button>
-                        )}
-                      </div>
-                      <div className="bg-[#f0f2f5] rounded-2xl p-4 flex-shrink-0">
-                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">What to expect</p>
-                        <ul className="space-y-1.5">
-                          {['Discuss your visa goals and timeline', 'Review required documents together', 'Get your questions answered', 'Agree on next steps'].map(item => (
-                            <li key={item} className="flex items-start gap-2 text-[11px] text-gray-600"><span className="text-[#07b3f2] mt-0.5 flex-shrink-0">→</span>{item}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="border-t border-gray-100 pt-3 flex-shrink-0">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5">
-                            {[...Array(3)].map((_, i) => <div key={i} className={`w-2 h-2 rounded-full ${i < cancelsLeft ? 'bg-[#07b3f2]' : 'bg-gray-200'}`} />)}
-                            <span className="text-[10px] text-gray-400 ml-1 font-medium">{cancelsLeft} cancellation{cancelsLeft !== 1 ? 's' : ''} left</span>
-                          </div>
-                          {meetingStatus === 'scheduled' && cancelsLeft > 0 && (
-                            <button onClick={() => setShowCancelModal(true)} className="text-[10px] text-red-400 hover:text-red-600 font-bold border border-red-100 px-3 py-1 rounded-xl hover:bg-red-50 transition-all">Cancel</button>
-                          )}
-                        </div>
-                        {cancelsLeft === 0 && <p className="text-[10px] text-red-500 font-semibold mt-1">You have used all 3 cancellations.</p>}
-                        <div className="mt-2 bg-[#f0f2f5] rounded-xl px-3 py-2">
-                          <p className="text-[10px] text-gray-500 leading-relaxed">Waiting for consultant to confirm. Once the call is completed, you can proceed to payment.</p>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
+            <div className={`bg-white rounded-3xl p-5 shadow-sm flex flex-col gap-4 h-full transition-all duration-300 ${step2ShouldPulse ? 'step2-pulse' : 'border border-gray-100'}`}>
+              <div className="flex items-start justify-between flex-shrink-0">
+                <div>
+                  <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Step 2 · Optional</p>
+                  <h3 className="text-base font-black text-gray-900">Messages</h3>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Chat with your consultant</p>
+                </div>
+                <span className="px-3 py-1 rounded-full text-[10px] font-bold bg-[#e0f2fe] text-[#0284c7] flex-shrink-0">
+                  {chatUnlocked ? 'Chat Active ✓' : 'Available'}
+                </span>
+              </div>
+              <div className="flex-1 min-h-0">
+                <InlineChatPanel
+                  applicationId={id}
+                  consultantName={application?.consultant_name}
+                  onOpenFullChat={() => router.push(`/application/${id}/chat`)}
+                />
+              </div>
             </div>
           </div>
 
-          {/* Col 3 */}
+          {/* Col 3 — Documents (Step 3) */}
           <div className="col-span-5 overflow-y-auto min-h-0 pb-1">
             <div className={`bg-white rounded-3xl p-5 shadow-sm flex flex-col gap-4 h-full transition-all duration-500 ${step3Highlight ? 'step3-pulse' : 'border border-gray-100'}`}>
               <div className="flex items-center justify-between flex-shrink-0">
@@ -761,29 +823,35 @@ export default function ApplicationDetailPage() {
         </div>
       </div>
 
-      {/* ── MOBILE / TABLET LAYOUT (< lg): scrollable stacked ── */}
+      {/* ── MOBILE / TABLET LAYOUT (< lg) ── */}
       <div className="lg:hidden flex flex-col">
-        {/* Mobile Header */}
         <div className="bg-white border-b border-gray-100 px-4 py-3 sticky top-0 z-10 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <div>
               <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{application?.package_country} — {application?.package_title}</p>
               <h2 className="text-base font-black text-gray-900 leading-tight">My Application</h2>
             </div>
-            {!isPaid
-              ? <button onClick={() => router.push(`/application/${id}/payment`)} className="flex items-center gap-1 px-3 py-1.5 bg-white border border-[#07b3f2]/30 text-[#07b3f2] text-xs font-bold rounded-xl hover:bg-[#07b3f2] hover:text-white transition-all shadow-sm">Pay →</button>
-              : <div className="flex items-center gap-1 px-3 py-1.5 bg-green-50 border border-green-200 text-green-600 text-xs font-bold rounded-xl">✓ Paid</div>
-            }
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleCallRequest}
+                disabled={callStatus === 'calling'}
+                className="flex items-center gap-1 px-2.5 py-1.5 bg-white border border-gray-200 text-gray-500 text-[10px] font-semibold rounded-xl hover:border-[#07b3f2]/40 hover:text-[#07b3f2] transition-all shadow-sm disabled:opacity-50"
+              >
+                <span>📞</span>
+                <span className="hidden sm:inline">Customer Care</span>
+              </button>
+              {!isPaid
+                ? <button onClick={() => router.push(`/application/${id}/payment`)} className="flex items-center gap-1 px-3 py-1.5 bg-white border border-[#07b3f2]/30 text-[#07b3f2] text-xs font-bold rounded-xl hover:bg-[#07b3f2] hover:text-white transition-all shadow-sm">Pay →</button>
+                : <div className="flex items-center gap-1 px-3 py-1.5 bg-green-50 border border-green-200 text-green-600 text-xs font-bold rounded-xl">✓ Paid</div>
+              }
+            </div>
           </div>
           <div className="bg-[#f0f2f5] rounded-2xl px-3 py-2">
             <StepTimeline status={status} />
           </div>
         </div>
 
-        {/* Mobile Body */}
         <div className="px-4 py-4 flex flex-col gap-3">
-
-          {/* Step 1: Progress + Consultant */}
           <CollapsibleSection
             title="Application Progress"
             subtitle="Step 1"
@@ -794,8 +862,7 @@ export default function ApplicationDetailPage() {
               <CircularProgress percent={progress} />
               <p className="text-xs text-gray-500 leading-relaxed flex-1">
                 {status === 'not_started' && <span className="font-bold text-gray-600">Click Start Application to begin your visa journey</span>}
-                {status === 'started' && !isPaid && 'Attend your discovery call, then complete payment'}
-                {status === 'started' && isPaid && 'Upload your documents and chat with your consultant'}
+                {status === 'started' && 'Upload your documents and chat with your consultant'}
                 {status === 'processing' && 'Your application is under review by our team'}
                 {status === 'completed' && 'Congratulations! Your visa is ready'}
               </p>
@@ -805,11 +872,9 @@ export default function ApplicationDetailPage() {
                 {starting ? <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />Starting...</> : 'Start Application'}
               </button>
             )}
-            {isPaid && <button onClick={() => router.push(`/application/${id}/chat`)} className="w-full py-3 bg-gradient-to-r from-[#07b3f2] to-[#055fa3] text-white text-sm font-bold rounded-2xl hover:opacity-90 transition-all shadow-lg shadow-[#07b3f2]/25">Open Chat with Consultant</button>}
-            {status === 'processing' && <div className="w-full py-2.5 bg-amber-50 rounded-2xl text-center"><p className="text-sm font-bold text-amber-600">Under Review</p><p className="text-xs text-amber-500 mt-0.5">Our team is processing your application</p></div>}
+            {isPaid && <button onClick={() => router.push(`/application/${id}/chat`)} className="w-full py-3 bg-gradient-to-r from-[#07b3f2] to-[#055fa3] text-white text-sm font-bold rounded-2xl hover:opacity-90 transition-all shadow-lg shadow-[#07b3f2]/25">Open Full Chat</button>}
+            {status === 'processing' && <div className="w-full py-2.5 bg-amber-50 rounded-2xl text-center"><p className="text-sm font-bold text-amber-600">Under Review</p></div>}
             {status === 'completed' && <div className="w-full py-2.5 bg-green-50 rounded-2xl text-center"><p className="text-sm font-bold text-green-600">Visa Approved!</p></div>}
-
-            {/* Consultant info embedded in Step 1 on mobile */}
             {status !== 'not_started' && (
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-3">Your Consultant</p>
@@ -822,86 +887,28 @@ export default function ApplicationDetailPage() {
                     <p className="text-[10px] text-gray-400">{application?.consultant_title || 'Visa Consultant'}</p>
                   </div>
                 </div>
-                <div className="bg-[#f0f2f5] rounded-2xl p-3">
-                  <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1">Discovery Meeting</p>
-                  <p className="text-xs font-bold text-gray-800">{formatDate(application?.meeting_date)}</p>
-                  {application?.meeting_time && <p className="text-[10px] text-gray-500 mt-0.5">{application.meeting_time}</p>}
-                </div>
               </div>
             )}
           </CollapsibleSection>
 
-          {/* Step 2: Discovery Call / Messages */}
           <CollapsibleSection
-            title={meetingDone ? 'Messages' : 'Discovery Call'}
-            subtitle="Step 2"
+            title="Messages"
+            subtitle="Step 2 · Optional"
             defaultOpen={true}
-            pulseClass={!meetingDone && step2ShouldPulse ? 'step2-pulse' : meetingDone ? '!border-[#07b3f2]/20' : ''}
+            pulseClass={step2ShouldPulse ? 'step2-pulse' : ''}
             badge={
-              status !== 'not_started' ? (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${step2ShouldPulse && !meetingDone ? 'step2-badge-pulse' : ''} ${meetingDone ? 'bg-[#e0f2fe] text-[#0284c7]' : meetingStatus === 'scheduled' ? 'bg-[#e0f2fe] text-[#07b3f2]' : meetingStatus === 'cancelled' ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-600'}`}>
-                  {meetingDone ? (chatUnlocked && meetingStatus !== 'completed' ? 'Unlocked ✓' : 'Completed ✓') : meetingStatus === 'scheduled' ? 'Scheduled' : meetingStatus === 'cancelled' ? 'Cancelled' : 'Completed'}
-                </span>
-              ) : null
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#e0f2fe] text-[#0284c7]">
+                {chatUnlocked ? 'Active ✓' : 'Available'}
+              </span>
             }
           >
-            {meetingDone ? (
-              <div className="flex flex-col items-center text-center gap-4 py-2">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#07b3f2] to-[#0284c7] flex items-center justify-center text-white text-2xl shadow-lg shadow-[#07b3f2]/25">💬</div>
-                <div>
-                  <p className="text-sm font-bold text-gray-800">{application?.consultant_name || 'Your Consultant'}</p>
-                  <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">
-                    {chatUnlocked && meetingStatus !== 'completed'
-                      ? 'Your consultant has unlocked the chat.'
-                      : 'Your discovery call is complete. Continue chatting to move forward.'}
-                  </p>
-                </div>
-                <button onClick={() => router.push(`/application/${id}/chat`)} className="w-full py-3 bg-[#07b3f2] text-white text-sm font-bold rounded-2xl hover:bg-[#0596cf] transition-all shadow-lg shadow-[#07b3f2]/20">Open Messages →</button>
-              </div>
-            ) : status === 'not_started' ? (
-              <div className="text-center py-4">
-                <p className="text-sm font-bold text-gray-500">No meeting scheduled yet</p>
-                <p className="text-xs text-gray-400 mt-2 leading-relaxed">Start your application first to get a consultant and meeting scheduled.</p>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3">
-                <div className="bg-[#f0f2f5] rounded-2xl p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-bold text-gray-800">{formatDate(application?.meeting_date)}</p>
-                      {application?.meeting_time && <p className="text-xs text-gray-500 mt-0.5">{application.meeting_time} · 30 mins</p>}
-                      <p className="text-[10px] text-gray-400 mt-0.5">with {application?.consultant_name || 'Consultant'}</p>
-                    </div>
-                    <div className="flex flex-col gap-2 flex-shrink-0">
-                      {!application?.meeting_date && (
-                        <button onClick={handleCallRequest} disabled={callStatus === 'calling'} className="px-3 py-1.5 bg-[#07b3f2] text-white text-xs font-bold rounded-xl hover:bg-[#0596cf] transition-all flex items-center gap-1.5 disabled:opacity-60">
-                          {callStatus === 'calling' ? <><div className="w-3 h-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />Calling...</> : '📞 Free Call'}
-                        </button>
-                      )}
-                      {meetingStatus === 'scheduled' && application?.meeting_date && (
-                        <a href={application?.meeting_link || application?.meeting_url || '#'} target="_blank" rel="noopener noreferrer" className="px-3 py-1.5 bg-[#07b3f2] text-white text-xs font-bold rounded-xl text-center">Join Call →</a>
-                      )}
-                      {meetingStatus === 'cancelled' && (
-                        <button onClick={() => setApplication(prev => ({ ...prev, meeting_status: 'scheduled' }))} className="px-3 py-1.5 bg-[#07b3f2] text-white text-xs font-bold rounded-xl">Reschedule</button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between pt-1">
-                  <div className="flex items-center gap-1.5">
-                    {[...Array(3)].map((_, i) => <div key={i} className={`w-2 h-2 rounded-full ${i < cancelsLeft ? 'bg-[#07b3f2]' : 'bg-gray-200'}`} />)}
-                    <span className="text-[10px] text-gray-400 ml-1 font-medium">{cancelsLeft} cancellation{cancelsLeft !== 1 ? 's' : ''} left</span>
-                  </div>
-                  {meetingStatus === 'scheduled' && cancelsLeft > 0 && (
-                    <button onClick={() => setShowCancelModal(true)} className="text-[10px] text-red-400 font-bold border border-red-100 px-3 py-1 rounded-xl hover:bg-red-50 transition-all">Cancel</button>
-                  )}
-                </div>
-                {cancelsLeft === 0 && <p className="text-[10px] text-red-500 font-semibold">You have used all 3 cancellations.</p>}
-              </div>
-            )}
+            <InlineChatPanel
+              applicationId={id}
+              consultantName={application?.consultant_name}
+              onOpenFullChat={() => router.push(`/application/${id}/chat`)}
+            />
           </CollapsibleSection>
 
-          {/* Step 3: Documents */}
           <CollapsibleSection
             title="Upload Documents"
             subtitle="Step 3"
@@ -935,7 +942,6 @@ export default function ApplicationDetailPage() {
             </div>
           </CollapsibleSection>
 
-          {/* Required Documents (mobile) */}
           <CollapsibleSection title="Required Documents" defaultOpen={false}>
             <div className="space-y-2">
               {['International Passport', 'Bank Statement', 'Admission Letter', 'Birth Certificate', 'Sponsor Letter', 'Passport Photographs'].map(doc => (
@@ -947,17 +953,14 @@ export default function ApplicationDetailPage() {
             </div>
           </CollapsibleSection>
 
-          {/* Bottom spacer for safe area */}
           <div className="h-6" />
         </div>
       </div>
 
-      {/* Cancel Modal */}
       {showCancelModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl border border-gray-100">
-            <h3 className="text-lg font-black text-gray-900 mb-1">Cancel Discovery Meeting?</h3>
-            <p className="text-sm text-gray-500 mb-1">You have <span className="font-bold text-[#07b3f2]">{cancelsLeft} cancellation{cancelsLeft !== 1 ? 's' : ''}</span> remaining.{cancelsLeft === 1 && ' This is your last one!'}</p>
+            <h3 className="text-lg font-black text-gray-900 mb-1">Cancel Meeting?</h3>
             <p className="text-xs text-gray-400 mb-6">You can reschedule after cancelling.</p>
             <div className="flex gap-3">
               <button onClick={handleCancelMeeting} disabled={actionLoading} className="flex-1 py-3 bg-red-500 text-white font-bold rounded-2xl hover:bg-red-600 transition-all text-sm disabled:opacity-50">
