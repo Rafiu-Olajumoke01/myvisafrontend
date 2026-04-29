@@ -371,7 +371,6 @@ function InlineChatPanel({ applicationId, providerName, onOpenFullChat }) {
   }, [applicationId]);
 
   const sendMessage = async () => {
-    const sendMessage = async () => {
     if (!inputValue.trim() || sending) return;
     const text = inputValue.trim();
     setInputValue('');
