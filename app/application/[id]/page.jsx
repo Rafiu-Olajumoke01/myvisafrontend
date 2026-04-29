@@ -335,7 +335,8 @@ function CollapsibleSection({ title, subtitle, badge, children, defaultOpen = fa
 }
 
 // ─── Inline Chat Panel ────────────────────────────────────────────────────────
-function InlineChatPanel({ applicationId, consultantName, onOpenFullChat }) {
+// ✅ FIX: Added `chatUnlocked` prop — chat only polls when unlocked
+function InlineChatPanel({ applicationId, consultantName, onOpenFullChat, chatUnlocked }) {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [sending, setSending] = useState(false);
@@ -345,12 +346,19 @@ function InlineChatPanel({ applicationId, consultantName, onOpenFullChat }) {
   const lastMsgIdRef = useRef(null);
   const token = () => localStorage.getItem('access_token');
 
-  // ✅ Fetch real messages from backend
   const fetchMessages = async (initial = false) => {
     try {
       const res = await fetch(`${API_BASE}/applications/${applicationId}/messages/`, {
         headers: { 'Authorization': `Bearer ${token()}` },
       });
+
+      // ✅ FIX: Stop polling immediately on 401 — no more spam
+      if (res.status === 401) {
+        clearInterval(pollRef.current);
+        if (initial) setChatLoading(false);
+        return;
+      }
+
       if (res.ok) {
         const data = await res.json();
         const msgs = data.messages || data;
@@ -366,10 +374,16 @@ function InlineChatPanel({ applicationId, consultantName, onOpenFullChat }) {
   };
 
   useEffect(() => {
+    // ✅ FIX: Don't fetch or poll at all if chat isn't unlocked yet
+    if (!chatUnlocked) {
+      setChatLoading(false);
+      return;
+    }
+
     fetchMessages(true);
     pollRef.current = setInterval(() => fetchMessages(false), CHAT_POLL_INTERVAL);
     return () => clearInterval(pollRef.current);
-  }, [applicationId]);
+  }, [applicationId, chatUnlocked]); // ✅ re-run when chatUnlocked changes
 
   const sendMessage = async () => {
     if (!inputValue.trim() || sending) return;
@@ -377,7 +391,6 @@ function InlineChatPanel({ applicationId, consultantName, onOpenFullChat }) {
     setInputValue('');
     setSending(true);
 
-    // ✅ Temp message uses 'client' role so it appears on the right
     const tempMsg = { id: `temp-${Date.now()}`, content: text, sender_role: 'client', created_at: new Date().toISOString(), is_temp: true };
     setMessages(prev => [...prev, tempMsg]);
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
@@ -386,7 +399,6 @@ function InlineChatPanel({ applicationId, consultantName, onOpenFullChat }) {
       const res = await fetch(`${API_BASE}/applications/${applicationId}/messages/`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' },
-        // ✅ Fixed: was 'message', backend expects 'content'
         body: JSON.stringify({ content: text }),
       });
       if (res.ok) await fetchMessages(false);
@@ -398,9 +410,21 @@ function InlineChatPanel({ applicationId, consultantName, onOpenFullChat }) {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
   };
 
-  // ✅ Fixed: 'client' is the user sending, should appear on the right
   const isOwn = (msg) => msg.sender_role === 'client';
   const providerInitials = consultantName ? consultantName.split(' ').map(n => n[0]).join('').toUpperCase() : '?';
+
+  // ✅ FIX: Show a locked state if chat isn't unlocked yet
+  if (!chatUnlocked) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center py-10 gap-3">
+        <span className="text-3xl">🔒</span>
+        <p className="text-xs font-bold text-gray-500">Chat not yet unlocked</p>
+        <p className="text-[10px] text-gray-400 leading-relaxed max-w-[200px]">
+          Complete your discovery call to unlock chat with your consultant.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -778,10 +802,12 @@ export default function ApplicationDetailPage() {
                 </span>
               </div>
               <div className="flex-1 min-h-0">
+                {/* ✅ FIX: Pass chatUnlocked prop */}
                 <InlineChatPanel
                   applicationId={id}
                   consultantName={application?.consultant_name}
                   onOpenFullChat={() => router.push(`/application/${id}/chat`)}
+                  chatUnlocked={chatUnlocked}
                 />
               </div>
             </div>
@@ -902,10 +928,12 @@ export default function ApplicationDetailPage() {
               </span>
             }
           >
+            {/* ✅ FIX: Pass chatUnlocked prop here too (mobile) */}
             <InlineChatPanel
               applicationId={id}
               consultantName={application?.consultant_name}
               onOpenFullChat={() => router.push(`/application/${id}/chat`)}
+              chatUnlocked={chatUnlocked}
             />
           </CollapsibleSection>
 
