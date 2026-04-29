@@ -333,7 +333,7 @@ function CollapsibleSection({ title, subtitle, badge, children, defaultOpen = fa
 
 // ─── Inline Chat Panel ────────────────────────────────────────────────────────
 const CHAT_POLL_INTERVAL = 4000;
-const CHAT_API_BASE = 'http://127.0.0.1:8000/api';
+const CHAT_API_BASE = 'https://web-production-f50dc.up.railway.app/api';
 
 function InlineChatPanel({ applicationId, providerName, onOpenFullChat }) {
   const [messages, setMessages] = useState([]);
@@ -371,11 +371,13 @@ function InlineChatPanel({ applicationId, providerName, onOpenFullChat }) {
   }, [applicationId]);
 
   const sendMessage = async () => {
+    const sendMessage = async () => {
     if (!inputValue.trim() || sending) return;
     const text = inputValue.trim();
     setInputValue('');
     setSending(true);
     const tempMsg = { id: `temp-${Date.now()}`, content: text, sender_role: 'client', created_at: new Date().toISOString(), is_temp: true };
+    setMessages(prev => [...prev, tempMsg]);
     setTimeout(() => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
     try {
       const res = await fetch(`${CHAT_API_BASE}/applications/${applicationId}/messages/`, {
