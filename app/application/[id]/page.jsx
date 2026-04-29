@@ -522,7 +522,7 @@ export default function ApplicationDetailPage() {
   const [evalResult, setEvalResult] = useState(null);
   const [step3Highlight, setStep3Highlight] = useState(false);
 
-  const [chatUnlocked, setChatUnlocked] = useState(false);
+  const [chatUnlocked, setChatUnlocked] = useState(true);
 
   const token = () => localStorage.getItem('access_token');
 
