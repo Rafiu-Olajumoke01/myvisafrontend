@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import useAdminGuard from './../components/admincomponents/AdminGuard';
-import AdminPackagesSection from '../components/admincomponents/AdminPackagesSection';
+import AdminPackagesSection from './../components/admincomponents/Packages';
 
 const API = 'https://web-production-f50dc.up.railway.app/api';
 const auth = () => ({ Authorization: `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('access_token') : ''}`, 'Content-Type': 'application/json' });
