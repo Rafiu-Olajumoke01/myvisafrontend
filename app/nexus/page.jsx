@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import useAdminGuard from './../components/admincomponents/AdminGuard';
+import AdminPackagesSection from '../components/admincomponents/AdminPackagesSection';
 
 const API = 'https://web-production-f50dc.up.railway.app/api';
 const auth = () => ({ Authorization: `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('access_token') : ''}`, 'Content-Type': 'application/json' });
@@ -514,10 +515,7 @@ const styles = `
   }
 
   /* ── EMPTY ── */
-  .nx-empty {
-    padding: 56px 20px;
-    text-align: center;
-  }
+  .nx-empty { padding: 56px 20px; text-align: center; }
   .nx-empty-icon { font-size: 36px; margin-bottom: 12px; }
   .nx-empty-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
   .nx-empty-sub { font-size: 12px; color: var(--muted2); }
@@ -573,15 +571,15 @@ const styles = `
 // ── Status configs ────────────────────────────────────────────────────────────
 const APP_STATUS = {
   not_started: { label: 'Not Started', dot: '#94a3b8', bg: 'rgba(148,163,184,0.1)', text: '#64748b' },
-  started: { label: 'In Progress', dot: '#3b82f6', bg: 'rgba(59,130,246,0.1)', text: '#2563eb' },
-  processing: { label: 'Processing', dot: '#f59e0b', bg: 'rgba(245,158,11,0.1)', text: '#d97706' },
-  completed: { label: 'Completed', dot: '#10b981', bg: 'rgba(16,185,129,0.1)', text: '#059669' },
-  cancelled: { label: 'Cancelled', dot: '#ef4444', bg: 'rgba(239,68,68,0.1)', text: '#dc2626' },
+  started:     { label: 'In Progress', dot: '#3b82f6', bg: 'rgba(59,130,246,0.1)',   text: '#2563eb' },
+  processing:  { label: 'Processing',  dot: '#f59e0b', bg: 'rgba(245,158,11,0.1)',   text: '#d97706' },
+  completed:   { label: 'Completed',   dot: '#10b981', bg: 'rgba(16,185,129,0.1)',   text: '#059669' },
+  cancelled:   { label: 'Cancelled',   dot: '#ef4444', bg: 'rgba(239,68,68,0.1)',    text: '#dc2626' },
 };
 const SP_STATUS = {
-  pending: { label: 'Pending', dot: '#f59e0b', bg: 'rgba(245,158,11,0.1)', text: '#d97706' },
+  pending:  { label: 'Pending',  dot: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  text: '#d97706' },
   approved: { label: 'Approved', dot: '#10b981', bg: 'rgba(16,185,129,0.1)', text: '#059669' },
-  rejected: { label: 'Rejected', dot: '#ef4444', bg: 'rgba(239,68,68,0.1)', text: '#dc2626' },
+  rejected: { label: 'Rejected', dot: '#ef4444', bg: 'rgba(239,68,68,0.1)',  text: '#dc2626' },
 };
 
 const Badge = ({ status, map }) => {
@@ -598,30 +596,27 @@ const Badge = ({ status, map }) => {
 const NAV = [
   {
     key: 'overview', label: 'Overview',
-    icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+    icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>,
   },
   {
-    key: 'sp_applications', label: 'SP Applications',
+    key: 'sp_applications', label: 'SP Applications', badge: true,
     icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>,
-    badge: true,
   },
   {
     key: 'applications', label: 'Applications',
-    icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+    icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>,
   },
-
   {
-    key: 'pending_posts', label: 'Pending Posts',
+    key: 'pending_posts', label: 'Pending Posts', badgePosts: true,
     icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>,
-    badgePosts: true,
   },
   {
     key: 'packages', label: 'Packages',
-    icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" /></svg>
+    icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" /></svg>,
   },
   {
     key: 'users', label: 'Users',
-    icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
+    icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>,
   },
 ];
 
@@ -640,15 +635,15 @@ function OverviewSection() {
           fetch(`${API}/auth/admin/users/`, { headers: auth() }),
           fetch(`${API}/providers/admin/list/`, { headers: auth() }),
         ]);
-        const apps = (await appsRes.json()).applications || [];
+        const apps  = (await appsRes.json()).applications || [];
         const users = (await usersRes.json()).users || [];
-        const sps = (await spRes.json()).providers || [];
+        const sps   = (await spRes.json()).providers || [];
         setStats({
-          total: apps.length,
-          completed: apps.filter(a => a.status === 'completed').length,
-          processing: apps.filter(a => a.status === 'processing').length,
-          users: users.length,
-          sp_pending: sps.filter(s => s.status === 'pending').length,
+          total:       apps.length,
+          completed:   apps.filter(a => a.status === 'completed').length,
+          processing:  apps.filter(a => a.status === 'processing').length,
+          users:       users.length,
+          sp_pending:  sps.filter(s => s.status === 'pending').length,
           sp_approved: sps.filter(s => s.status === 'approved').length,
         });
         setRecentApps(apps.slice(0, 6));
@@ -674,7 +669,6 @@ function OverviewSection() {
 
   return (
     <div>
-      {/* Header */}
       <div className="nx-anim nx-anim-1" style={{ marginBottom: 24 }}>
         <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 26, fontWeight: 800, color: 'var(--ink)', letterSpacing: '-0.5px', marginBottom: 4 }}>
           {greeting}, <span style={{ color: 'var(--blue)' }}>Admin</span> 👋
@@ -684,7 +678,6 @@ function OverviewSection() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="nx-stats nx-anim nx-anim-2">
         <div className="nx-stat nx-stat-hero" style={{ gridColumn: 'span 2' }}>
           <div className="nx-stat-accent" style={{ background: 'var(--blue)' }} />
@@ -700,12 +693,12 @@ function OverviewSection() {
           </div>
         </div>
         {[
-          { label: 'Completed', value: stats.completed, icon: '✅', accent: '#10b981', barBg: '#f0fdf4', barFill: '#10b981' },
-          { label: 'Processing', value: stats.processing, icon: '⚙️', accent: '#f59e0b', barBg: '#fef3c7', barFill: '#f59e0b' },
-          { label: 'Total Users', value: stats.users, icon: '👥', accent: '#7c3aed', barBg: '#f5f3ff', barFill: '#7c3aed' },
-          { label: 'SP Pending', value: stats.sp_pending, icon: '⏳', accent: '#f59e0b', barBg: '#fef3c7', barFill: '#f59e0b' },
+          { label: 'Completed',   value: stats.completed,   icon: '✅', accent: '#10b981', barBg: '#f0fdf4', barFill: '#10b981' },
+          { label: 'Processing',  value: stats.processing,  icon: '⚙️', accent: '#f59e0b', barBg: '#fef3c7', barFill: '#f59e0b' },
+          { label: 'Total Users', value: stats.users,       icon: '👥', accent: '#7c3aed', barBg: '#f5f3ff', barFill: '#7c3aed' },
+          { label: 'SP Pending',  value: stats.sp_pending,  icon: '⏳', accent: '#f59e0b', barBg: '#fef3c7', barFill: '#f59e0b' },
           { label: 'SP Approved', value: stats.sp_approved, icon: '🏢', accent: '#10b981', barBg: '#f0fdf4', barFill: '#10b981' },
-        ].map((s, i) => (
+        ].map(s => (
           <div key={s.label} className="nx-stat">
             <div className="nx-stat-accent" style={{ background: s.accent }} />
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
@@ -722,9 +715,7 @@ function OverviewSection() {
         ))}
       </div>
 
-      {/* Grid */}
       <div className="nx-grid nx-anim nx-anim-3">
-        {/* Recent Applications */}
         <div className="nx-card">
           <div className="nx-card-header">
             <div>
@@ -760,7 +751,6 @@ function OverviewSection() {
           )}
         </div>
 
-        {/* Recent SP Applications */}
         <div className="nx-card">
           <div className="nx-card-header">
             <div>
@@ -831,7 +821,6 @@ function SPApplicationsSection({ showToast }) {
         if (action === 'approve') fetchProviders();
       } else {
         const err = await res.json();
-        console.error('Action failed:', err);
         showToast('❌ Error: ' + (err.error || err.detail || 'Something went wrong'));
       }
     } catch (e) { console.error(e); }
@@ -843,14 +832,10 @@ function SPApplicationsSection({ showToast }) {
     setSchedulingCall(true);
     try {
       const res = await fetch(`${API}/providers/admin/${selected.id}/schedule-call/`, {
-        method: 'POST',
-        headers: auth(),
+        method: 'POST', headers: auth(),
         body: JSON.stringify({ scheduled_date: callDate, scheduled_time: callTime, meet_link: callLink }),
       });
-      if (res.ok) {
-        showToast('📅 Verification call scheduled!');
-        setCallDate(''); setCallTime(''); setCallLink('');
-      }
+      if (res.ok) { showToast('📅 Verification call scheduled!'); setCallDate(''); setCallTime(''); setCallLink(''); }
     } catch (e) { console.error(e); }
     finally { setSchedulingCall(false); }
   };
@@ -861,7 +846,11 @@ function SPApplicationsSection({ showToast }) {
     return matchSearch && matchFilter;
   });
 
-  const counts = { pending: providers.filter(p => p.status === 'pending').length, approved: providers.filter(p => p.status === 'approved').length, rejected: providers.filter(p => p.status === 'rejected').length };
+  const counts = {
+    pending:  providers.filter(p => p.status === 'pending').length,
+    approved: providers.filter(p => p.status === 'approved').length,
+    rejected: providers.filter(p => p.status === 'rejected').length,
+  };
 
   if (loading) return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -871,7 +860,6 @@ function SPApplicationsSection({ showToast }) {
 
   return (
     <div>
-      {/* Header */}
       <div className="nx-anim nx-anim-1" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
           <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 22, fontWeight: 800, color: 'var(--ink)', letterSpacing: '-0.3px' }}>Service Provider Applications</div>
@@ -886,7 +874,6 @@ function SPApplicationsSection({ showToast }) {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="nx-anim nx-anim-2" style={{ display: 'flex', gap: 10, marginBottom: 18, flexWrap: 'wrap', alignItems: 'center' }}>
         <input className="nx-input" style={{ flex: 1, minWidth: 200 }} placeholder="🔍 Search by business name or email..." value={search} onChange={e => setSearch(e.target.value)} />
         <div className="nx-tabs">
@@ -898,16 +885,11 @@ function SPApplicationsSection({ showToast }) {
         </div>
       </div>
 
-      {/* Table */}
       <div className="nx-card nx-anim nx-anim-3">
         <div style={{ overflowX: 'auto' }}>
           <table className="nx-table">
             <thead>
-              <tr>
-                {['Business', 'Type', 'Contact', 'Country', 'Applied', 'Status', ''].map(h => (
-                  <th key={h} className="nx-th">{h}</th>
-                ))}
-              </tr>
+              <tr>{['Business', 'Type', 'Contact', 'Country', 'Applied', 'Status', ''].map(h => <th key={h} className="nx-th">{h}</th>)}</tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
@@ -928,9 +910,7 @@ function SPApplicationsSection({ showToast }) {
                   <td className="nx-td" style={{ fontSize: 11 }}>{sp.country || '—'}</td>
                   <td className="nx-td" style={{ fontSize: 11, color: 'var(--muted2)', whiteSpace: 'nowrap' }}>{fmtDate(sp.created_at)}</td>
                   <td className="nx-td"><Badge status={sp.status} map={SP_STATUS} /></td>
-                  <td className="nx-td">
-                    <button className="nx-btn nx-btn-ghost nx-btn-sm" onClick={() => setSelected(sp)}>View →</button>
-                  </td>
+                  <td className="nx-td"><button className="nx-btn nx-btn-ghost nx-btn-sm" onClick={() => setSelected(sp)}>View →</button></td>
                 </tr>
               ))}
             </tbody>
@@ -938,7 +918,6 @@ function SPApplicationsSection({ showToast }) {
         </div>
       </div>
 
-      {/* Detail Modal */}
       {selected && (
         <div className="nx-modal-overlay" onClick={e => e.target === e.currentTarget && setSelected(null)}>
           <div className="nx-modal">
@@ -954,8 +933,6 @@ function SPApplicationsSection({ showToast }) {
             </div>
             <div className="nx-modal-body">
               <div style={{ marginBottom: 14 }}><Badge status={selected.status} map={SP_STATUS} /></div>
-
-              {/* Business Info */}
               <div className="nx-info-section">
                 <div style={{ fontSize: 9, fontWeight: 800, color: 'var(--muted2)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>🏢 Business Details</div>
                 <div className="nx-info-grid">
@@ -970,23 +947,15 @@ function SPApplicationsSection({ showToast }) {
                   </div>
                 )}
               </div>
-
-              {/* Documents */}
               {(selected.id_document || selected.profile_picture) && (
                 <div className="nx-info-section" style={{ marginBottom: 14 }}>
                   <div style={{ fontSize: 9, fontWeight: 800, color: 'var(--muted2)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>📎 Documents</div>
                   <div style={{ display: 'flex', gap: 8 }}>
-                    {selected.id_document && (
-                      <a href={selected.id_document} target="_blank" rel="noreferrer" className="nx-btn nx-btn-ghost nx-btn-sm">📄 View ID Document</a>
-                    )}
-                    {selected.profile_picture && (
-                      <a href={selected.profile_picture} target="_blank" rel="noreferrer" className="nx-btn nx-btn-ghost nx-btn-sm">🖼 View Profile Photo</a>
-                    )}
+                    {selected.id_document && <a href={selected.id_document} target="_blank" rel="noreferrer" className="nx-btn nx-btn-ghost nx-btn-sm">📄 View ID Document</a>}
+                    {selected.profile_picture && <a href={selected.profile_picture} target="_blank" rel="noreferrer" className="nx-btn nx-btn-ghost nx-btn-sm">🖼 View Profile Photo</a>}
                   </div>
                 </div>
               )}
-
-              {/* Schedule Verification Call */}
               {selected.status === 'pending' && (
                 <div className="nx-schedule-section" style={{ marginBottom: 14 }}>
                   <div style={{ fontSize: 9, fontWeight: 800, color: 'var(--blue)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>📅 Schedule Verification Call</div>
@@ -1000,8 +969,6 @@ function SPApplicationsSection({ showToast }) {
                   </button>
                 </div>
               )}
-
-              {/* Action Buttons */}
               {selected.status === 'pending' && (
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button className="nx-btn nx-btn-danger" style={{ flex: 1 }} onClick={() => handleAction(selected.id, 'reject')} disabled={actionLoading}>✕ Reject</button>
@@ -1109,66 +1076,6 @@ function ApplicationsSection() {
   );
 }
 
-// ── PACKAGES SECTION ──────────────────────────────────────────────────────────
-function PackagesSection() {
-  const [packages, setPackages] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    const fetch_ = async () => {
-      try {
-        const res = await fetch(`${API}/packages/`, { headers: auth() });
-        const data = await res.json();
-        setPackages(data.packages || []);
-      } catch (e) { console.error(e); }
-      finally { setLoading(false); }
-    };
-    fetch_();
-  }, []);
-
-  const filtered = packages.filter(p =>
-    !search || p.title?.toLowerCase().includes(search.toLowerCase()) ||
-    p.country?.toLowerCase().includes(search.toLowerCase()) ||
-    String(p.service_id).includes(search)
-  );
-
-  if (loading) return <div className="nx-skeleton" style={{ height: 400 }} />;
-
-  return (
-    <div>
-      <div className="nx-anim nx-anim-1" style={{ marginBottom: 20 }}>
-        <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 22, fontWeight: 800, color: 'var(--ink)', letterSpacing: '-0.3px' }}>Packages</div>
-        <div style={{ fontSize: 12, color: 'var(--muted2)', marginTop: 3 }}>{packages.length} packages on platform</div>
-      </div>
-      <div className="nx-anim nx-anim-2" style={{ marginBottom: 18 }}>
-        <input className="nx-input" style={{ width: '100%' }} placeholder="🔍 Search by title, country or service ID..." value={search} onChange={e => setSearch(e.target.value)} />
-      </div>
-      <div className="nx-card nx-anim nx-anim-3">
-        <table className="nx-table">
-          <thead><tr>{['Service ID', 'Package', 'Category', 'Country', 'Created By', 'Created'].map(h => <th key={h} className="nx-th">{h}</th>)}</tr></thead>
-          <tbody>
-            {filtered.length === 0 ? (
-              <tr><td colSpan={6}><div className="nx-empty"><div className="nx-empty-icon">📦</div><div className="nx-empty-title">No packages found</div></div></td></tr>
-            ) : filtered.map((pkg, i) => (
-              <tr key={pkg.id} className="nx-tr">
-                <td className="nx-td"><span style={{ fontFamily: 'monospace', background: 'var(--surface2)', padding: '2px 8px', borderRadius: 6, fontSize: 11, fontWeight: 700, color: 'var(--blue)' }}>{pkg.service_id || `#${pkg.id}`}</span></td>
-                <td className="nx-td">
-                  <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ink)' }}>{pkg.title || pkg.name || '—'}</div>
-                </td>
-                <td className="nx-td"><span style={{ fontSize: 11, textTransform: 'capitalize', color: 'var(--muted)' }}>{pkg.category || '—'}</span></td>
-                <td className="nx-td" style={{ fontSize: 12 }}>{pkg.country || '—'}</td>
-                <td className="nx-td" style={{ fontSize: 11, color: 'var(--muted2)' }}>{pkg.created_by_name || 'Admin'}</td>
-                <td className="nx-td" style={{ fontSize: 11, color: 'var(--muted2)' }}>{fmtDate(pkg.created_at)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
 // ── USERS SECTION ─────────────────────────────────────────────────────────────
 function UsersSection() {
   const [users, setUsers] = useState([]);
@@ -1239,7 +1146,7 @@ function UsersSection() {
   );
 }
 
-// ── SEARCH RESULTS ────────────────────────────────────────────────────────────
+// ── GLOBAL SEARCH RESULTS ─────────────────────────────────────────────────────
 function GlobalSearchResults({ query, onClose }) {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1252,12 +1159,11 @@ function GlobalSearchResults({ query, onClose }) {
         const res = await fetch(`${API}/packages/`, { headers: auth() });
         const data = await res.json();
         const pkgs = data.packages || [];
-        const filtered = pkgs.filter(p =>
+        setResults(pkgs.filter(p =>
           String(p.service_id).includes(query) ||
           p.title?.toLowerCase().includes(query.toLowerCase()) ||
           p.country?.toLowerCase().includes(query.toLowerCase())
-        );
-        setResults(filtered);
+        ));
       } catch (e) { console.error(e); }
       finally { setLoading(false); }
     };
@@ -1312,7 +1218,7 @@ export default function Nexus() {
         const res = await fetch(`${API}/providers/admin/list/`, { headers: auth() });
         const data = await res.json();
         setSpPendingCount((data.providers || []).filter(p => p.status === 'pending').length);
-      } catch { }
+      } catch {}
     };
     fetchPending();
   }, []);
@@ -1329,11 +1235,8 @@ export default function Nexus() {
   };
 
   const SECTION_TITLES = {
-    overview: 'Overview',
-    sp_applications: 'SP Applications',
-    applications: 'Applications',
-    packages: 'Packages',
-    users: 'Users',
+    overview: 'Overview', sp_applications: 'SP Applications',
+    applications: 'Applications', packages: 'Packages', users: 'Users',
   };
 
   if (!ready) return (
@@ -1384,8 +1287,6 @@ export default function Nexus() {
 
         {/* MAIN */}
         <div className="nx-main">
-
-          {/* TOPBAR */}
           <header className="nx-topbar">
             <div className="nx-topbar-left">
               <div className="nx-breadcrumb">{SECTION_TITLES[active]}</div>
@@ -1403,16 +1304,15 @@ export default function Nexus() {
             </div>
           </header>
 
-          {/* CONTENT */}
           <main className="nx-content">
             {searchActive && (
               <GlobalSearchResults query={searchQuery} onClose={() => { setSearchQuery(''); setSearchActive(false); }} />
             )}
-            {active === 'overview' && <OverviewSection />}
-            {active === 'sp_applications' && <SPApplicationsSection showToast={showToast} />}
-            {active === 'applications' && <ApplicationsSection />}
-            {active === 'packages' && <PackagesSection />}
-            {active === 'users' && <UsersSection />}
+            {active === 'overview'         && <OverviewSection />}
+            {active === 'sp_applications'  && <SPApplicationsSection showToast={showToast} />}
+            {active === 'applications'     && <ApplicationsSection />}
+            {active === 'packages'         && <AdminPackagesSection showToast={showToast} />}
+            {active === 'users'            && <UsersSection />}
           </main>
         </div>
       </div>
