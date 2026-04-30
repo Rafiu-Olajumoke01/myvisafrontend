@@ -374,17 +374,12 @@ function InlineChatPanel({ applicationId, consultantName, onOpenFullChat, chatUn
   };
 
   useEffect(() => {
-    // ✅ FIX: Don't fetch or poll at all if chat isn't unlocked yet
-    if (!chatUnlocked) {
-      setChatLoading(false);
-      return;
-    }
-
     fetchMessages(true);
     pollRef.current = setInterval(() => fetchMessages(false), CHAT_POLL_INTERVAL);
     return () => clearInterval(pollRef.current);
-  }, [applicationId, chatUnlocked]); // ✅ re-run when chatUnlocked changes
+  }, [applicationId]);
 
+  
   const sendMessage = async () => {
     if (!inputValue.trim() || sending) return;
     const text = inputValue.trim();
@@ -412,19 +407,6 @@ function InlineChatPanel({ applicationId, consultantName, onOpenFullChat, chatUn
 
   const isOwn = (msg) => msg.sender_role === 'client';
   const providerInitials = consultantName ? consultantName.split(' ').map(n => n[0]).join('').toUpperCase() : '?';
-
-  // ✅ FIX: Show a locked state if chat isn't unlocked yet
-  if (!chatUnlocked) {
-    return (
-      <div className="flex flex-col items-center justify-center text-center py-10 gap-3">
-        <span className="text-3xl">🔒</span>
-        <p className="text-xs font-bold text-gray-500">Chat not yet unlocked</p>
-        <p className="text-[10px] text-gray-400 leading-relaxed max-w-[200px]">
-          Complete your discovery call to unlock chat with your consultant.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col h-full">
@@ -595,7 +577,9 @@ export default function ApplicationDetailPage() {
     setStarting(true);
     try {
       const res = await fetch(`${API_BASE}/applications/${id}/start/`, { method: 'POST', headers: { 'Authorization': `Bearer ${token()}`, 'Content-Type': 'application/json' } });
-      if (res.ok) { const data = await res.json(); setApplication(data.application || data); }
+      if (res.ok) { const data = await res.json(); setApplication(data.application || data); 
+        setChatUnlocked(true); // 👈 ADD THIS
+      }
     } catch (e) { console.error(e); } finally { setStarting(false); }
   };
 
