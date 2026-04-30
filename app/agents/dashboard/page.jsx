@@ -1214,7 +1214,7 @@ export default function SPDashboard() {
                     const hasNewMsg = newMessageAlerts[client.latest_application_id];
                     return (
                       <div key={client.id}
-                        onClick={() => router.push(`/sp/chat/${client.latest_application_id}`)}
+                        onClick={() => router.push(`/agents/dashboard/clients/chat/${client.latest_application_id}`)}
                         style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '16px 20px', borderBottom: i < clients.length - 1 ? '1px solid #f8fafc' : 'none', cursor: 'pointer', transition: 'background .15s', background: hasNewMsg ? '#f0f9ff' : 'white' }}
                         onMouseEnter={e => e.currentTarget.style.background = '#fafbfc'}
                         onMouseLeave={e => e.currentTarget.style.background = hasNewMsg ? '#f0f9ff' : 'white'}
