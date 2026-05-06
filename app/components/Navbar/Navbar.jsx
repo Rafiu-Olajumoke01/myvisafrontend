@@ -47,8 +47,8 @@ function Navbar() {
               <Image
                 src="/ingress Updated.png"
                 alt="Ingress Logo"
-                width={250}
-                height={92}
+                width={150}
+                height={52}
                 style={{ objectFit: 'contain' }}
                 priority
               />
