@@ -353,7 +353,7 @@ export default function SignupPage() {
           localStorage.setItem('user', JSON.stringify({ email: data.email, name: data.name }));
           const intended = localStorage.getItem('intendedPackage');
           if (intended) { router.push(`/apply/${intended}`); localStorage.removeItem('intendedPackage'); }
-          else router.push('/package');
+          else router.push('/dashboard');
         }
       }
     } catch {

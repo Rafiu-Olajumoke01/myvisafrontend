@@ -332,6 +332,7 @@ const GlobalStyles = () => (
       padding-bottom: 4px;
       background: none; border: none;
       -webkit-tap-highlight-color: transparent;
+      position: relative;
     }
     .mobile-nav-item.active { opacity: 1; }
     .mobile-nav-label {
@@ -740,7 +741,7 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
 
 // ─── Mobile Feed ──────────────────────────────────────────────────────────────
 function MobileFeed({ packages, onPackageClick }) {
-  const router = useRouter(); // ← FIXED: router now properly instantiated here
+  const router = useRouter();
   const [current, setCurrent] = useState(0);
   const trackRef = useRef(null);
   const wrapRef = useRef(null);
@@ -829,12 +830,11 @@ function MobileFeed({ packages, onPackageClick }) {
         ))}
       </div>
 
-      {/* ─── FIXED: all 4 nav items now have onClick handlers ─── */}
+      {/* ─── Mobile Bottom Nav: Home / History / Saved / Alerts / Settings ─── */}
       <div className="mobile-bottom-nav">
-        <div
-          className="mobile-nav-item active"
-          onClick={() => router.push('/package')}
-        >
+
+        {/* Home */}
+        <div className="mobile-nav-item active" onClick={() => router.push('/package')}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5">
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
             <polyline points="9 22 9 12 15 12 15 22" />
@@ -842,36 +842,48 @@ function MobileFeed({ packages, onPackageClick }) {
           <span className="mobile-nav-label">Home</span>
         </div>
 
-        <div
-          className="mobile-nav-item"
-          onClick={() => router.push('/visa')}
-        >
+        {/* History (was My Visa) */}
+        <div className="mobile-nav-item" onClick={() => router.push('/visa')}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
-          <span className="mobile-nav-label">My Visa</span>
+          <span className="mobile-nav-label">History</span>
         </div>
 
-        <div
-          className="mobile-nav-item"
-          onClick={() => router.push('/bookmarks')}
-        >
+        {/* Saved */}
+        <div className="mobile-nav-item" onClick={() => router.push('/bookmarks')}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-            <path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
           </svg>
           <span className="mobile-nav-label">Saved</span>
         </div>
 
-        <div
-          className="mobile-nav-item"
-          onClick={() => router.push('/settings')}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-          <span className="mobile-nav-label">Profile</span>
+        {/* Alerts (new — links to /notification) */}
+        <div className="mobile-nav-item" onClick={() => router.push('/notification')}>
+          <div style={{ position: 'relative', width: 22, height: 22 }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+            </svg>
+            {/* red dot badge */}
+            <span style={{
+              position: 'absolute', top: 0, right: 0,
+              width: 7, height: 7, borderRadius: '50%',
+              background: '#ff3b5c',
+              border: '1.5px solid rgba(0,0,0,0.6)',
+            }} />
+          </div>
+          <span className="mobile-nav-label">Alerts</span>
         </div>
+
+        {/* Settings (was Profile) */}
+        <div className="mobile-nav-item" onClick={() => router.push('/settings')}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.527-.878 3.31.905 2.432 2.432a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.878 1.527-.905 3.31-2.432 2.432a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.527.878-3.31-.905-2.432-2.432a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.878-1.527.905-3.31 2.432-2.432.996.574 2.296.07 2.573-1.066z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span className="mobile-nav-label">Settings</span>
+        </div>
+
       </div>
     </div>
   );

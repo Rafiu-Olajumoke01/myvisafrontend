@@ -395,7 +395,7 @@ function LoginForm() {
         {/* ── RIGHT: form ── */}
         <div className="login-right">
           <div className="login-right-header">
-            <p className="login-right-eyebrow">Ingress Travel</p>
+           
             <h1 className="login-right-title">Sign in to your account</h1>
             <p className="login-right-sub">
               New here? <Link href="/signup">Create an account</Link>
