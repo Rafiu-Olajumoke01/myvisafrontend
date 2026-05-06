@@ -339,7 +339,7 @@ function LoginForm() {
             router.push('/agents/dashboard');
           }
         } else {
-          router.push('/package');
+          router.push('/dashboard');
         }
       } else {
         setError(data.error || 'Invalid email or password');
