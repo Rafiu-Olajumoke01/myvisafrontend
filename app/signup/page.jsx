@@ -386,7 +386,7 @@ export default function SignupPage() {
         localStorage.setItem('user', JSON.stringify(data.user));
         const intended = localStorage.getItem('intendedPackage');
         if (intended) { router.push(`/apply/${intended}`); localStorage.removeItem('intendedPackage'); }
-        else router.push('/package');
+        else router.push('/dashboard');
       } else {
         setError(data.username?.[0] || data.email?.[0] || data.password?.[0] || data.error || 'Registration failed. Please try again.');
       }
