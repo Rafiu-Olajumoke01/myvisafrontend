@@ -34,7 +34,7 @@ export default function AgentPending() {
         <div style={{ marginBottom: 28, textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'center', marginBottom: 4 }}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg, #07b3f2, #0284c7)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>✈️</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', fontFamily: 'Playfair Display, serif' }}>MyVisa</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', fontFamily: 'Playfair Display, serif' }}>Ingress</div>
           </div>
           <div style={{ fontSize: 12, color: '#94a3b8', letterSpacing: '0.06em', textTransform: 'uppercase', fontWeight: 600 }}>Agent Portal</div>
         </div>
@@ -81,7 +81,7 @@ export default function AgentPending() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0284c7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
             </svg>
-            <span style={{ fontSize: 12, color: '#0284c7', fontWeight: 500 }}>Questions? Reach us at <strong>support@myvisaapp.com</strong></span>
+            <span style={{ fontSize: 12, color: '#0284c7', fontWeight: 500 }}>Questions? Reach us at <strong>support@ingresstravels.com</strong></span>
           </div>
 
           {/* Back button */}
@@ -93,7 +93,7 @@ export default function AgentPending() {
           </button>
         </div>
 
-        <p style={{ fontSize: 12, color: '#94a3b8', marginTop: 20 }}>MyVisa · Agent Onboarding</p>
+        <p style={{ fontSize: 12, color: '#94a3b8', marginTop: 20 }}>Ingress · Agent Onboarding</p>
       </div>
     </div>
   )

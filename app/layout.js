@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "MyVisa",
+  title: "Ingress Travels",
   description: "Your visa journey starts here",
 };
 

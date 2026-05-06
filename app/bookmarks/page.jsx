@@ -185,7 +185,7 @@ function BookmarksPage() {
 
   const navItems = [
     { key: 'home', label: 'Home', icon: HomeIcon, route: '/package' },
-    { key: 'myvisa', label: 'My Visa', icon: MyVisaIcon, route: '/applications' },
+    { key: 'myvisa', label: 'History', icon: MyVisaIcon, route: '/applications' },
     { key: 'saved', label: 'Saved', icon: SavedIcon, route: '/bookmarks' },
     { key: 'profile', label: 'Profile', icon: ProfileIcon, route: '/dashboard' },
   ];

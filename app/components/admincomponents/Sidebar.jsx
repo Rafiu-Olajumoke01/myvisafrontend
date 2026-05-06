@@ -68,7 +68,7 @@ export default function Sidebar({ activeSection, setActiveSection }) {
     <aside className="w-64 bg-white border-r border-gray-100 flex flex-col fixed h-full z-40 shadow-sm">
       {/* Logo */}
       <div className="px-7 py-6 border-b border-gray-100">
-        <h1 className="text-2xl font-black text-[#07b3f2]">MyVisa</h1>
+        {/* <h1 className="text-2xl font-black text-[#07b3f2]">Ingress</h1> */}
         <p className="text-xs font-bold text-gray-400 mt-0.5 uppercase tracking-widest">Admin Panel</p>
       </div>
 

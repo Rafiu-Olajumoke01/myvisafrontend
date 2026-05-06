@@ -370,10 +370,10 @@ export default function AgentChatPage() {
         <aside className="chat-sidebar">
           <div className="chat-sidebar-logo">
             <div className="chat-sidebar-logo-icon">✈️</div>
-            <div>
+            {/* <div>
               <div className="chat-sidebar-logo-text">MyVisa</div>
               <div className="chat-sidebar-logo-sub">AGENT PORTAL</div>
-            </div>
+            </div> */}
           </div>
           <nav className="chat-nav">
             {navItems.map(item => (

@@ -69,15 +69,15 @@ function CallingScreen({ callStatus, meetLink, onCancel }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#0f172a 0%,#0c2a4a 50%,#0f172a 100%)' }}>
       <style>{`@keyframes pulse-ring{0%{transform:scale(.8);opacity:1}100%{transform:scale(2);opacity:0}}.pulse-ring{position:absolute;width:100px;height:100px;border-radius:50%;border:3px solid rgba(7,179,242,0.4);animation:pulse-ring 1.5s ease-out infinite}.pulse-ring-2{animation-delay:.5s}.pulse-ring-3{animation-delay:1s}`}</style>
       <div className="flex flex-col items-center text-center text-white px-8 w-full max-w-sm">
-        <p className="text-sm font-bold tracking-widest uppercase opacity-60 mb-8" style={{ fontFamily: "'DM Sans',sans-serif" }}>✈️ MyVisa</p>
+        <p className="text-sm font-bold tracking-widest uppercase opacity-60 mb-8" style={{ fontFamily: "'DM Sans',sans-serif" }}>✈️ Ingress</p>
         <div className="relative flex items-center justify-center mb-8" style={{ width: 120, height: 120 }}>
           {callStatus === 'calling' && <><div className="pulse-ring" /><div className="pulse-ring pulse-ring-2" /><div className="pulse-ring pulse-ring-3" /></>}
           <div className="w-20 h-20 rounded-full flex items-center justify-center text-4xl relative z-10" style={{ background: callStatus === 'connected' ? 'rgba(34,197,94,0.3)' : callStatus === 'declined' ? 'rgba(239,68,68,0.3)' : 'rgba(7,179,242,0.2)', border: '1px solid rgba(7,179,242,0.3)' }}>
             {callStatus === 'connected' ? '✅' : callStatus === 'declined' ? '❌' : '📞'}
           </div>
         </div>
-        {callStatus === 'calling' && <><h2 className="text-2xl font-black mb-2" style={{ fontFamily: "'Playfair Display',serif" }}>Connecting you to an agent</h2><p className="text-sm opacity-70 mb-1">Linking you to a MyVisa agent...</p><p className="text-xs opacity-50 mb-10">Please wait, this won't take long</p></>}
-        {callStatus === 'connected' && <><h2 className="text-2xl font-black mb-2" style={{ fontFamily: "'Playfair Display',serif" }}>Agent Connected! 🎉</h2><p className="text-sm opacity-70 mb-8">Your MyVisa agent is ready for your discovery call</p><a href={meetLink} target="_blank" rel="noopener noreferrer" className="px-8 py-3 rounded-2xl font-bold text-[#07b3f2] mb-4 text-sm" style={{ background: 'white', fontFamily: "'DM Sans',sans-serif" }}>Join Discovery Call →</a></>}
+        {callStatus === 'calling' && <><h2 className="text-2xl font-black mb-2" style={{ fontFamily: "'Playfair Display',serif" }}>Connecting you to an agent</h2><p className="text-sm opacity-70 mb-1">Linking you to a Ingress agent...</p><p className="text-xs opacity-50 mb-10">Please wait, this won't take long</p></>}
+        {callStatus === 'connected' && <><h2 className="text-2xl font-black mb-2" style={{ fontFamily: "'Playfair Display',serif" }}>Agent Connected! 🎉</h2><p className="text-sm opacity-70 mb-8">Your Ingress agent is ready for your discovery call</p><a href={meetLink} target="_blank" rel="noopener noreferrer" className="px-8 py-3 rounded-2xl font-bold text-[#07b3f2] mb-4 text-sm" style={{ background: 'white', fontFamily: "'DM Sans',sans-serif" }}>Join Discovery Call →</a></>}
         {callStatus === 'declined' && <><h2 className="text-2xl font-black mb-2" style={{ fontFamily: "'Playfair Display',serif" }}>No Agents Available</h2><p className="text-sm opacity-70 mb-8">All our agents are currently busy. Please try again shortly.</p></>}
         {callStatus !== 'connected' && <button onClick={onCancel} className="mt-4 px-6 py-2.5 rounded-2xl text-xs font-bold border border-white/30 text-white/70 hover:bg-white/10 transition-all" style={{ fontFamily: "'DM Sans',sans-serif" }}>{callStatus === 'declined' ? 'Go Back' : 'Cancel Request'}</button>}
       </div>
@@ -189,7 +189,7 @@ function OnboardingOverlay({ agentName, phase, result, onContinue }) {
 
       <div style={{ width: '100%', maxWidth: 440, position: 'relative', zIndex: 1, padding: '0 16px' }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>✈️ &nbsp;MyVisa</span>
+          <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>✈️ &nbsp;Ingress</span>
         </div>
 
         {phase === 'onboarding' && (
@@ -235,7 +235,7 @@ function OnboardingOverlay({ agentName, phase, result, onContinue }) {
               )}
               {welcomeStep >= 2 && (
                 <div className="ob-fade-up" style={{ marginBottom: 6 }}>
-                  <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, fontWeight: 700, color: '#fff', lineHeight: 1.2, marginBottom: 6 }}>Welcome to MyVisa,</h1>
+                  <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, fontWeight: 700, color: '#fff', lineHeight: 1.2, marginBottom: 6 }}>Welcome to Ingress,</h1>
                   <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 22, fontWeight: 700, color: '#7dd3fc', lineHeight: 1.2, marginBottom: 14 }}>{result.applicant_name?.split(' ')[0] || 'there'}! ✈️</h1>
                   <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.48)', lineHeight: 1.7 }}>Your account is fully set up. Chat, documents, and your application are now unlocked.</p>
                 </div>
@@ -292,7 +292,7 @@ function RejectionScreen({ applicantName, onBack }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto py-6" style={{ background: 'linear-gradient(135deg,#0f172a 0%,#0c2a4a 100%)' }}>
       <style>{`@keyframes rejFadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}.rej-content{animation:rejFadeIn 0.5s ease forwards;}`}</style>
       <div className="rej-content flex flex-col items-center text-center text-white px-6 max-w-md w-full">
-        <p className="text-sm font-bold tracking-widest uppercase opacity-60 mb-10" style={{ fontFamily: "'DM Sans',sans-serif" }}>✈️ MyVisa</p>
+        <p className="text-sm font-bold tracking-widest uppercase opacity-60 mb-10" style={{ fontFamily: "'DM Sans',sans-serif" }}>✈️ Ingress</p>
         <div className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl mb-6" style={{ background: 'rgba(239,68,68,0.12)', border: '1.5px solid rgba(239,68,68,0.25)' }}>📋</div>
         <h1 style={{ fontFamily: "'Playfair Display',serif", fontSize: 24, fontWeight: 700, marginBottom: 12 }}>Thank you, {applicantName?.split(' ')[0] || 'there'}</h1>
         <p className="text-sm opacity-70 leading-relaxed mb-4">Our consultant has reviewed your consultation and we need a bit more time to assess your eligibility.</p>

@@ -156,7 +156,7 @@ function OnboardingPage() {
         {phase === 'onboarding' && (
           <div className="ob-fade-in">
             <div style={{ textAlign:'center', marginBottom:24 }}>
-              <span style={{ fontSize:11, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)' }}>✈️ &nbsp;MyVisa</span>
+              <span style={{ fontSize:11, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)' }}>✈️ &nbsp;Ingress</span>
             </div>
             <div style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(7,179,242,0.15)', borderRadius:28, padding:'40px 32px', backdropFilter:'blur(20px)', boxShadow:'0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
               <div style={{ display:'flex', justifyContent:'center', marginBottom:28 }}>
@@ -170,7 +170,7 @@ function OnboardingPage() {
               <div style={{ textAlign:'center', marginBottom:6 }}>
                 <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:24, fontWeight:700, color:'#fff', lineHeight:1.2, marginBottom:8 }}>Onboarding</h1>
                 <p style={{ fontSize:13, color:'rgba(255,255,255,0.5)', lineHeight:1.65 }}>
-                  <span style={{ color:'#7dd3fc', fontWeight:600 }}>{agentName}</span> is completing your profile and setting up your MyVisa account.
+                  <span style={{ color:'#7dd3fc', fontWeight:600 }}>{agentName}</span> is completing your profile and setting up your Ingress account.
                 </p>
               </div>
               <div style={{ height:1, background:'rgba(255,255,255,0.07)', margin:'22px 0' }} />
@@ -209,7 +209,7 @@ function OnboardingPage() {
             ))}
             <div className="ob-fade-in">
               <div style={{ textAlign:'center', marginBottom:24 }}>
-                <span style={{ fontSize:11, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)' }}>✈️ &nbsp;MyVisa</span>
+                <span style={{ fontSize:11, fontWeight:800, letterSpacing:'0.16em', textTransform:'uppercase', color:'rgba(255,255,255,0.35)' }}>✈️ &nbsp;Ingress</span>
               </div>
               <div style={{ background:'rgba(255,255,255,0.04)', border:'1px solid rgba(7,179,242,0.3)', borderRadius:28, padding:'44px 32px', backdropFilter:'blur(20px)', boxShadow:'0 24px 60px rgba(0,0,0,0.4), 0 0 60px rgba(7,179,242,0.1), inset 0 1px 0 rgba(255,255,255,0.06)', textAlign:'center' }}>
                 {welcomeStep >= 1 && (
@@ -219,7 +219,7 @@ function OnboardingPage() {
                 )}
                 {welcomeStep >= 2 && (
                   <div className="ob-fade-up" style={{ marginBottom:6 }}>
-                    <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:26, fontWeight:700, color:'#fff', lineHeight:1.2, marginBottom:6 }}>Welcome to MyVisa,</h1>
+                    <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:26, fontWeight:700, color:'#fff', lineHeight:1.2, marginBottom:6 }}>Welcome to Ingress,</h1>
                     <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:26, fontWeight:700, color:'#7dd3fc', lineHeight:1.2, marginBottom:14 }}>{result.applicant_name?.split(' ')[0] || 'there'}! ✈️</h1>
                     <p style={{ fontSize:13, color:'rgba(255,255,255,0.5)', lineHeight:1.7 }}>Your account is fully set up. Chat, documents, and your full application are now unlocked.</p>
                   </div>

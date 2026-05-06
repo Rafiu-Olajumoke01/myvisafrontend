@@ -361,10 +361,10 @@ export default function ClientsPage() {
         <aside className="clients-sidebar">
           <div className="clients-sidebar-logo">
             <div className="clients-sidebar-logo-icon">✈️</div>
-            <div>
+            {/* <div>
               <div className="clients-sidebar-logo-text">MyVisa</div>
               <div className="clients-sidebar-logo-sub">AGENT PORTAL</div>
-            </div>
+            </div> */}
           </div>
           <nav className="clients-nav">
             {navItems.map(item => (

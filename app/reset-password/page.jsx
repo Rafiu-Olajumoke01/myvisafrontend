@@ -107,7 +107,7 @@ function ResetPasswordForm() {
         {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold bg-gradient-to-r from-[#07b3f2] to-[#0891c7] bg-clip-text text-transparent">
-            MyVisa
+            Ingress
           </h1>
           <p className="text-gray-600 mt-2">Create a new password</p>
         </div>
