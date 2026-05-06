@@ -45,7 +45,7 @@ function Navbar() {
           <div className="vc-logo-container">
             <Link href="/package" className="vc-logo">
               <Image
-                src="/ingress.png"
+                src="/ingress Updated.png"
                 alt="Ingress Logo"
                 width={250}
                 height={92}
