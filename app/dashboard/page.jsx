@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-
 const STATUS_CONFIG = {
   not_started: { label: 'Not Started', color: '#94a3b8', bg: '#f1f5f9', progress: 10 },
   started: { label: 'In Progress', color: '#07b3f2', bg: '#e0f7fe', progress: 40 },
@@ -97,7 +96,6 @@ const styles = `
     padding: 2px 6px;
     border-radius: 999px;
   }
-
   .db-sidebar-user {
     margin: 0 12px;
     padding: 14px;
@@ -122,18 +120,10 @@ const styles = `
     font-size: 12px; font-weight: 600; color: #0a0e1a;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .db-sidebar-user-role {
-    font-size: 10px; color: #94a3b8; margin-top: 1px;
-  }
+  .db-sidebar-user-role { font-size: 10px; color: #94a3b8; margin-top: 1px; }
 
   /* ── MAIN ── */
-  .db-main {
-    margin-left: 240px;
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-  }
+  .db-main { margin-left: 240px; flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
   /* ── TOPBAR ── */
   .db-topbar {
@@ -148,46 +138,44 @@ const styles = `
     top: 0;
     z-index: 30;
   }
-  .db-topbar-title {
-    font-family: 'Fraunces', serif;
-    font-size: 20px;
-    font-weight: 600;
-    color: #0a0e1a;
-    letter-spacing: -0.3px;
-  }
-  .db-topbar-right {
-    display: flex; align-items: center; gap: 12px;
-  }
-  .db-topbar-btn {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    border: 1px solid #eef0f6;
-    background: white;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: #64748b;
-    transition: all 0.15s;
-    position: relative;
-  }
-  .db-topbar-btn:hover { background: #f6f8fc; color: #0a0e1a; }
-  .db-topbar-btn svg { width: 16px; height: 16px; }
-  .db-notif-dot {
-    position: absolute; top: 7px; right: 7px;
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #ef4444; border: 1.5px solid white;
-  }
+  .db-topbar-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: #0a0e1a; letter-spacing: -0.3px; }
+  .db-topbar-right { display: flex; align-items: center; gap: 12px; }
   .db-topbar-avatar {
-    width: 36px; height: 36px;
-    border-radius: 10px;
+    width: 36px; height: 36px; border-radius: 10px;
     background: linear-gradient(135deg, #07b3f2, #0284c7);
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 700; color: white;
-    cursor: pointer;
+    font-size: 12px; font-weight: 700; color: white; cursor: pointer;
   }
 
   /* ── CONTENT ── */
-  .db-content {
-    padding: 28px 32px 48px;
-    flex: 1;
+  .db-content { padding: 28px 32px 48px; flex: 1; }
+
+  /* ── PERSONAL/BUSINESS TABS ── */
+  .db-main-tabs {
+    display: flex;
+    gap: 4px;
+    background: #eef0f6;
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 24px;
+    width: fit-content;
+  }
+  .db-main-tab {
+    padding: 10px 28px;
+    border-radius: 11px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #64748b;
+    background: transparent;
+  }
+  .db-main-tab.active {
+    background: white;
+    color: #0a0e1a;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
 
   /* ── WELCOME STRIP ── */
@@ -219,404 +207,170 @@ const styles = `
     background: rgba(7,179,242,0.07);
   }
   .db-welcome-left { position: relative; z-index: 1; }
-  .db-welcome-eyebrow {
-    font-size: 10px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 6px;
-  }
-  .db-welcome-name {
-    font-family: 'Fraunces', serif;
-    font-size: 26px;
-    font-weight: 700;
-    color: white;
-    letter-spacing: -0.5px;
-    margin-bottom: 6px;
-  }
-  .db-welcome-sub {
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
-  }
-  .db-welcome-right {
-    position: relative; z-index: 1;
-    display: flex; gap: 10px; flex-shrink: 0;
-  }
-  .db-welcome-btn {
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-  }
-  .db-welcome-btn-primary {
-    background: #07b3f2;
-    color: white;
-  }
+  .db-welcome-eyebrow { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+  .db-welcome-name { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 700; color: white; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .db-welcome-sub { font-size: 13px; color: rgba(255,255,255,0.5); }
+  .db-welcome-right { position: relative; z-index: 1; display: flex; gap: 10px; flex-shrink: 0; }
+  .db-welcome-btn { padding: 10px 20px; border-radius: 10px; font-size: 12px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; border: none; }
+  .db-welcome-btn-primary { background: #07b3f2; color: white; }
   .db-welcome-btn-primary:hover { background: #0291c8; transform: translateY(-1px); }
-  .db-welcome-btn-ghost {
-    background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.8);
-    border: 1px solid rgba(255,255,255,0.12) !important;
-  }
+  .db-welcome-btn-ghost { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.12) !important; }
   .db-welcome-btn-ghost:hover { background: rgba(255,255,255,0.14); }
 
   /* ── SP BANNER ── */
   .db-sp-banner {
-    background: white;
-    border: 1.5px solid #e0f7fe;
-    border-radius: 16px;
-    padding: 20px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    gap: 16px;
+    background: white; border: 1.5px solid #e0f7fe; border-radius: 16px;
+    padding: 20px 24px; display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 24px; gap: 16px;
   }
-  .db-sp-banner-left {
-    display: flex; align-items: center; gap: 16px;
-  }
+  .db-sp-banner-left { display: flex; align-items: center; gap: 16px; }
   .db-sp-icon {
-    width: 46px; height: 46px;
-    border-radius: 12px;
+    width: 46px; height: 46px; border-radius: 12px;
     background: linear-gradient(135deg, #e0f7fe, #bae6fd);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
   .db-sp-icon svg { width: 22px; height: 22px; color: #07b3f2; }
-  .db-sp-title {
-    font-size: 14px; font-weight: 700; color: #0a0e1a; margin-bottom: 3px;
-  }
-  .db-sp-sub {
-    font-size: 12px; color: #94a3b8; line-height: 1.5;
-  }
+  .db-sp-title { font-size: 14px; font-weight: 700; color: #0a0e1a; margin-bottom: 3px; }
+  .db-sp-sub { font-size: 12px; color: #94a3b8; line-height: 1.5; }
   .db-sp-btn {
-    padding: 10px 22px;
-    background: #07b3f2;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 700;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: all 0.2s;
-    display: flex; align-items: center; gap: 6px;
+    padding: 10px 22px; background: #07b3f2; color: white; border: none;
+    border-radius: 10px; font-size: 12px; font-weight: 700;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; white-space: nowrap;
+    flex-shrink: 0; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
   }
   .db-sp-btn:hover { background: #0291c8; transform: translateY(-1px); }
 
   /* ── STATS ROW ── */
-  .db-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  .db-stat-card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    border: 1px solid #eef0f6;
-    transition: box-shadow 0.2s;
-  }
+  .db-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .db-stat-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #eef0f6; transition: box-shadow 0.2s; }
   .db-stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-  .db-stat-top {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 12px;
-  }
-  .db-stat-label {
-    font-size: 11px; font-weight: 600; color: #94a3b8;
-    text-transform: uppercase; letter-spacing: 0.06em;
-  }
-  .db-stat-icon {
-    width: 32px; height: 32px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .db-stat-icon svg { width: 15px; height: 15px; }
-  .db-stat-num {
-    font-family: 'Fraunces', serif;
-    font-size: 30px; font-weight: 700;
-    color: #0a0e1a; line-height: 1;
-    margin-bottom: 4px;
-  }
-  .db-stat-change {
-    font-size: 11px; color: #94a3b8;
-  }
+  .db-stat-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .db-stat-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; }
+  .db-stat-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .db-stat-num { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 700; color: #0a0e1a; line-height: 1; margin-bottom: 4px; }
+  .db-stat-change { font-size: 11px; color: #94a3b8; }
 
   /* ── GRID ── */
-  .db-grid {
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 20px;
-  }
+  .db-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
 
   /* ── APPLICATIONS ── */
-  .db-card {
-    background: white;
-    border-radius: 16px;
-    border: 1px solid #eef0f6;
-    overflow: hidden;
-  }
-  .db-card-header {
-    padding: 20px 24px 0;
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .db-card-title {
-    font-size: 14px; font-weight: 700; color: #0a0e1a;
-  }
+  .db-card { background: white; border-radius: 16px; border: 1px solid #eef0f6; overflow: hidden; }
+  .db-card-header { padding: 20px 24px 0; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .db-card-title { font-size: 14px; font-weight: 700; color: #0a0e1a; }
   .db-card-sub { font-size: 12px; color: #94a3b8; margin-top: 2px; }
-  .db-card-action {
-    font-size: 12px; color: #07b3f2; font-weight: 600;
-    cursor: pointer; background: none; border: none;
-    font-family: 'DM Sans', sans-serif;
-  }
+  .db-card-action { font-size: 12px; color: #07b3f2; font-weight: 600; cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; }
   .db-card-action:hover { text-decoration: underline; }
 
-  /* filter tabs */
-  .db-filter-tabs {
-    display: flex; gap: 6px; padding: 0 24px;
-    margin-bottom: 16px; overflow-x: auto;
-  }
-  .db-filter-tab {
-    padding: 6px 14px; border-radius: 999px;
-    font-size: 11px; font-weight: 600;
-    cursor: pointer; border: none; font-family: 'DM Sans', sans-serif;
-    transition: all 0.15s; white-space: nowrap;
-  }
+  .db-filter-tabs { display: flex; gap: 6px; padding: 0 24px; margin-bottom: 16px; overflow-x: auto; }
+  .db-filter-tab { padding: 6px 14px; border-radius: 999px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s; white-space: nowrap; }
   .db-filter-tab.active { background: #07b3f2; color: white; }
   .db-filter-tab:not(.active) { background: #f6f8fc; color: #64748b; }
   .db-filter-tab:not(.active):hover { background: #eef0f6; }
 
-  /* app item */
   .db-app-list { padding: 0 16px 16px; }
-  .db-app-item {
-    display: flex; align-items: center; gap: 14px;
-    padding: 14px 8px;
-    border-bottom: 1px solid #f6f8fc;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: background 0.15s;
-    margin-bottom: 2px;
-  }
+  .db-app-item { display: flex; align-items: center; gap: 14px; padding: 14px 8px; border-bottom: 1px solid #f6f8fc; cursor: pointer; border-radius: 10px; transition: background 0.15s; margin-bottom: 2px; }
   .db-app-item:last-child { border-bottom: none; }
   .db-app-item:hover { background: #f6f8fc; }
-  .db-app-emoji {
-    width: 42px; height: 42px; border-radius: 12px;
-    background: #f6f8fc;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; flex-shrink: 0;
-  }
+  .db-app-emoji { width: 42px; height: 42px; border-radius: 12px; background: #f6f8fc; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
   .db-app-info { flex: 1; min-width: 0; }
-  .db-app-title {
-    font-size: 13px; font-weight: 600; color: #0a0e1a;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    margin-bottom: 4px;
-  }
-  .db-app-bar-wrap {
-    height: 3px; background: #f1f5f9; border-radius: 999px;
-    margin-bottom: 4px; overflow: hidden;
-  }
+  .db-app-title { font-size: 13px; font-weight: 600; color: #0a0e1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+  .db-app-bar-wrap { height: 3px; background: #f1f5f9; border-radius: 999px; margin-bottom: 4px; overflow: hidden; }
   .db-app-bar { height: 100%; border-radius: 999px; transition: width 0.7s; }
-  .db-app-meta {
-    display: flex; align-items: center; justify-content: space-between;
-  }
+  .db-app-meta { display: flex; align-items: center; justify-content: space-between; }
   .db-app-date { font-size: 10px; color: #94a3b8; }
-  .db-app-status {
-    font-size: 10px; font-weight: 700;
-    padding: 3px 8px; border-radius: 999px;
-  }
+  .db-app-status { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px; }
 
-  /* empty */
-  .db-empty {
-    padding: 48px 24px;
-    text-align: center;
-  }
-  .db-empty-icon {
-    width: 56px; height: 56px; border-radius: 16px;
-    background: #e0f7fe;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px; margin: 0 auto 16px;
-  }
+  .db-empty { padding: 48px 24px; text-align: center; }
+  .db-empty-icon { width: 56px; height: 56px; border-radius: 16px; background: #e0f7fe; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px; }
   .db-empty-title { font-size: 15px; font-weight: 700; color: #0a0e1a; margin-bottom: 6px; }
   .db-empty-sub { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 20px; }
-  .db-empty-btn {
-    padding: 10px 24px; background: #07b3f2; color: white;
-    border: none; border-radius: 10px; font-size: 13px; font-weight: 600;
-    font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s;
-  }
+  .db-empty-btn { padding: 10px 24px; background: #07b3f2; color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; }
   .db-empty-btn:hover { background: #0291c8; }
 
   /* ── RIGHT PANEL ── */
   .db-right { display: flex; flex-direction: column; gap: 16px; }
 
-  /* profile card */
-  .db-profile-card {
-    background: white; border-radius: 16px;
-    border: 1px solid #eef0f6; padding: 24px; text-align: center;
-  }
-  .db-profile-avatar {
-    width: 64px; height: 64px; border-radius: 18px;
-    background: linear-gradient(135deg, #07b3f2, #0284c7);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Fraunces', serif;
-    font-size: 22px; font-weight: 700; color: white;
-    margin: 0 auto 14px;
-  }
-  .db-profile-name {
-    font-family: 'Fraunces', serif;
-    font-size: 17px; font-weight: 700; color: #0a0e1a;
-    margin-bottom: 3px;
-  }
+  .db-profile-card { background: white; border-radius: 16px; border: 1px solid #eef0f6; padding: 24px; text-align: center; }
+  .db-profile-avatar { width: 64px; height: 64px; border-radius: 18px; background: linear-gradient(135deg, #07b3f2, #0284c7); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: white; margin: 0 auto 14px; }
+  .db-profile-name { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 700; color: #0a0e1a; margin-bottom: 3px; }
   .db-profile-email { font-size: 12px; color: #94a3b8; margin-bottom: 16px; }
   .db-profile-divider { height: 1px; background: #eef0f6; margin: 16px 0; }
-  .db-profile-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 6px 0;
-  }
+  .db-profile-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; }
   .db-profile-row-label { font-size: 11px; color: #94a3b8; }
   .db-profile-row-val { font-size: 11px; font-weight: 600; color: #0a0e1a; }
-  .db-edit-btn {
-    width: 100%; margin-top: 16px;
-    padding: 10px; border-radius: 10px;
-    border: 1.5px solid #eef0f6; background: white;
-    font-size: 12px; font-weight: 600; color: #64748b;
-    font-family: 'DM Sans', sans-serif; cursor: pointer;
-    transition: all 0.15s;
-  }
+  .db-edit-btn { width: 100%; margin-top: 16px; padding: 10px; border-radius: 10px; border: 1.5px solid #eef0f6; background: white; font-size: 12px; font-weight: 600; color: #64748b; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.15s; }
   .db-edit-btn:hover { border-color: #07b3f2; color: #07b3f2; }
 
-  /* quick links */
-  .db-quick-card {
-    background: white; border-radius: 16px;
-    border: 1px solid #eef0f6; padding: 20px;
-  }
-  .db-quick-title {
-    font-size: 11px; font-weight: 700; color: #94a3b8;
-    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;
-  }
-  .db-quick-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px; border-radius: 10px;
-    cursor: pointer; transition: background 0.15s;
-    margin-bottom: 2px; border: none; background: none;
-    width: 100%; text-align: left; font-family: 'DM Sans', sans-serif;
-  }
+  .db-quick-card { background: white; border-radius: 16px; border: 1px solid #eef0f6; padding: 20px; }
+  .db-quick-title { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+  .db-quick-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; cursor: pointer; transition: background 0.15s; margin-bottom: 2px; border: none; background: none; width: 100%; text-align: left; font-family: 'DM Sans', sans-serif; }
   .db-quick-item:hover { background: #f6f8fc; }
-  .db-quick-item-icon {
-    width: 32px; height: 32px; border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; font-size: 14px;
-  }
+  .db-quick-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
   .db-quick-item-label { font-size: 12px; font-weight: 500; color: #374151; }
   .db-quick-item-arrow { margin-left: auto; color: #c1c9d2; font-size: 12px; }
 
-  /* ── SP MODAL ── */
+  /* ── BUSINESS TAB ── */
+  .db-business-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  .db-business-card {
+    background: white; border-radius: 20px; border: 1.5px solid #eef0f6;
+    padding: 28px; display: flex; flex-direction: column; align-items: flex-start;
+    gap: 16px; transition: all 0.2s; cursor: pointer;
+  }
+  .db-business-card:hover { border-color: #07b3f2; box-shadow: 0 8px 32px rgba(7,179,242,0.1); transform: translateY(-2px); }
+  .db-business-card-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; font-size: 24px;
+  }
+  .db-business-card-title { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; color: #0a0e1a; margin-bottom: 4px; }
+  .db-business-card-sub { font-size: 12px; color: #64748b; line-height: 1.6; }
+  .db-business-card-perks { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  .db-business-card-perk { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #374151; font-weight: 500; }
+  .db-business-card-btn {
+    margin-top: 4px; padding: 11px 22px; border-radius: 10px; border: none;
+    font-size: 13px; font-weight: 700; font-family: 'DM Sans', sans-serif;
+    cursor: pointer; transition: all 0.2s; width: 100%;
+  }
+
+  /* ── MODAL ── */
   .sp-modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(10,14,26,0.6);
-    backdrop-filter: blur(6px);
-    z-index: 100;
-    display: flex; align-items: center; justify-content: center;
-    padding: 20px;
+    position: fixed; inset: 0; background: rgba(10,14,26,0.6);
+    backdrop-filter: blur(6px); z-index: 100;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
   }
   .sp-modal {
-    background: white;
-    border-radius: 20px;
-    width: 100%;
-    max-width: 540px;
-    max-height: 90vh;
-    overflow-y: auto;
+    background: white; border-radius: 20px; width: 100%;
+    max-width: 540px; max-height: 90vh; overflow-y: auto;
     box-shadow: 0 24px 60px rgba(0,0,0,0.2);
     animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
   }
-  @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.92) translateY(16px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  .sp-modal-header {
-    padding: 24px 28px 0;
-    display: flex; align-items: flex-start; justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  .sp-modal-title {
-    font-family: 'Fraunces', serif;
-    font-size: 20px; font-weight: 700; color: #0a0e1a;
-    letter-spacing: -0.3px; margin-bottom: 4px;
-  }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.92) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .sp-modal-header { padding: 24px 28px 0; display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; }
+  .sp-modal-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700; color: #0a0e1a; letter-spacing: -0.3px; margin-bottom: 4px; }
   .sp-modal-sub { font-size: 12px; color: #94a3b8; line-height: 1.5; }
-  .sp-modal-close {
-    width: 32px; height: 32px; border-radius: 8px;
-    border: 1px solid #eef0f6; background: white;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: #94a3b8; flex-shrink: 0;
-    transition: all 0.15s; font-size: 16px;
-  }
+  .sp-modal-close { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #eef0f6; background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #94a3b8; flex-shrink: 0; transition: all 0.15s; font-size: 16px; }
   .sp-modal-close:hover { background: #f6f8fc; color: #0a0e1a; }
   .sp-modal-body { padding: 0 28px 28px; }
   .sp-modal-form { display: flex; flex-direction: column; gap: 14px; }
   .sp-modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .sp-field { display: flex; flex-direction: column; gap: 5px; }
   .sp-label { font-size: 11px; font-weight: 600; color: #374151; letter-spacing: 0.02em; }
-  .sp-input, .sp-select, .sp-textarea {
-    width: 100%; padding: 10px 13px;
-    border: 1.5px solid #e8eaed; border-radius: 10px;
-    font-size: 13px; font-family: 'DM Sans', sans-serif;
-    color: #0a0e1a; background: #fafafa;
-    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-    outline: none;
-  }
-  .sp-input:focus, .sp-select:focus, .sp-textarea:focus {
-    border-color: #07b3f2; background: white;
-    box-shadow: 0 0 0 3px rgba(7,179,242,0.1);
-  }
+  .sp-input, .sp-select, .sp-textarea { width: 100%; padding: 10px 13px; border: 1.5px solid #e8eaed; border-radius: 10px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: #0a0e1a; background: #fafafa; transition: border-color 0.2s, box-shadow 0.2s, background 0.2s; outline: none; }
+  .sp-input:focus, .sp-select:focus, .sp-textarea:focus { border-color: #07b3f2; background: white; box-shadow: 0 0 0 3px rgba(7,179,242,0.1); }
   .sp-input::placeholder, .sp-textarea::placeholder { color: #c1c9d2; }
   .sp-textarea { resize: vertical; min-height: 80px; }
   .sp-select { appearance: none; cursor: pointer; }
-  .sp-file-label {
-    display: flex; align-items: center; gap: 10px;
-    padding: 10px 13px; border: 1.5px dashed #e8eaed;
-    border-radius: 10px; cursor: pointer; background: #fafafa;
-    transition: border-color 0.2s, background 0.2s;
-    font-size: 12px; color: #94a3b8;
-  }
+  .sp-file-label { display: flex; align-items: center; gap: 10px; padding: 10px 13px; border: 1.5px dashed #e8eaed; border-radius: 10px; cursor: pointer; background: #fafafa; transition: border-color 0.2s, background 0.2s; font-size: 12px; color: #94a3b8; }
   .sp-file-label:hover { border-color: #07b3f2; background: #f0f9ff; color: #07b3f2; }
   .sp-file-label.has-file { border-color: #10b981; background: #f0fdf4; color: #10b981; }
   .sp-file-input { display: none; }
   .sp-divider { height: 1px; background: #eef0f6; margin: 4px 0; }
-  .sp-submit {
-    width: 100%; padding: 13px;
-    background: #07b3f2; color: white;
-    border: none; border-radius: 10px;
-    font-size: 14px; font-weight: 600;
-    font-family: 'DM Sans', sans-serif;
-    cursor: pointer; transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    margin-top: 4px;
-  }
+  .sp-submit { width: 100%; padding: 13px; background: #07b3f2; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 4px; }
   .sp-submit:hover:not(:disabled) { background: #0291c8; transform: translateY(-1px); }
   .sp-submit:disabled { background: #b0d9f0; cursor: not-allowed; }
-  .sp-error {
-    padding: 10px 13px; background: #fef2f2;
-    border: 1px solid #fecaca; border-radius: 10px;
-    font-size: 12px; color: #dc2626;
-  }
-  .sp-success {
-    padding: 10px 13px; background: #f0fdf4;
-    border: 1px solid #bbf7d0; border-radius: 10px;
-    font-size: 12px; color: #16a34a; text-align: center;
-  }
+  .sp-error { padding: 10px 13px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px; font-size: 12px; color: #dc2626; }
+  .sp-success { padding: 10px 13px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; font-size: 12px; color: #16a34a; text-align: center; }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   .db-animate { animation: fadeUp 0.4s ease both; }
   .db-animate-1 { animation-delay: 0.05s; }
   .db-animate-2 { animation-delay: 0.1s; }
@@ -625,65 +379,18 @@ const styles = `
   .db-animate-5 { animation-delay: 0.25s; }
 
   @keyframes spin { to { transform: rotate(360deg); } }
-  .db-spinner {
-    width: 36px; height: 36px;
-    border: 3px solid #eef0f6;
-    border-top-color: #07b3f2;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
+  .db-spinner { width: 36px; height: 36px; border: 3px solid #eef0f6; border-top-color: #07b3f2; border-radius: 50%; animation: spin 0.8s linear infinite; }
 
-  @media (max-width: 1100px) {
-    .db-grid { grid-template-columns: 1fr; }
-    .db-stats { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 768px) {
-    .db-sidebar { display: none; }
-    .db-main { margin-left: 0; }
-    .db-content { padding: 20px 16px 80px; }
-    .db-topbar { padding: 0 16px; }
-    .db-welcome { flex-direction: column; align-items: flex-start; gap: 16px; }
-    .db-sp-banner { flex-direction: column; align-items: flex-start; }
-    .db-stats { grid-template-columns: repeat(2, 1fr); }
-  }
+  @media (max-width: 1100px) { .db-grid { grid-template-columns: 1fr; } .db-stats { grid-template-columns: repeat(2, 1fr); } .db-business-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 768px) { .db-sidebar { display: none; } .db-main { margin-left: 0; } .db-content { padding: 20px 16px 80px; } .db-topbar { padding: 0 16px; } .db-welcome { flex-direction: column; align-items: flex-start; gap: 16px; } .db-sp-banner { flex-direction: column; align-items: flex-start; } .db-stats { grid-template-columns: repeat(2, 1fr); } }
 `;
 
 const NAV_ITEMS = [
-  {
-    key: 'dashboard', label: 'Dashboard', icon: (
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-      </svg>
-    )
-  },
-  {
-    key: 'applications', label: 'Applications', icon: (
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    )
-  },
-  {
-    key: 'packages', label: 'Browse Packages', icon: (
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" />
-      </svg>
-    )
-  },
-  {
-    key: 'bookmarks', label: 'Saved', icon: (
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-      </svg>
-    )
-  },
-  {
-    key: 'notification', label: 'Notification', icon: (
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-      </svg>
-    ), badge: true
-  },
+  { key: 'dashboard', label: 'Dashboard', icon: (<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /></svg>) },
+  { key: 'applications', label: 'Applications', icon: (<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>) },
+  { key: 'packages', label: 'Browse Packages', icon: (<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" /></svg>) },
+  { key: 'bookmarks', label: 'Saved', icon: (<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" /></svg>) },
+  { key: 'notification', label: 'Notification', badge: true, icon: (<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>) },
 ];
 
 export default function DashboardPage() {
@@ -693,16 +400,20 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
   const [activeNav, setActiveNav] = useState('dashboard');
+  const [activeMainTab, setActiveMainTab] = useState('personal');
   const [showSPModal, setShowSPModal] = useState(false);
+  const [showInfluencerModal, setShowInfluencerModal] = useState(false);
   const [spStatus, setSpStatus] = useState(null);
-  const [spForm, setSpForm] = useState({
-    business_name: '', business_type: '', country: '', phone: '', bio: '',
-  });
+  const [spForm, setSpForm] = useState({ business_name: '', business_type: '', country: '', phone: '', bio: '' });
   const [spIdDoc, setSpIdDoc] = useState(null);
   const [spProfilePic, setSpProfilePic] = useState(null);
   const [spLoading, setSpLoading] = useState(false);
   const [spError, setSpError] = useState('');
   const [spSuccess, setSpSuccess] = useState(false);
+  const [infForm, setInfForm] = useState({ full_name: '', email: '', phone: '', platform: '', handle: '', audience_size: '', why: '' });
+  const [infLoading, setInfLoading] = useState(false);
+  const [infSuccess, setInfSuccess] = useState(false);
+  const [infError, setInfError] = useState('');
 
   useEffect(() => { fetchDashboard(); }, []);
 
@@ -747,7 +458,6 @@ export default function DashboardPage() {
   ];
 
   const filteredApps = activeFilter === 'all' ? applications : applications.filter(a => a.status === activeFilter);
-
   const STATUS_EMOJI = { not_started: '🕐', started: '⚡', processing: '🔄', completed: '✅', cancelled: '❌' };
 
   const handleNav = (key) => {
@@ -772,9 +482,7 @@ export default function DashboardPage() {
       if (spIdDoc) formData.append('id_document', spIdDoc);
       if (spProfilePic) formData.append('profile_picture', spProfilePic);
       const res = await fetch('https://web-production-f50dc.up.railway.app/api/providers/register/', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
+        method: 'POST', headers: { Authorization: `Bearer ${token}` }, body: formData,
       });
       const data = await res.json();
       if (res.ok) {
@@ -784,11 +492,20 @@ export default function DashboardPage() {
       } else {
         setSpError(data.detail || data.error || 'Something went wrong. Please try again.');
       }
-    } catch {
-      setSpError('Network error. Please check your connection.');
-    } finally {
-      setSpLoading(false);
-    }
+    } catch { setSpError('Network error. Please check your connection.'); }
+    finally { setSpLoading(false); }
+  };
+
+  const handleInfluencerSubmit = async (e) => {
+    e.preventDefault();
+    setInfLoading(true);
+    setInfError('');
+    try {
+      await new Promise(r => setTimeout(r, 1500));
+      setInfSuccess(true);
+      setTimeout(() => { setShowInfluencerModal(false); setInfSuccess(false); setInfForm({ full_name: '', email: '', phone: '', platform: '', handle: '', audience_size: '', why: '' }); }, 3000);
+    } catch { setInfError('Network error. Please check your connection.'); }
+    finally { setInfLoading(false); }
   };
 
   if (loading) {
@@ -824,15 +541,11 @@ export default function DashboardPage() {
             ))}
             <div className="db-nav-section" style={{ marginTop: 24 }}>Account</div>
             <button className="db-nav-item" onClick={() => router.push('/profile/edit')}>
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8" style={{ width: 16, height: 16 }}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8" style={{ width: 16, height: 16 }}><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
               Profile Settings
             </button>
             <button className="db-nav-item" onClick={() => { localStorage.clear(); router.push('/login'); }}>
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8" style={{ width: 16, height: 16 }}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-              </svg>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8" style={{ width: 16, height: 16 }}><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
               Sign Out
             </button>
           </nav>
@@ -847,8 +560,6 @@ export default function DashboardPage() {
 
         {/* ── MAIN ── */}
         <div className="db-main">
-
-          {/* TOPBAR */}
           <header className="db-topbar">
             <div className="db-topbar-title">My Dashboard</div>
             <div className="db-topbar-right">
@@ -856,264 +567,288 @@ export default function DashboardPage() {
             </div>
           </header>
 
-          {/* CONTENT */}
           <main className="db-content">
 
             {/* Welcome */}
             <div className="db-welcome db-animate db-animate-1">
               <div className="db-welcome-left">
                 <div className="db-welcome-eyebrow">Welcome back</div>
-                <div className="db-welcome-name">
-                  {userData?.fullname?.split(' ')[0] || userData?.username} 👋
-                </div>
+                <div className="db-welcome-name">{userData?.fullname?.split(' ')[0] || userData?.username} 👋</div>
                 <div className="db-welcome-sub">
-                  {totalApps > 0
-                    ? `You have ${totalApps} visa application${totalApps > 1 ? 's' : ''} — ${activeApps} active`
-                    : 'Ready to start your visa journey?'}
+                  {totalApps > 0 ? `You have ${totalApps} visa application${totalApps > 1 ? 's' : ''} — ${activeApps} active` : 'Ready to start your visa journey?'}
                 </div>
               </div>
               <div className="db-welcome-right">
-                <button className="db-welcome-btn db-welcome-btn-ghost" onClick={() => router.push('/package')}>
-                  Browse Packages
-                </button>
-                <button className="db-welcome-btn db-welcome-btn-primary" onClick={() => router.push('/package')}>
-                  + New Application
-                </button>
+                <button className="db-welcome-btn db-welcome-btn-ghost" onClick={() => router.push('/package')}>Browse Packages</button>
+                <button className="db-welcome-btn db-welcome-btn-primary" onClick={() => router.push('/package')}>+ New Application</button>
               </div>
             </div>
 
-            {/* SP Banner */}
-            {(!spStatus || !spStatus.has_application) && (
-              <div className="db-sp-banner db-animate db-animate-2">
-                <div className="db-sp-banner-left">
-                  <div className="db-sp-icon">
-                    <svg fill="none" stroke="#07b3f2" viewBox="0 0 24 24" strokeWidth="1.8">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="db-sp-title">Become a Service Provider</div>
-                    <div className="db-sp-sub">List your travel services, reach thousands of clients and grow your business on Ingress.</div>
-                  </div>
-                </div>
-                <button className="db-sp-btn" onClick={() => setShowSPModal(true)}>
-                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  Get Started
-                </button>
-              </div>
-            )}
-
-            {spStatus?.has_application && spStatus?.status === 'pending' && (
-              <div className="db-sp-banner db-animate db-animate-2" style={{ borderColor: '#fef3c7', background: '#fffbeb' }}>
-                <div className="db-sp-banner-left">
-                  <div className="db-sp-icon" style={{ background: '#fef3c7' }}>
-                    <svg fill="none" stroke="#f59e0b" viewBox="0 0 24 24" strokeWidth="1.8">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="db-sp-title" style={{ color: '#92400e' }}>Application Pending</div>
-                    <div className="db-sp-sub">Your Service Provider application is being reviewed. We'll notify you once it's processed.</div>
-                  </div>
-                </div>
-                <span style={{ background: '#fef3c7', color: '#f59e0b', fontSize: 11, fontWeight: 700, padding: '8px 16px', borderRadius: 999 }}>
-                  ⏳ Under Review
-                </span>
-              </div>
-            )}
-
-            {spStatus?.has_application && spStatus?.status === 'pending' && spStatus?.verification_call_scheduled && (
-              <div className="db-sp-banner db-animate db-animate-2" style={{ borderColor: '#e0f7fe', background: '#f0f9ff' }}>
-                <div className="db-sp-banner-left">
-                  <div className="db-sp-icon" style={{ background: '#e0f7fe' }}>
-                    <svg fill="none" stroke="#07b3f2" viewBox="0 0 24 24" strokeWidth="1.8">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.069A1 1 0 0121 8.845v6.31a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="db-sp-title" style={{ color: '#0369a1' }}>Verification Call Scheduled</div>
-                    <div className="db-sp-sub">Please be available for your verification video call. Check your notifications for details.</div>
-                  </div>
-                </div>
-                <span style={{ background: '#e0f7fe', color: '#07b3f2', fontSize: 11, fontWeight: 700, padding: '8px 16px', borderRadius: 999 }}>
-                  📅 Call Scheduled
-                </span>
-              </div>
-            )}
-
-            {spStatus?.has_application && spStatus?.status === 'approved' && (
-              <div className="db-sp-banner db-animate db-animate-2" style={{ borderColor: '#d1fae5', background: '#f0fdf4' }}>
-                <div className="db-sp-banner-left">
-                  <div className="db-sp-icon" style={{ background: '#d1fae5' }}>
-                    <svg fill="none" stroke="#10b981" viewBox="0 0 24 24" strokeWidth="1.8">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="db-sp-title" style={{ color: '#065f46' }}>You're an Approved Service Provider! 🎉</div>
-                    <div className="db-sp-sub">Your account is active. Start creating packages and accepting client calls.</div>
-                  </div>
-                </div>
-                <button className="db-sp-btn" style={{ background: '#10b981' }} onClick={() => router.push('/agents/dashboard')}>
-                  Go to SP Dashboard →
-                </button>
-              </div>
-            )}
-
-            {spStatus?.has_application && spStatus?.status === 'rejected' && (
-              <div className="db-sp-banner db-animate db-animate-2" style={{ borderColor: '#fee2e2', background: '#fef2f2' }}>
-                <div className="db-sp-banner-left">
-                  <div className="db-sp-icon" style={{ background: '#fee2e2' }}>
-                    <svg fill="none" stroke="#ef4444" viewBox="0 0 24 24" strokeWidth="1.8">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="db-sp-title" style={{ color: '#991b1b' }}>Application Rejected</div>
-                    <div className="db-sp-sub">{spStatus?.rejection_reason || 'Your application did not meet our requirements.'}</div>
-                  </div>
-                </div>
-                <span style={{ background: '#fee2e2', color: '#ef4444', fontSize: 11, fontWeight: 700, padding: '8px 16px', borderRadius: 999 }}>
-                  ❌ Rejected
-                </span>
-              </div>
-            )}
-
-            {/* Stats */}
-            <div className="db-stats db-animate db-animate-3">
-              {[
-                { label: 'Total Applications', num: totalApps, icon: '📄', iconBg: '#e0f7fe', iconColor: '#07b3f2', change: 'All time' },
-                { label: 'Completed', num: completedApps, icon: '✅', iconBg: '#d1fae5', iconColor: '#10b981', change: 'Approved visas' },
-                { label: 'In Progress', num: activeApps, icon: '⚡', iconBg: '#fef3c7', iconColor: '#f59e0b', change: 'Active now' },
-                { label: 'Docs Uploaded', num: totalDocs, icon: '📁', iconBg: '#ede9fe', iconColor: '#7c3aed', change: 'Total files' },
-              ].map((s, i) => (
-                <div key={s.label} className="db-stat-card">
-                  <div className="db-stat-top">
-                    <div className="db-stat-label">{s.label}</div>
-                    <div className="db-stat-icon" style={{ background: s.iconBg }}>
-                      <span style={{ fontSize: 14 }}>{s.icon}</span>
-                    </div>
-                  </div>
-                  <div className="db-stat-num">{String(s.num).padStart(2, '0')}</div>
-                  <div className="db-stat-change">{s.change}</div>
-                </div>
-              ))}
+            {/* ── PERSONAL / BUSINESS TABS ── */}
+            <div className="db-main-tabs db-animate db-animate-2">
+              <button className={`db-main-tab${activeMainTab === 'personal' ? ' active' : ''}`} onClick={() => setActiveMainTab('personal')}>
+                👤 Personal
+              </button>
+              <button className={`db-main-tab${activeMainTab === 'business' ? ' active' : ''}`} onClick={() => setActiveMainTab('business')}>
+                💼 Business
+              </button>
             </div>
 
-            {/* Main Grid */}
-            <div className="db-grid db-animate db-animate-4">
-
-              {/* Applications */}
-              <div className="db-card">
-                <div className="db-card-header">
-                  <div>
-                    <div className="db-card-title">My Applications</div>
-                    <div className="db-card-sub">{totalApps} total applications</div>
-                  </div>
-                  <button className="db-card-action" onClick={() => router.push('/package')}>+ New</button>
-                </div>
-
-                {totalApps > 0 && (
-                  <div className="db-filter-tabs">
-                    {FILTERS.map(f => (
-                      <button key={f.key} className={`db-filter-tab${activeFilter === f.key ? ' active' : ''}`} onClick={() => setActiveFilter(f.key)}>
-                        {f.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {filteredApps.length === 0 && totalApps === 0 ? (
-                  <div className="db-empty">
-                    <div className="db-empty-icon">🌍</div>
-                    <div className="db-empty-title">No applications yet</div>
-                    <div className="db-empty-sub">Browse our visa packages and start your first application today.</div>
-                    <button className="db-empty-btn" onClick={() => router.push('/package')}>Browse Packages →</button>
-                  </div>
-                ) : filteredApps.length === 0 ? (
-                  <div className="db-empty">
-                    <div className="db-empty-title" style={{ fontSize: 13, color: '#94a3b8' }}>No {activeFilter} applications</div>
-                  </div>
-                ) : (
-                  <div className="db-app-list">
-                    {filteredApps.map(app => {
-                      const status = STATUS_CONFIG[app.status] || STATUS_CONFIG.not_started;
-                      const emoji = STATUS_EMOJI[app.status] || '📄';
-                      return (
-                        <div key={app.id} className="db-app-item" onClick={() => router.push(`/application/${app.id}`)}>
-                          <div className="db-app-emoji">{emoji}</div>
-                          <div className="db-app-info">
-                            <div className="db-app-title">{app.package_country} — {app.package_title}</div>
-                            <div className="db-app-bar-wrap">
-                              <div className="db-app-bar" style={{ width: `${status.progress}%`, background: status.color }} />
-                            </div>
-                            <div className="db-app-meta">
-                              <div className="db-app-date">{app.submitted_at ? `Applied ${formatDate(app.submitted_at)}` : 'Draft'}</div>
-                              <div className="db-app-status" style={{ background: status.bg, color: status.color }}>{status.label}</div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Right Panel */}
-              <div className="db-right db-animate db-animate-5">
-
-                {/* Profile Card */}
-                <div className="db-profile-card">
-                  <div className="db-profile-avatar">{getInitials()}</div>
-                  <div className="db-profile-name">{userData?.fullname || userData?.username}</div>
-                  <div className="db-profile-email">{userData?.email}</div>
-                  <div style={{ display: 'flex', justifyContent: 'center', gap: 8 }}>
-                    <span style={{ background: '#e0f7fe', color: '#07b3f2', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999 }}>✓ Verified</span>
-                    <span style={{ background: '#f1f5f9', color: '#64748b', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999 }}>Customer</span>
-                  </div>
-                  <div className="db-profile-divider" />
-                  {userData?.country && (
-                    <div className="db-profile-row">
-                      <span className="db-profile-row-label">Country</span>
-                      <span className="db-profile-row-val">{userData.country}</span>
+            {/* ══════════════ PERSONAL TAB ══════════════ */}
+            {activeMainTab === 'personal' && (
+              <>
+                {/* SP Status Banners */}
+                {(!spStatus || !spStatus.has_application) && (
+                  <div className="db-sp-banner db-animate db-animate-2">
+                    <div className="db-sp-banner-left">
+                      <div className="db-sp-icon">
+                        <svg fill="none" stroke="#07b3f2" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                      </div>
+                      <div>
+                        <div className="db-sp-title">Grow your business on Ingress</div>
+                        <div className="db-sp-sub">Become a Service Provider or Influencer. Switch to the Business tab to get started.</div>
+                      </div>
                     </div>
-                  )}
-                  {userData?.phone && (
-                    <div className="db-profile-row">
-                      <span className="db-profile-row-label">Phone</span>
-                      <span className="db-profile-row-val">{userData.phone}</span>
-                    </div>
-                  )}
-                  {userData?.date_joined && (
-                    <div className="db-profile-row">
-                      <span className="db-profile-row-label">Joined</span>
-                      <span className="db-profile-row-val">{formatJoined(userData.date_joined)}</span>
-                    </div>
-                  )}
-                  <button className="db-edit-btn" onClick={() => router.push('/profile/edit')}>Edit Profile</button>
-                </div>
-
-                {/* Quick Links */}
-                <div className="db-quick-card">
-                  <div className="db-quick-title">Quick Links</div>
-                  {[
-                    { icon: '📦', label: 'Browse Packages', route: '/package', bg: '#e0f7fe' },
-                    { icon: '🔖', label: 'Saved Packages', route: '/bookmarks', bg: '#ede9fe' },
-                    { icon: '📞', label: 'Book a Call', route: '/calls', bg: '#d1fae5' },
-                    { icon: '⚙️', label: 'Settings', route: '/settings', bg: '#fef3c7' },
-                  ].map(item => (
-                    <button key={item.label} className="db-quick-item" onClick={() => router.push(item.route)}>
-                      <div className="db-quick-item-icon" style={{ background: item.bg }}>{item.icon}</div>
-                      <span className="db-quick-item-label">{item.label}</span>
-                      <span className="db-quick-item-arrow">›</span>
+                    <button className="db-sp-btn" onClick={() => setActiveMainTab('business')}>
+                      Go to Business →
                     </button>
+                  </div>
+                )}
+
+                {spStatus?.has_application && spStatus?.status === 'pending' && (
+                  <div className="db-sp-banner db-animate db-animate-2" style={{ borderColor: '#fef3c7', background: '#fffbeb' }}>
+                    <div className="db-sp-banner-left">
+                      <div className="db-sp-icon" style={{ background: '#fef3c7' }}>
+                        <svg fill="none" stroke="#f59e0b" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      </div>
+                      <div>
+                        <div className="db-sp-title" style={{ color: '#92400e' }}>SP Application Pending</div>
+                        <div className="db-sp-sub">Your Service Provider application is being reviewed. We'll notify you once processed.</div>
+                      </div>
+                    </div>
+                    <span style={{ background: '#fef3c7', color: '#f59e0b', fontSize: 11, fontWeight: 700, padding: '8px 16px', borderRadius: 999 }}>⏳ Under Review</span>
+                  </div>
+                )}
+
+                {spStatus?.has_application && spStatus?.status === 'pending' && spStatus?.verification_call_scheduled && (
+                  <div className="db-sp-banner db-animate db-animate-2" style={{ borderColor: '#e0f7fe', background: '#f0f9ff' }}>
+                    <div className="db-sp-banner-left">
+                      <div className="db-sp-icon" style={{ background: '#e0f7fe' }}>
+                        <svg fill="none" stroke="#07b3f2" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.069A1 1 0 0121 8.845v6.31a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                      </div>
+                      <div>
+                        <div className="db-sp-title" style={{ color: '#0369a1' }}>Verification Call Scheduled</div>
+                        <div className="db-sp-sub">Please be available for your verification video call. Check your notifications for details.</div>
+                      </div>
+                    </div>
+                    <span style={{ background: '#e0f7fe', color: '#07b3f2', fontSize: 11, fontWeight: 700, padding: '8px 16px', borderRadius: 999 }}>📅 Call Scheduled</span>
+                  </div>
+                )}
+
+                {spStatus?.has_application && spStatus?.status === 'approved' && (
+                  <div className="db-sp-banner db-animate db-animate-2" style={{ borderColor: '#d1fae5', background: '#f0fdf4' }}>
+                    <div className="db-sp-banner-left">
+                      <div className="db-sp-icon" style={{ background: '#d1fae5' }}>
+                        <svg fill="none" stroke="#10b981" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      </div>
+                      <div>
+                        <div className="db-sp-title" style={{ color: '#065f46' }}>You're an Approved Service Provider! 🎉</div>
+                        <div className="db-sp-sub">Your account is active. Start creating packages and accepting client calls.</div>
+                      </div>
+                    </div>
+                    <button className="db-sp-btn" style={{ background: '#10b981' }} onClick={() => router.push('/agents/dashboard')}>Go to SP Dashboard →</button>
+                  </div>
+                )}
+
+                {spStatus?.has_application && spStatus?.status === 'rejected' && (
+                  <div className="db-sp-banner db-animate db-animate-2" style={{ borderColor: '#fee2e2', background: '#fef2f2' }}>
+                    <div className="db-sp-banner-left">
+                      <div className="db-sp-icon" style={{ background: '#fee2e2' }}>
+                        <svg fill="none" stroke="#ef4444" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      </div>
+                      <div>
+                        <div className="db-sp-title" style={{ color: '#991b1b' }}>Application Rejected</div>
+                        <div className="db-sp-sub">{spStatus?.rejection_reason || 'Your application did not meet our requirements.'}</div>
+                      </div>
+                    </div>
+                    <span style={{ background: '#fee2e2', color: '#ef4444', fontSize: 11, fontWeight: 700, padding: '8px 16px', borderRadius: 999 }}>❌ Rejected</span>
+                  </div>
+                )}
+
+                {/* Stats */}
+                <div className="db-stats db-animate db-animate-3">
+                  {[
+                    { label: 'Total Applications', num: totalApps, icon: '📄', iconBg: '#e0f7fe', change: 'All time' },
+                    { label: 'Completed', num: completedApps, icon: '✅', iconBg: '#d1fae5', change: 'Approved visas' },
+                    { label: 'In Progress', num: activeApps, icon: '⚡', iconBg: '#fef3c7', change: 'Active now' },
+                    { label: 'Docs Uploaded', num: totalDocs, icon: '📁', iconBg: '#ede9fe', change: 'Total files' },
+                  ].map((s) => (
+                    <div key={s.label} className="db-stat-card">
+                      <div className="db-stat-top">
+                        <div className="db-stat-label">{s.label}</div>
+                        <div className="db-stat-icon" style={{ background: s.iconBg }}><span style={{ fontSize: 14 }}>{s.icon}</span></div>
+                      </div>
+                      <div className="db-stat-num">{String(s.num).padStart(2, '0')}</div>
+                      <div className="db-stat-change">{s.change}</div>
+                    </div>
                   ))}
                 </div>
 
+                {/* Main Grid */}
+                <div className="db-grid db-animate db-animate-4">
+                  <div className="db-card">
+                    <div className="db-card-header">
+                      <div>
+                        <div className="db-card-title">My Applications</div>
+                        <div className="db-card-sub">{totalApps} total applications</div>
+                      </div>
+                      <button className="db-card-action" onClick={() => router.push('/package')}>+ New</button>
+                    </div>
+                    {totalApps > 0 && (
+                      <div className="db-filter-tabs">
+                        {FILTERS.map(f => (
+                          <button key={f.key} className={`db-filter-tab${activeFilter === f.key ? ' active' : ''}`} onClick={() => setActiveFilter(f.key)}>{f.label}</button>
+                        ))}
+                      </div>
+                    )}
+                    {filteredApps.length === 0 && totalApps === 0 ? (
+                      <div className="db-empty">
+                        <div className="db-empty-icon">🌍</div>
+                        <div className="db-empty-title">No applications yet</div>
+                        <div className="db-empty-sub">Browse our visa packages and start your first application today.</div>
+                        <button className="db-empty-btn" onClick={() => router.push('/package')}>Browse Packages →</button>
+                      </div>
+                    ) : filteredApps.length === 0 ? (
+                      <div className="db-empty">
+                        <div className="db-empty-title" style={{ fontSize: 13, color: '#94a3b8' }}>No {activeFilter} applications</div>
+                      </div>
+                    ) : (
+                      <div className="db-app-list">
+                        {filteredApps.map(app => {
+                          const status = STATUS_CONFIG[app.status] || STATUS_CONFIG.not_started;
+                          const emoji = STATUS_EMOJI[app.status] || '📄';
+                          return (
+                            <div key={app.id} className="db-app-item" onClick={() => router.push(`/application/${app.id}`)}>
+                              <div className="db-app-emoji">{emoji}</div>
+                              <div className="db-app-info">
+                                <div className="db-app-title">{app.package_country} — {app.package_title}</div>
+                                <div className="db-app-bar-wrap"><div className="db-app-bar" style={{ width: `${status.progress}%`, background: status.color }} /></div>
+                                <div className="db-app-meta">
+                                  <div className="db-app-date">{app.submitted_at ? `Applied ${formatDate(app.submitted_at)}` : 'Draft'}</div>
+                                  <div className="db-app-status" style={{ background: status.bg, color: status.color }}>{status.label}</div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Panel */}
+                  <div className="db-right db-animate db-animate-5">
+                    <div className="db-profile-card">
+                      <div className="db-profile-avatar">{getInitials()}</div>
+                      <div className="db-profile-name">{userData?.fullname || userData?.username}</div>
+                      <div className="db-profile-email">{userData?.email}</div>
+                      <div style={{ display: 'flex', justifyContent: 'center', gap: 8 }}>
+                        <span style={{ background: '#e0f7fe', color: '#07b3f2', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999 }}>✓ Verified</span>
+                        <span style={{ background: '#f1f5f9', color: '#64748b', fontSize: 10, fontWeight: 700, padding: '4px 10px', borderRadius: 999 }}>Customer</span>
+                      </div>
+                      <div className="db-profile-divider" />
+                      {userData?.country && <div className="db-profile-row"><span className="db-profile-row-label">Country</span><span className="db-profile-row-val">{userData.country}</span></div>}
+                      {userData?.phone && <div className="db-profile-row"><span className="db-profile-row-label">Phone</span><span className="db-profile-row-val">{userData.phone}</span></div>}
+                      {userData?.date_joined && <div className="db-profile-row"><span className="db-profile-row-label">Joined</span><span className="db-profile-row-val">{formatJoined(userData.date_joined)}</span></div>}
+                      <button className="db-edit-btn" onClick={() => router.push('/profile/edit')}>Edit Profile</button>
+                    </div>
+                    <div className="db-quick-card">
+                      <div className="db-quick-title">Quick Links</div>
+                      {[
+                        { icon: '📦', label: 'Browse Packages', route: '/package', bg: '#e0f7fe' },
+                        { icon: '🔖', label: 'Saved Packages', route: '/bookmarks', bg: '#ede9fe' },
+                        { icon: '📞', label: 'Book a Call', route: '/calls', bg: '#d1fae5' },
+                        { icon: '⚙️', label: 'Settings', route: '/settings', bg: '#fef3c7' },
+                      ].map(item => (
+                        <button key={item.label} className="db-quick-item" onClick={() => router.push(item.route)}>
+                          <div className="db-quick-item-icon" style={{ background: item.bg }}>{item.icon}</div>
+                          <span className="db-quick-item-label">{item.label}</span>
+                          <span className="db-quick-item-arrow">›</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* ══════════════ BUSINESS TAB ══════════════ */}
+            {activeMainTab === 'business' && (
+              <div className="db-animate db-animate-2">
+                <div style={{ marginBottom: 24 }}>
+                  <div style={{ fontFamily: 'Fraunces, serif', fontSize: 22, fontWeight: 700, color: '#0a0e1a', marginBottom: 6 }}>Grow with Ingress</div>
+                  <div style={{ fontSize: 13, color: '#64748b' }}>Choose how you want to earn and grow your business on our platform.</div>
+                </div>
+
+                <div className="db-business-grid">
+
+                  {/* ── BECOME AN INFLUENCER ── */}
+                  <div className="db-business-card" onClick={() => setShowInfluencerModal(true)}>
+                    <div className="db-business-card-icon" style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)' }}>🌟</div>
+                    <div>
+                      <div className="db-business-card-title">Become an Influencer</div>
+                      <div className="db-business-card-sub">Share Ingress with your audience and earn commission every time someone books using your unique promo code.</div>
+                    </div>
+                    <div className="db-business-card-perks">
+                      <div className="db-business-card-perk">✅ Get a unique referral promo code</div>
+                      <div className="db-business-card-perk">✅ Earn commission on every booking</div>
+                      <div className="db-business-card-perk">✅ Track your earnings in real time</div>
+                      <div className="db-business-card-perk">✅ Open to all registered users</div>
+                    </div>
+                    <button className="db-business-card-btn" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white' }}>
+                      Apply as Influencer →
+                    </button>
+                  </div>
+
+                  {/* ── BECOME A SERVICE PROVIDER ── */}
+                  <div className="db-business-card" onClick={() => !spStatus?.has_application && setShowSPModal(true)}>
+                    <div className="db-business-card-icon" style={{ background: 'linear-gradient(135deg, #e0f7fe, #bae6fd)' }}>🏢</div>
+                    <div>
+                      <div className="db-business-card-title">Become a Service Provider</div>
+                      <div className="db-business-card-sub">List your travel and visa services, reach thousands of clients and grow your business on Ingress.</div>
+                    </div>
+                    <div className="db-business-card-perks">
+                      <div className="db-business-card-perk">✅ List student, tourist, business & medical packages</div>
+                      <div className="db-business-card-perk">✅ Get discovered by thousands of clients</div>
+                      <div className="db-business-card-perk">✅ Real-time chat with potential clients</div>
+                      <div className="db-business-card-perk">✅ Video discovery calls built in</div>
+                    </div>
+
+                    {!spStatus?.has_application && (
+                      <button className="db-business-card-btn" style={{ background: 'linear-gradient(135deg, #07b3f2, #0284c7)', color: 'white' }}>
+                        Apply as Service Provider →
+                      </button>
+                    )}
+                    {spStatus?.has_application && spStatus?.status === 'pending' && (
+                      <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: 10, padding: '10px 14px', fontSize: 12, fontWeight: 600, color: '#92400e', width: '100%', textAlign: 'center' }}>
+                        ⏳ Application Under Review
+                      </div>
+                    )}
+                    {spStatus?.has_application && spStatus?.status === 'approved' && (
+                      <button className="db-business-card-btn" style={{ background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white' }} onClick={(e) => { e.stopPropagation(); router.push('/agents/dashboard'); }}>
+                        Go to SP Dashboard →
+                      </button>
+                    )}
+                    {spStatus?.has_application && spStatus?.status === 'rejected' && (
+                      <div style={{ background: '#fee2e2', border: '1px solid #fecaca', borderRadius: 10, padding: '10px 14px', fontSize: 12, fontWeight: 600, color: '#991b1b', width: '100%', textAlign: 'center' }}>
+                        ❌ Application Rejected
+                      </div>
+                    )}
+                  </div>
+
+                </div>
               </div>
-            </div>
+            )}
+
           </main>
         </div>
       </div>
@@ -1131,27 +866,18 @@ export default function DashboardPage() {
             </div>
             <div className="sp-modal-body">
               {spSuccess ? (
-                <div className="sp-success">
-                  🎉 Application submitted! We'll review it and reach out to schedule a verification call.
-                </div>
+                <div className="sp-success">🎉 Application submitted! We'll review it and reach out to schedule a verification call.</div>
               ) : (
                 <form className="sp-modal-form" onSubmit={handleSPSubmit}>
                   {spError && <div className="sp-error">⚠️ {spError}</div>}
-
                   <div className="sp-modal-row">
                     <div className="sp-field">
                       <label className="sp-label">Business Name *</label>
-                      <input className="sp-input" placeholder="e.g. Apex Travel Agency" required
-                        value={spForm.business_name}
-                        onChange={e => setSpForm({ ...spForm, business_name: e.target.value })}
-                        disabled={spLoading} />
+                      <input className="sp-input" placeholder="e.g. Apex Travel Agency" required value={spForm.business_name} onChange={e => setSpForm({ ...spForm, business_name: e.target.value })} disabled={spLoading} />
                     </div>
                     <div className="sp-field">
                       <label className="sp-label">Business Type *</label>
-                      <select className="sp-select" required
-                        value={spForm.business_type}
-                        onChange={e => setSpForm({ ...spForm, business_type: e.target.value })}
-                        disabled={spLoading}>
+                      <select className="sp-select" required value={spForm.business_type} onChange={e => setSpForm({ ...spForm, business_type: e.target.value })} disabled={spLoading}>
                         <option value="">Select type...</option>
                         <option value="travel_consultant">Travel Consultant</option>
                         <option value="visa_agency">Visa Agency</option>
@@ -1161,67 +887,120 @@ export default function DashboardPage() {
                       </select>
                     </div>
                   </div>
-
                   <div className="sp-modal-row">
                     <div className="sp-field">
                       <label className="sp-label">Country *</label>
-                      <input className="sp-input" placeholder="e.g. Nigeria" required
-                        value={spForm.country}
-                        onChange={e => setSpForm({ ...spForm, country: e.target.value })}
-                        disabled={spLoading} />
+                      <input className="sp-input" placeholder="e.g. Nigeria" required value={spForm.country} onChange={e => setSpForm({ ...spForm, country: e.target.value })} disabled={spLoading} />
                     </div>
                     <div className="sp-field">
                       <label className="sp-label">Business Phone *</label>
-                      <input className="sp-input" placeholder="+234 801 234 5678" required
-                        value={spForm.phone}
-                        onChange={e => setSpForm({ ...spForm, phone: e.target.value })}
-                        disabled={spLoading} />
+                      <input className="sp-input" placeholder="+234 801 234 5678" required value={spForm.phone} onChange={e => setSpForm({ ...spForm, phone: e.target.value })} disabled={spLoading} />
                     </div>
                   </div>
-
                   <div className="sp-field">
                     <label className="sp-label">Business Bio</label>
-                    <textarea className="sp-textarea" placeholder="Tell us about your business, experience and services..."
-                      value={spForm.bio}
-                      onChange={e => setSpForm({ ...spForm, bio: e.target.value })}
-                      disabled={spLoading} />
+                    <textarea className="sp-textarea" placeholder="Tell us about your business, experience and services..." value={spForm.bio} onChange={e => setSpForm({ ...spForm, bio: e.target.value })} disabled={spLoading} />
                   </div>
-
                   <div className="sp-divider" />
-
                   <div className="sp-modal-row">
                     <div className="sp-field">
                       <label className="sp-label">Government ID *</label>
                       <label className={`sp-file-label${spIdDoc ? ' has-file' : ''}`}>
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                        </svg>
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
                         {spIdDoc ? `✓ ${spIdDoc.name.slice(0, 18)}...` : 'Upload ID document'}
-                        <input className="sp-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png"
-                          onChange={e => setSpIdDoc(e.target.files[0])}
-                          disabled={spLoading} />
+                        <input className="sp-file-input" type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={e => setSpIdDoc(e.target.files[0])} disabled={spLoading} />
                       </label>
                     </div>
                     <div className="sp-field">
                       <label className="sp-label">Profile Picture</label>
                       <label className={`sp-file-label${spProfilePic ? ' has-file' : ''}`}>
-                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                         {spProfilePic ? `✓ ${spProfilePic.name.slice(0, 18)}...` : 'Upload photo'}
-                        <input className="sp-file-input" type="file" accept=".jpg,.jpeg,.png"
-                          onChange={e => setSpProfilePic(e.target.files[0])}
-                          disabled={spLoading} />
+                        <input className="sp-file-input" type="file" accept=".jpg,.jpeg,.png" onChange={e => setSpProfilePic(e.target.files[0])} disabled={spLoading} />
                       </label>
                     </div>
                   </div>
-
                   <button type="submit" className="sp-submit" disabled={spLoading}>
-                    {spLoading ? (
-                      <><div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> Submitting...</>
-                    ) : (
-                      <> Submit Application →</>
-                    )}
+                    {spLoading ? <><div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> Submitting...</> : 'Submit Application →'}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── INFLUENCER MODAL ── */}
+      {showInfluencerModal && (
+        <div className="sp-modal-overlay" onClick={() => !infLoading && setShowInfluencerModal(false)}>
+          <div className="sp-modal" onClick={e => e.stopPropagation()}>
+            <div className="sp-modal-header">
+              <div>
+                <div className="sp-modal-title">🌟 Become an Influencer</div>
+                <div className="sp-modal-sub">Apply to join our influencer program. Earn commission every time someone books with your promo code.</div>
+              </div>
+              <button className="sp-modal-close" onClick={() => !infLoading && setShowInfluencerModal(false)}>✕</button>
+            </div>
+            <div className="sp-modal-body">
+              {infSuccess ? (
+                <div className="sp-success">
+                  🎉 Application submitted! We'll review it and send your unique promo code once approved.
+                </div>
+              ) : (
+                <form className="sp-modal-form" onSubmit={handleInfluencerSubmit}>
+                  {infError && <div className="sp-error">⚠️ {infError}</div>}
+                  <div className="sp-modal-row">
+                    <div className="sp-field">
+                      <label className="sp-label">Full Name *</label>
+                      <input className="sp-input" placeholder="Your full name" required value={infForm.full_name} onChange={e => setInfForm({ ...infForm, full_name: e.target.value })} disabled={infLoading} />
+                    </div>
+                    <div className="sp-field">
+                      <label className="sp-label">Email *</label>
+                      <input className="sp-input" type="email" placeholder="your@email.com" required value={infForm.email} onChange={e => setInfForm({ ...infForm, email: e.target.value })} disabled={infLoading} />
+                    </div>
+                  </div>
+                  <div className="sp-modal-row">
+                    <div className="sp-field">
+                      <label className="sp-label">Phone *</label>
+                      <input className="sp-input" placeholder="+234 801 234 5678" required value={infForm.phone} onChange={e => setInfForm({ ...infForm, phone: e.target.value })} disabled={infLoading} />
+                    </div>
+                    <div className="sp-field">
+                      <label className="sp-label">Main Platform *</label>
+                      <select className="sp-select" required value={infForm.platform} onChange={e => setInfForm({ ...infForm, platform: e.target.value })} disabled={infLoading}>
+                        <option value="">Select platform...</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="twitter">X (Twitter)</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="sp-modal-row">
+                    <div className="sp-field">
+                      <label className="sp-label">Social Media Handle *</label>
+                      <input className="sp-input" placeholder="@yourhandle" required value={infForm.handle} onChange={e => setInfForm({ ...infForm, handle: e.target.value })} disabled={infLoading} />
+                    </div>
+                    <div className="sp-field">
+                      <label className="sp-label">Audience Size *</label>
+                      <select className="sp-select" required value={infForm.audience_size} onChange={e => setInfForm({ ...infForm, audience_size: e.target.value })} disabled={infLoading}>
+                        <option value="">Select range...</option>
+                        <option value="1k-10k">1,000 – 10,000</option>
+                        <option value="10k-50k">10,000 – 50,000</option>
+                        <option value="50k-100k">50,000 – 100,000</option>
+                        <option value="100k-500k">100,000 – 500,000</option>
+                        <option value="500k+">500,000+</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="sp-field">
+                    <label className="sp-label">Why do you want to be an Ingress Influencer? *</label>
+                    <textarea className="sp-textarea" placeholder="Tell us about your audience, content style and why you'd be a great fit..." required value={infForm.why} onChange={e => setInfForm({ ...infForm, why: e.target.value })} disabled={infLoading} />
+                  </div>
+                  <button type="submit" className="sp-submit" disabled={infLoading} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
+                    {infLoading ? <><div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> Submitting...</> : '🌟 Submit Influencer Application →'}
                   </button>
                 </form>
               )}
