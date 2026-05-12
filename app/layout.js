@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Ingress Travels",
+  title: "Access to Global Education, Cities, Healthcare, Business and Career Opportunities.",
   description: "Your visa journey starts here",
 };
 

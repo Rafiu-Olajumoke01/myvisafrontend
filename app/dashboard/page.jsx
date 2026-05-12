@@ -23,7 +23,6 @@ const styles = `
     font-family: 'DM Sans', sans-serif;
   }
 
-  /* ── SIDEBAR ── */
   .db-sidebar {
     width: 240px;
     flex-shrink: 0;
@@ -122,10 +121,8 @@ const styles = `
   }
   .db-sidebar-user-role { font-size: 10px; color: #94a3b8; margin-top: 1px; }
 
-  /* ── MAIN ── */
   .db-main { margin-left: 240px; flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
-  /* ── TOPBAR ── */
   .db-topbar {
     background: #ffffff;
     border-bottom: 1px solid #eef0f6;
@@ -147,10 +144,8 @@ const styles = `
     font-size: 12px; font-weight: 700; color: white; cursor: pointer;
   }
 
-  /* ── CONTENT ── */
   .db-content { padding: 28px 32px 48px; flex: 1; }
 
-  /* ── PERSONAL/BUSINESS TABS ── */
   .db-main-tabs {
     display: flex;
     gap: 4px;
@@ -178,7 +173,6 @@ const styles = `
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
 
-  /* ── WELCOME STRIP ── */
   .db-welcome {
     background: linear-gradient(135deg, #0a0e1a 0%, #0f172a 60%, #07b3f2 200%);
     border-radius: 20px;
@@ -217,7 +211,6 @@ const styles = `
   .db-welcome-btn-ghost { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.12) !important; }
   .db-welcome-btn-ghost:hover { background: rgba(255,255,255,0.14); }
 
-  /* ── SP BANNER ── */
   .db-sp-banner {
     background: white; border: 1.5px solid #e0f7fe; border-radius: 16px;
     padding: 20px 24px; display: flex; align-items: center;
@@ -240,7 +233,6 @@ const styles = `
   }
   .db-sp-btn:hover { background: #0291c8; transform: translateY(-1px); }
 
-  /* ── STATS ROW ── */
   .db-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
   .db-stat-card { background: white; border-radius: 16px; padding: 20px; border: 1px solid #eef0f6; transition: box-shadow 0.2s; }
   .db-stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
@@ -250,10 +242,8 @@ const styles = `
   .db-stat-num { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 700; color: #0a0e1a; line-height: 1; margin-bottom: 4px; }
   .db-stat-change { font-size: 11px; color: #94a3b8; }
 
-  /* ── GRID ── */
   .db-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
 
-  /* ── APPLICATIONS ── */
   .db-card { background: white; border-radius: 16px; border: 1px solid #eef0f6; overflow: hidden; }
   .db-card-header { padding: 20px 24px 0; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
   .db-card-title { font-size: 14px; font-weight: 700; color: #0a0e1a; }
@@ -287,7 +277,6 @@ const styles = `
   .db-empty-btn { padding: 10px 24px; background: #07b3f2; color: white; border: none; border-radius: 10px; font-size: 13px; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; }
   .db-empty-btn:hover { background: #0291c8; }
 
-  /* ── RIGHT PANEL ── */
   .db-right { display: flex; flex-direction: column; gap: 16px; }
 
   .db-profile-card { background: white; border-radius: 16px; border: 1px solid #eef0f6; padding: 24px; text-align: center; }
@@ -309,7 +298,6 @@ const styles = `
   .db-quick-item-label { font-size: 12px; font-weight: 500; color: #374151; }
   .db-quick-item-arrow { margin-left: auto; color: #c1c9d2; font-size: 12px; }
 
-  /* ── BUSINESS TAB ── */
   .db-business-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
   .db-business-card {
     background: white; border-radius: 20px; border: 1.5px solid #eef0f6;
@@ -331,7 +319,6 @@ const styles = `
     cursor: pointer; transition: all 0.2s; width: 100%;
   }
 
-  /* ── MODAL ── */
   .sp-modal-overlay {
     position: fixed; inset: 0; background: rgba(10,14,26,0.6);
     backdrop-filter: blur(6px); z-index: 100;
@@ -404,6 +391,7 @@ export default function DashboardPage() {
   const [showSPModal, setShowSPModal] = useState(false);
   const [showInfluencerModal, setShowInfluencerModal] = useState(false);
   const [spStatus, setSpStatus] = useState(null);
+  const [infStatus, setInfStatus] = useState(null); // ✅ NEW
   const [spForm, setSpForm] = useState({ business_name: '', business_type: '', country: '', phone: '', bio: '' });
   const [spIdDoc, setSpIdDoc] = useState(null);
   const [spProfilePic, setSpProfilePic] = useState(null);
@@ -417,19 +405,33 @@ export default function DashboardPage() {
 
   useEffect(() => { fetchDashboard(); }, []);
 
+  // ✅ UPDATED fetchDashboard — now fetches influencer status too
   const fetchDashboard = async () => {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) { router.push('/login'); return; }
-      const [profileRes, appRes, spRes] = await Promise.all([
-        fetch('https://web-production-f50dc.up.railway.app/api/auth/profile/', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('https://web-production-f50dc.up.railway.app/api/applications/', { headers: { Authorization: `Bearer ${token}` } }),
-        fetch('https://web-production-f50dc.up.railway.app/api/providers/status/', { headers: { Authorization: `Bearer ${token}` } }),
+
+      const [profileRes, appRes, spRes, infRes] = await Promise.all([
+        fetch('https://web-production-f50dc.up.railway.app/api/auth/profile/', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch('https://web-production-f50dc.up.railway.app/api/applications/', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch('https://web-production-f50dc.up.railway.app/api/providers/status/', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        fetch('https://web-production-f50dc.up.railway.app/api/influencers/status/', {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
       ]);
+
       if (profileRes.status === 401) { router.push('/login'); return; }
       if (profileRes.ok) setUserData(await profileRes.json());
       if (appRes.ok) { const d = await appRes.json(); setApplications(d.applications || []); }
       if (spRes.ok) { const d = await spRes.json(); setSpStatus(d); }
+      if (infRes.ok) { const d = await infRes.json(); setInfStatus(d); } // ✅ NEW
+
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
   };
@@ -496,6 +498,7 @@ export default function DashboardPage() {
     finally { setSpLoading(false); }
   };
 
+  // ✅ UPDATED — now calls fetchDashboard() after success so UI updates immediately
   const handleInfluencerSubmit = async (e) => {
     e.preventDefault();
     setInfLoading(true);
@@ -513,6 +516,7 @@ export default function DashboardPage() {
       const data = await res.json();
       if (res.ok) {
         setInfSuccess(true);
+        await fetchDashboard(); // ✅ This refreshes infStatus so the card updates
         setTimeout(() => {
           setShowInfluencerModal(false);
           setInfSuccess(false);
@@ -544,7 +548,7 @@ export default function DashboardPage() {
       <style>{styles}</style>
       <div className="db-root">
 
-        {/* ── SIDEBAR ── */}
+        {/* SIDEBAR */}
         <aside className="db-sidebar">
           <div className="db-sidebar-logo">
             <div className="db-sidebar-logo-text">Ingress<span>.</span></div>
@@ -578,7 +582,7 @@ export default function DashboardPage() {
           </div>
         </aside>
 
-        {/* ── MAIN ── */}
+        {/* MAIN */}
         <div className="db-main">
           <header className="db-topbar">
             <div className="db-topbar-title">My Dashboard</div>
@@ -604,7 +608,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* ── PERSONAL / BUSINESS TABS ── */}
+            {/* PERSONAL / BUSINESS TABS */}
             <div className="db-main-tabs db-animate db-animate-2">
               <button className={`db-main-tab${activeMainTab === 'personal' ? ' active' : ''}`} onClick={() => setActiveMainTab('personal')}>
                 👤 Personal
@@ -614,10 +618,9 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            {/* ══════════════ PERSONAL TAB ══════════════ */}
+            {/* PERSONAL TAB */}
             {activeMainTab === 'personal' && (
               <>
-                {/* SP Status Banners */}
                 {(!spStatus || !spStatus.has_application) && (
                   <div className="db-sp-banner db-animate db-animate-2">
                     <div className="db-sp-banner-left">
@@ -629,15 +632,10 @@ export default function DashboardPage() {
                         <div className="db-sp-sub">Become a Service Provider or Influencer. Switch to the Business tab to get started.</div>
                       </div>
                     </div>
-                    <button className="db-sp-btn" onClick={() => setActiveMainTab('business')}>
-                      Go to Business →
-                    </button>
+                    <button className="db-sp-btn" onClick={() => setActiveMainTab('business')}>Go to Business →</button>
                   </div>
                 )}
 
-                {/* <button className="db-business-card-btn" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white' }} onClick={() => router.push('/influencer/dashboard')}>
-                  Go to Influencer Dashboard →
-                </button> */}
                 {spStatus?.has_application && spStatus?.status === 'pending' && (
                   <div className="db-sp-banner db-animate db-animate-2" style={{ borderColor: '#fef3c7', background: '#fffbeb' }}>
                     <div className="db-sp-banner-left">
@@ -804,7 +802,7 @@ export default function DashboardPage() {
               </>
             )}
 
-            {/* ══════════════ BUSINESS TAB ══════════════ */}
+            {/* BUSINESS TAB */}
             {activeMainTab === 'business' && (
               <div className="db-animate db-animate-2">
                 <div style={{ marginBottom: 24 }}>
@@ -814,8 +812,8 @@ export default function DashboardPage() {
 
                 <div className="db-business-grid">
 
-                  {/* ── BECOME AN INFLUENCER ── */}
-                  <div className="db-business-card" onClick={() => setShowInfluencerModal(true)}>
+                  {/* ✅ BECOME AN INFLUENCER — fully updated with status-aware button */}
+                  <div className="db-business-card" onClick={() => !infStatus?.has_application && setShowInfluencerModal(true)}>
                     <div className="db-business-card-icon" style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)' }}>🌟</div>
                     <div>
                       <div className="db-business-card-title">Become an Influencer</div>
@@ -827,12 +825,41 @@ export default function DashboardPage() {
                       <div className="db-business-card-perk">✅ Track your earnings in real time</div>
                       <div className="db-business-card-perk">✅ Open to all registered users</div>
                     </div>
-                    <button className="db-business-card-btn" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white' }}>
-                      Apply as Influencer →
-                    </button>
+
+                    {/* No application yet — show Apply button */}
+                    {!infStatus?.has_application && (
+                      <button className="db-business-card-btn" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white' }}>
+                        Apply as Influencer →
+                      </button>
+                    )}
+
+                    {/* Applied and pending — show Under Review */}
+                    {infStatus?.has_application && infStatus?.status === 'pending' && (
+                      <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: 10, padding: '10px 14px', fontSize: 12, fontWeight: 600, color: '#92400e', width: '100%', textAlign: 'center' }}>
+                        ⏳ Application Under Review
+                      </div>
+                    )}
+
+                    {/* Approved — show Go to Dashboard button */}
+                    {infStatus?.has_application && infStatus?.status === 'approved' && (
+                      <button
+                        className="db-business-card-btn"
+                        style={{ background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white' }}
+                        onClick={(e) => { e.stopPropagation(); router.push('/influencer/dashboard'); }}
+                      >
+                        Go to Influencer Dashboard →
+                      </button>
+                    )}
+
+                    {/* Rejected */}
+                    {infStatus?.has_application && infStatus?.status === 'rejected' && (
+                      <div style={{ background: '#fee2e2', border: '1px solid #fecaca', borderRadius: 10, padding: '10px 14px', fontSize: 12, fontWeight: 600, color: '#991b1b', width: '100%', textAlign: 'center' }}>
+                        ❌ Application Rejected
+                      </div>
+                    )}
                   </div>
 
-                  {/* ── BECOME A SERVICE PROVIDER ── */}
+                  {/* BECOME A SERVICE PROVIDER */}
                   <div className="db-business-card" onClick={() => !spStatus?.has_application && setShowSPModal(true)}>
                     <div className="db-business-card-icon" style={{ background: 'linear-gradient(135deg, #e0f7fe, #bae6fd)' }}>🏢</div>
                     <div>
@@ -876,7 +903,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── SP MODAL ── */}
+      {/* SP MODAL */}
       {showSPModal && (
         <div className="sp-modal-overlay" onClick={() => !spLoading && setShowSPModal(false)}>
           <div className="sp-modal" onClick={e => e.stopPropagation()}>
@@ -953,7 +980,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* ── INFLUENCER MODAL ── */}
+      {/* INFLUENCER MODAL */}
       {showInfluencerModal && (
         <div className="sp-modal-overlay" onClick={() => !infLoading && setShowInfluencerModal(false)}>
           <div className="sp-modal" onClick={e => e.stopPropagation()}>
@@ -1022,7 +1049,6 @@ export default function DashboardPage() {
                     <label className="sp-label">Why do you want to be an Ingress Influencer? *</label>
                     <textarea className="sp-textarea" placeholder="Tell us about your audience, content style and why you'd be a great fit..." required value={infForm.why} onChange={e => setInfForm({ ...infForm, why: e.target.value })} disabled={infLoading} />
                   </div>
-
                   <div className="sp-field">
                     <label className="sp-label">Your Promo Code * <span style={{ color: '#94a3b8', fontWeight: 400 }}>(letters & numbers only, e.g. SARAH2025)</span></label>
                     <input
