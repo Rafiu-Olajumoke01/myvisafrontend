@@ -37,6 +37,7 @@ const styles = `
     --amber: #f59e0b;
     --red: #ef4444;
     --purple: #7c3aed;
+    --pink: #ec4899;
   }
 
   .nx-root {
@@ -152,6 +153,7 @@ const styles = `
     text-align: center;
   }
   .nx-nav-badge.red { background: var(--red); }
+  .nx-nav-badge.pink { background: var(--pink); }
   .nx-sidebar-bottom {
     padding: 14px 10px;
     border-top: 1px solid rgba(255,255,255,0.06);
@@ -407,6 +409,11 @@ const styles = `
   }
   .nx-btn-primary:hover { background: var(--blue-d); transform: translateY(-1px); }
   .nx-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .nx-btn-pink {
+    background: rgba(236,72,153,0.1); color: var(--pink);
+    border: 1px solid rgba(236,72,153,0.2);
+  }
+  .nx-btn-pink:hover { background: rgba(236,72,153,0.18); }
   .nx-btn-success {
     background: rgba(16,185,129,0.1); color: var(--green);
     border: 1px solid rgba(16,185,129,0.2);
@@ -514,6 +521,26 @@ const styles = `
     margin-bottom: 14px;
   }
 
+  /* ── INFLUENCER SECTION BANNER ── */
+  .nx-influencer-banner {
+    background: linear-gradient(135deg, rgba(236,72,153,0.06), rgba(124,58,237,0.06));
+    border: 1px solid rgba(236,72,153,0.15);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+
+  /* ── SOCIAL PILL ── */
+  .nx-social-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 999px;
+    font-size: 10px; font-weight: 700;
+    background: rgba(236,72,153,0.08);
+    color: var(--pink);
+    border: 1px solid rgba(236,72,153,0.15);
+    margin: 2px;
+  }
+
   /* ── EMPTY ── */
   .nx-empty { padding: 56px 20px; text-align: center; }
   .nx-empty-icon { font-size: 36px; margin-bottom: 12px; }
@@ -581,6 +608,12 @@ const SP_STATUS = {
   approved: { label: 'Approved', dot: '#10b981', bg: 'rgba(16,185,129,0.1)', text: '#059669' },
   rejected: { label: 'Rejected', dot: '#ef4444', bg: 'rgba(239,68,68,0.1)',  text: '#dc2626' },
 };
+// Influencer uses same status shape as SP
+const INF_STATUS = {
+  pending:  { label: 'Pending',  dot: '#f59e0b', bg: 'rgba(245,158,11,0.1)',  text: '#d97706' },
+  approved: { label: 'Approved', dot: '#10b981', bg: 'rgba(16,185,129,0.1)', text: '#059669' },
+  rejected: { label: 'Rejected', dot: '#ef4444', bg: 'rgba(239,68,68,0.1)',  text: '#dc2626' },
+};
 
 const Badge = ({ status, map }) => {
   const s = map[status] || map.pending || map.not_started;
@@ -601,6 +634,11 @@ const NAV = [
   {
     key: 'sp_applications', label: 'SP Applications', badge: true,
     icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>,
+  },
+  {
+    // ── NEW: Influencer Applications nav item
+    key: 'influencer_applications', label: 'Influencers', badgeInfluencer: true,
+    icon: <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" /></svg>,
   },
   {
     key: 'applications', label: 'Applications',
@@ -1003,6 +1041,341 @@ function SPApplicationsSection({ showToast }) {
   );
 }
 
+// ── INFLUENCER APPLICATIONS SECTION ──────────────────────────────────────────
+// Mirrors SP Applications but targets /influencers/admin/list/ and
+// /influencers/admin/<id>/approve|reject/ endpoints.
+// Adjust the endpoint paths below to match your actual API routes.
+function InfluencerApplicationsSection({ showToast }) {
+  const [influencers, setInfluencers] = useState([]);
+  const [loading, setLoading]         = useState(true);
+  const [filter, setFilter]           = useState('pending');
+  const [search, setSearch]           = useState('');
+  const [selected, setSelected]       = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  useEffect(() => { fetchInfluencers(); }, []);
+
+  const fetchInfluencers = async () => {
+    setLoading(true);
+    try {
+      // ── adjust this endpoint to your actual influencer list route ──
+      const res  = await fetch(`${API}/influencers/admin/list/`, { headers: auth() });
+      const data = await res.json();
+      // expects { influencers: [...] }  — adjust key if different
+      setInfluencers(
+        (data.influencers || []).map((inf, i) => ({ ...inf, color: AVATAR_COLORS[i % AVATAR_COLORS.length] }))
+      );
+    } catch (e) { console.error(e); }
+    finally { setLoading(false); }
+  };
+
+  const handleAction = async (id, action) => {
+    setActionLoading(true);
+    try {
+      // ── adjust endpoint to your actual approve/reject route ──
+      const res = await fetch(`${API}/influencers/admin/${id}/${action}/`, {
+        method: 'POST', headers: auth(),
+      });
+      if (res.ok) {
+        const newStatus = action === 'approve' ? 'approved' : 'rejected';
+        setInfluencers(prev => prev.map(inf => inf.id === id ? { ...inf, status: newStatus } : inf));
+        if (selected?.id === id) setSelected(prev => ({ ...prev, status: newStatus }));
+        showToast(action === 'approve' ? '✅ Influencer approved! They can now access their dashboard.' : '❌ Influencer application rejected');
+        if (action === 'approve') fetchInfluencers();
+      } else {
+        const err = await res.json();
+        showToast('❌ Error: ' + (err.error || err.detail || 'Something went wrong'));
+      }
+    } catch (e) { console.error(e); }
+    finally { setActionLoading(false); }
+  };
+
+  const filtered = influencers.filter(inf => {
+    const matchSearch =
+      !search ||
+      inf.full_name?.toLowerCase().includes(search.toLowerCase()) ||
+      inf.username?.toLowerCase().includes(search.toLowerCase()) ||
+      inf.email?.toLowerCase().includes(search.toLowerCase()) ||
+      inf.niche?.toLowerCase().includes(search.toLowerCase());
+    const matchFilter = filter === 'all' || inf.status === filter;
+    return matchSearch && matchFilter;
+  });
+
+  const counts = {
+    pending:  influencers.filter(i => i.status === 'pending').length,
+    approved: influencers.filter(i => i.status === 'approved').length,
+    rejected: influencers.filter(i => i.status === 'rejected').length,
+  };
+
+  if (loading) return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {[...Array(5)].map((_, i) => <div key={i} className="nx-skeleton" style={{ height: 60 }} />)}
+    </div>
+  );
+
+  return (
+    <div>
+      {/* ── Header ── */}
+      <div className="nx-anim nx-anim-1" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 20 }}>
+        <div>
+          <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 22, fontWeight: 800, color: 'var(--ink)', letterSpacing: '-0.3px' }}>
+            Influencer Applications
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--muted2)', marginTop: 3 }}>
+            {influencers.length} total · {counts.pending} awaiting review
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {[['pending', counts.pending, INF_STATUS.pending], ['approved', counts.approved, INF_STATUS.approved], ['rejected', counts.rejected, INF_STATUS.rejected]].map(([key, count, s]) => (
+            <span key={key} className="nx-badge" style={{ background: s.bg, color: s.text, padding: '5px 12px' }}>
+              <span className="nx-badge-dot" style={{ background: s.dot }} />{count} {key}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Filters ── */}
+      <div className="nx-anim nx-anim-2" style={{ display: 'flex', gap: 10, marginBottom: 18, flexWrap: 'wrap', alignItems: 'center' }}>
+        <input
+          className="nx-input"
+          style={{ flex: 1, minWidth: 200 }}
+          placeholder="🔍 Search by name, username, email or niche..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+        />
+        <div className="nx-tabs">
+          {['pending', 'approved', 'rejected', 'all'].map(t => (
+            <button key={t} className={`nx-tab ${filter === t ? 'active' : 'inactive'}`} onClick={() => setFilter(t)} style={{ textTransform: 'capitalize' }}>
+              {t}
+              {t === 'pending' && counts.pending > 0 && (
+                <span style={{ marginLeft: 5, background: 'var(--pink)', color: 'white', fontSize: 9, fontWeight: 800, padding: '1px 5px', borderRadius: 999 }}>{counts.pending}</span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Table ── */}
+      <div className="nx-card nx-anim nx-anim-3">
+        <div style={{ overflowX: 'auto' }}>
+          <table className="nx-table">
+            <thead>
+              <tr>
+                {['Influencer', 'Niche', 'Platform', 'Followers', 'Country', 'Applied', 'Status', ''].map(h => (
+                  <th key={h} className="nx-th">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="nx-td">
+                    <div className="nx-empty">
+                      <div className="nx-empty-icon">✨</div>
+                      <div className="nx-empty-title">No {filter === 'all' ? '' : filter} influencer applications</div>
+                      <div className="nx-empty-sub">New influencer sign-ups will appear here for review</div>
+                    </div>
+                  </td>
+                </tr>
+              ) : filtered.map((inf) => (
+                <tr key={inf.id} className="nx-tr">
+                  <td className="nx-td">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                      <div className="nx-avatar" style={{ width: 34, height: 34, background: inf.color }}>
+                        {inf.profile_picture
+                          ? <img src={inf.profile_picture} alt="" style={{ width: '100%', height: '100%', borderRadius: 10, objectFit: 'cover' }} />
+                          : ini(inf.full_name || inf.username)}
+                      </div>
+                      <div>
+                        <div style={{ fontSize: 12.5, fontWeight: 600, color: 'var(--ink)' }}>{inf.full_name || inf.username || '—'}</div>
+                        <div style={{ fontSize: 10, color: 'var(--muted2)' }}>{inf.email || '—'}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="nx-td" style={{ fontSize: 11, textTransform: 'capitalize' }}>{inf.niche || '—'}</td>
+                  <td className="nx-td" style={{ fontSize: 11 }}>{inf.primary_platform || inf.platform || '—'}</td>
+                  <td className="nx-td" style={{ fontSize: 11 }}>
+                    {inf.follower_count
+                      ? Number(inf.follower_count).toLocaleString()
+                      : '—'}
+                  </td>
+                  <td className="nx-td" style={{ fontSize: 11 }}>{inf.country || '—'}</td>
+                  <td className="nx-td" style={{ fontSize: 11, color: 'var(--muted2)', whiteSpace: 'nowrap' }}>{fmtDate(inf.created_at)}</td>
+                  <td className="nx-td"><Badge status={inf.status} map={INF_STATUS} /></td>
+                  <td className="nx-td">
+                    <button className="nx-btn nx-btn-ghost nx-btn-sm" onClick={() => setSelected(inf)}>View →</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ── Detail Modal ── */}
+      {selected && (
+        <div className="nx-modal-overlay" onClick={e => e.target === e.currentTarget && setSelected(null)}>
+          <div className="nx-modal">
+            <div className="nx-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div className="nx-avatar" style={{ width: 44, height: 44, background: selected.color, borderRadius: 12, fontSize: 14 }}>
+                  {selected.profile_picture
+                    ? <img src={selected.profile_picture} alt="" style={{ width: '100%', height: '100%', borderRadius: 12, objectFit: 'cover' }} />
+                    : ini(selected.full_name || selected.username)}
+                </div>
+                <div>
+                  <div className="nx-modal-title">{selected.full_name || selected.username}</div>
+                  <div style={{ fontSize: 11, color: 'var(--muted2)', marginTop: 2 }}>{selected.email}</div>
+                </div>
+              </div>
+              <button className="nx-modal-close" onClick={() => setSelected(null)}>✕</button>
+            </div>
+
+            <div className="nx-modal-body">
+              <div style={{ marginBottom: 14 }}><Badge status={selected.status} map={INF_STATUS} /></div>
+
+              {/* Personal Info */}
+              <div className="nx-info-section">
+                <div style={{ fontSize: 9, fontWeight: 800, color: 'var(--muted2)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
+                  ✨ Influencer Details
+                </div>
+                <div className="nx-info-grid">
+                  {[
+                    ['Full Name',    selected.full_name || selected.username],
+                    ['Email',        selected.email],
+                    ['Username',     selected.username],
+                    ['Phone',        selected.phone],
+                    ['Country',      selected.country],
+                    ['Niche',        selected.niche],
+                    ['Platform',     selected.primary_platform || selected.platform],
+                    ['Followers',    selected.follower_count ? Number(selected.follower_count).toLocaleString() : null],
+                    ['Applied',      fmtDate(selected.created_at)],
+                  ].map(([l, v]) => (
+                    <div key={l}>
+                      <div className="nx-info-label">{l}</div>
+                      <div className="nx-info-val" style={{ textTransform: 'capitalize' }}>{v || '—'}</div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bio */}
+                {selected.bio && (
+                  <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--border2)' }}>
+                    <div className="nx-info-label">Bio</div>
+                    <div style={{ fontSize: 12, color: 'var(--ink3)', lineHeight: 1.6, marginTop: 4 }}>{selected.bio}</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Social Links */}
+              {(selected.instagram || selected.tiktok || selected.youtube || selected.twitter || selected.facebook || selected.social_links) && (
+                <div className="nx-influencer-banner" style={{ marginBottom: 14 }}>
+                  <div style={{ fontSize: 9, fontWeight: 800, color: 'var(--pink)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                    📱 Social Profiles
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                    {selected.instagram && (
+                      <a href={selected.instagram} target="_blank" rel="noreferrer" className="nx-social-pill">📸 Instagram</a>
+                    )}
+                    {selected.tiktok && (
+                      <a href={selected.tiktok} target="_blank" rel="noreferrer" className="nx-social-pill">🎵 TikTok</a>
+                    )}
+                    {selected.youtube && (
+                      <a href={selected.youtube} target="_blank" rel="noreferrer" className="nx-social-pill">▶️ YouTube</a>
+                    )}
+                    {selected.twitter && (
+                      <a href={selected.twitter} target="_blank" rel="noreferrer" className="nx-social-pill">🐦 Twitter/X</a>
+                    )}
+                    {selected.facebook && (
+                      <a href={selected.facebook} target="_blank" rel="noreferrer" className="nx-social-pill">📘 Facebook</a>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Documents */}
+              {(selected.id_document || selected.media_kit) && (
+                <div className="nx-info-section" style={{ marginBottom: 14 }}>
+                  <div style={{ fontSize: 9, fontWeight: 800, color: 'var(--muted2)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>📎 Documents</div>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {selected.id_document && (
+                      <a href={selected.id_document} target="_blank" rel="noreferrer" className="nx-btn nx-btn-ghost nx-btn-sm">📄 View ID Document</a>
+                    )}
+                    {selected.media_kit && (
+                      <a href={selected.media_kit} target="_blank" rel="noreferrer" className="nx-btn nx-btn-ghost nx-btn-sm">📊 View Media Kit</a>
+                    )}
+                    {selected.profile_picture && (
+                      <a href={selected.profile_picture} target="_blank" rel="noreferrer" className="nx-btn nx-btn-ghost nx-btn-sm">🖼 View Profile Photo</a>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* ── Action Buttons by status ── */}
+              {selected.status === 'pending' && (
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    className="nx-btn nx-btn-danger"
+                    style={{ flex: 1 }}
+                    onClick={() => handleAction(selected.id, 'reject')}
+                    disabled={actionLoading}
+                  >
+                    ✕ Reject
+                  </button>
+                  <button
+                    className="nx-btn nx-btn-primary"
+                    style={{ flex: 2 }}
+                    onClick={() => handleAction(selected.id, 'approve')}
+                    disabled={actionLoading}
+                  >
+                    {actionLoading ? <><div className="nx-spinner" />Processing...</> : '✓ Approve Influencer'}
+                  </button>
+                </div>
+              )}
+
+              {selected.status === 'approved' && (
+                <div>
+                  <div style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                    <span>✅</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--green)' }}>
+                      Influencer has full dashboard access
+                    </span>
+                  </div>
+                  <button
+                    className="nx-btn nx-btn-danger"
+                    style={{ width: '100%' }}
+                    onClick={() => handleAction(selected.id, 'reject')}
+                    disabled={actionLoading}
+                  >
+                    Revoke Access
+                  </button>
+                </div>
+              )}
+
+              {selected.status === 'rejected' && (
+                <div>
+                  <div style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                    <span>❌</span>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--red)' }}>Application rejected</span>
+                  </div>
+                  <button
+                    className="nx-btn nx-btn-primary"
+                    style={{ width: '100%' }}
+                    onClick={() => handleAction(selected.id, 'approve')}
+                    disabled={actionLoading}
+                  >
+                    {actionLoading ? <><div className="nx-spinner" />Processing...</> : '↩ Re-approve Influencer'}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── APPLICATIONS SECTION ──────────────────────────────────────────────────────
 function ApplicationsSection() {
   const [apps, setApps] = useState([]);
@@ -1210,14 +1583,22 @@ export default function Nexus() {
   const [toast, setToast] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActive, setSearchActive] = useState(false);
-  const [spPendingCount, setSpPendingCount] = useState(0);
+  const [spPendingCount, setSpPendingCount]   = useState(0);
+  const [infPendingCount, setInfPendingCount] = useState(0);
 
   useEffect(() => {
     const fetchPending = async () => {
       try {
-        const res = await fetch(`${API}/providers/admin/list/`, { headers: auth() });
-        const data = await res.json();
-        setSpPendingCount((data.providers || []).filter(p => p.status === 'pending').length);
+        // Fetch SP pending count
+        const spRes  = await fetch(`${API}/providers/admin/list/`, { headers: auth() });
+        const spData = await spRes.json();
+        setSpPendingCount((spData.providers || []).filter(p => p.status === 'pending').length);
+
+        // Fetch Influencer pending count
+        // ── adjust endpoint to your actual influencer list route ──
+        const infRes  = await fetch(`${API}/influencers/admin/list/`, { headers: auth() });
+        const infData = await infRes.json();
+        setInfPendingCount((infData.influencers || []).filter(i => i.status === 'pending').length);
       } catch {}
     };
     fetchPending();
@@ -1235,8 +1616,12 @@ export default function Nexus() {
   };
 
   const SECTION_TITLES = {
-    overview: 'Overview', sp_applications: 'SP Applications',
-    applications: 'Applications', packages: 'Packages', users: 'Users',
+    overview:                'Overview',
+    sp_applications:         'SP Applications',
+    influencer_applications: 'Influencer Applications',
+    applications:            'Applications',
+    packages:                'Packages',
+    users:                   'Users',
   };
 
   if (!ready) return (
@@ -1263,7 +1648,14 @@ export default function Nexus() {
               <button key={item.key} className={`nx-nav-item${active === item.key ? ' active' : ''}`} onClick={() => setActive(item.key)}>
                 {item.icon}
                 {item.label}
-                {item.badge && spPendingCount > 0 && <span className="nx-nav-badge red">{spPendingCount}</span>}
+                {/* SP pending badge */}
+                {item.badge && spPendingCount > 0 && (
+                  <span className="nx-nav-badge red">{spPendingCount}</span>
+                )}
+                {/* Influencer pending badge */}
+                {item.badgeInfluencer && infPendingCount > 0 && (
+                  <span className="nx-nav-badge pink">{infPendingCount}</span>
+                )}
               </button>
             ))}
             <div className="nx-nav-section" style={{ marginTop: 20 }}>System</div>
@@ -1299,7 +1691,7 @@ export default function Nexus() {
               <div className="nx-live-badge"><span className="nx-live-dot" />Live</div>
               <button className="nx-topbar-btn">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
-                {spPendingCount > 0 && <span className="nx-notif-dot" />}
+                {(spPendingCount > 0 || infPendingCount > 0) && <span className="nx-notif-dot" />}
               </button>
             </div>
           </header>
@@ -1308,11 +1700,12 @@ export default function Nexus() {
             {searchActive && (
               <GlobalSearchResults query={searchQuery} onClose={() => { setSearchQuery(''); setSearchActive(false); }} />
             )}
-            {active === 'overview'         && <OverviewSection />}
-            {active === 'sp_applications'  && <SPApplicationsSection showToast={showToast} />}
-            {active === 'applications'     && <ApplicationsSection />}
-            {active === 'packages'         && <AdminPackagesSection showToast={showToast} />}
-            {active === 'users'            && <UsersSection />}
+            {active === 'overview'                 && <OverviewSection />}
+            {active === 'sp_applications'          && <SPApplicationsSection showToast={showToast} />}
+            {active === 'influencer_applications'  && <InfluencerApplicationsSection showToast={showToast} />}
+            {active === 'applications'             && <ApplicationsSection />}
+            {active === 'packages'                 && <AdminPackagesSection showToast={showToast} />}
+            {active === 'users'                    && <UsersSection />}
           </main>
         </div>
       </div>

@@ -410,7 +410,7 @@ export default function DashboardPage() {
   const [spLoading, setSpLoading] = useState(false);
   const [spError, setSpError] = useState('');
   const [spSuccess, setSpSuccess] = useState(false);
-  const [infForm, setInfForm] = useState({ full_name: '', email: '', phone: '', platform: '', handle: '', audience_size: '', why: '' });
+  const [infForm, setInfForm] = useState({ full_name: '', email: '', phone: '', platform: '', handle: '', audience_size: '', why: '', promo_code: '' });
   const [infLoading, setInfLoading] = useState(false);
   const [infSuccess, setInfSuccess] = useState(false);
   const [infError, setInfError] = useState('');
@@ -501,11 +501,31 @@ export default function DashboardPage() {
     setInfLoading(true);
     setInfError('');
     try {
-      await new Promise(r => setTimeout(r, 1500));
-      setInfSuccess(true);
-      setTimeout(() => { setShowInfluencerModal(false); setInfSuccess(false); setInfForm({ full_name: '', email: '', phone: '', platform: '', handle: '', audience_size: '', why: '' }); }, 3000);
-    } catch { setInfError('Network error. Please check your connection.'); }
-    finally { setInfLoading(false); }
+      const token = localStorage.getItem('access_token');
+      const res = await fetch('https://web-production-f50dc.up.railway.app/api/influencers/apply/', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(infForm),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setInfSuccess(true);
+        setTimeout(() => {
+          setShowInfluencerModal(false);
+          setInfSuccess(false);
+          setInfForm({ full_name: '', email: '', phone: '', platform: '', handle: '', audience_size: '', why: '', promo_code: '' });
+        }, 3000);
+      } else {
+        setInfError(data.detail || data.error || Object.values(data)[0] || 'Something went wrong.');
+      }
+    } catch {
+      setInfError('Network error. Please check your connection.');
+    } finally {
+      setInfLoading(false);
+    }
   };
 
   if (loading) {
@@ -615,6 +635,9 @@ export default function DashboardPage() {
                   </div>
                 )}
 
+                {/* <button className="db-business-card-btn" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white' }} onClick={() => router.push('/influencer/dashboard')}>
+                  Go to Influencer Dashboard →
+                </button> */}
                 {spStatus?.has_application && spStatus?.status === 'pending' && (
                   <div className="db-sp-banner db-animate db-animate-2" style={{ borderColor: '#fef3c7', background: '#fffbeb' }}>
                     <div className="db-sp-banner-left">
@@ -998,6 +1021,18 @@ export default function DashboardPage() {
                   <div className="sp-field">
                     <label className="sp-label">Why do you want to be an Ingress Influencer? *</label>
                     <textarea className="sp-textarea" placeholder="Tell us about your audience, content style and why you'd be a great fit..." required value={infForm.why} onChange={e => setInfForm({ ...infForm, why: e.target.value })} disabled={infLoading} />
+                  </div>
+
+                  <div className="sp-field">
+                    <label className="sp-label">Your Promo Code * <span style={{ color: '#94a3b8', fontWeight: 400 }}>(letters & numbers only, e.g. SARAH2025)</span></label>
+                    <input
+                      className="sp-input"
+                      placeholder="e.g. SARAH2025"
+                      required
+                      value={infForm.promo_code}
+                      onChange={e => setInfForm({ ...infForm, promo_code: e.target.value })}
+                      disabled={infLoading}
+                    />
                   </div>
                   <button type="submit" className="sp-submit" disabled={infLoading} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
                     {infLoading ? <><div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> Submitting...</> : '🌟 Submit Influencer Application →'}
