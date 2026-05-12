@@ -391,7 +391,7 @@ export default function DashboardPage() {
   const [showSPModal, setShowSPModal] = useState(false);
   const [showInfluencerModal, setShowInfluencerModal] = useState(false);
   const [spStatus, setSpStatus] = useState(null);
-  const [infStatus, setInfStatus] = useState(null); // ✅ NEW
+  const [infStatus, setInfStatus] = useState(null);
   const [spForm, setSpForm] = useState({ business_name: '', business_type: '', country: '', phone: '', bio: '' });
   const [spIdDoc, setSpIdDoc] = useState(null);
   const [spProfilePic, setSpProfilePic] = useState(null);
@@ -405,7 +405,6 @@ export default function DashboardPage() {
 
   useEffect(() => { fetchDashboard(); }, []);
 
-  // ✅ UPDATED fetchDashboard — now fetches influencer status too
   const fetchDashboard = async () => {
     try {
       const token = localStorage.getItem('access_token');
@@ -430,7 +429,7 @@ export default function DashboardPage() {
       if (profileRes.ok) setUserData(await profileRes.json());
       if (appRes.ok) { const d = await appRes.json(); setApplications(d.applications || []); }
       if (spRes.ok) { const d = await spRes.json(); setSpStatus(d); }
-      if (infRes.ok) { const d = await infRes.json(); setInfStatus(d); } // ✅ NEW
+      if (infRes.ok) { const d = await infRes.json(); setInfStatus(d); }
 
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
@@ -498,7 +497,6 @@ export default function DashboardPage() {
     finally { setSpLoading(false); }
   };
 
-  // ✅ UPDATED — now calls fetchDashboard() after success so UI updates immediately
   const handleInfluencerSubmit = async (e) => {
     e.preventDefault();
     setInfLoading(true);
@@ -516,7 +514,7 @@ export default function DashboardPage() {
       const data = await res.json();
       if (res.ok) {
         setInfSuccess(true);
-        await fetchDashboard(); // ✅ This refreshes infStatus so the card updates
+        await fetchDashboard();
         setTimeout(() => {
           setShowInfluencerModal(false);
           setInfSuccess(false);
@@ -812,8 +810,15 @@ export default function DashboardPage() {
 
                 <div className="db-business-grid">
 
-                  {/* ✅ BECOME AN INFLUENCER — fully updated with status-aware button */}
-                  <div className="db-business-card" onClick={() => !infStatus?.has_application && setShowInfluencerModal(true)}>
+                  {/* BECOME AN INFLUENCER */}
+                  <div
+                    className="db-business-card"
+                    onClick={() => {
+                      if (infStatus?.status !== 'approved' && !infStatus?.has_application) {
+                        setShowInfluencerModal(true);
+                      }
+                    }}
+                  >
                     <div className="db-business-card-icon" style={{ background: 'linear-gradient(135deg, #fef3c7, #fde68a)' }}>🌟</div>
                     <div>
                       <div className="db-business-card-title">Become an Influencer</div>
@@ -826,22 +831,8 @@ export default function DashboardPage() {
                       <div className="db-business-card-perk">✅ Open to all registered users</div>
                     </div>
 
-                    {/* No application yet — show Apply button */}
-                    {!infStatus?.has_application && (
-                      <button className="db-business-card-btn" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white' }}>
-                        Apply as Influencer →
-                      </button>
-                    )}
-
-                    {/* Applied and pending — show Under Review */}
-                    {infStatus?.has_application && infStatus?.status === 'pending' && (
-                      <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: 10, padding: '10px 14px', fontSize: 12, fontWeight: 600, color: '#92400e', width: '100%', textAlign: 'center' }}>
-                        ⏳ Application Under Review
-                      </div>
-                    )}
-
-                    {/* Approved — show Go to Dashboard button */}
-                    {infStatus?.has_application && infStatus?.status === 'approved' && (
+                    {/* APPROVED — always wins, checked first */}
+                    {infStatus?.status === 'approved' && (
                       <button
                         className="db-business-card-btn"
                         style={{ background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white' }}
@@ -851,11 +842,25 @@ export default function DashboardPage() {
                       </button>
                     )}
 
-                    {/* Rejected */}
-                    {infStatus?.has_application && infStatus?.status === 'rejected' && (
+                    {/* PENDING */}
+                    {infStatus?.status === 'pending' && (
+                      <div style={{ background: '#fef3c7', border: '1px solid #fde68a', borderRadius: 10, padding: '10px 14px', fontSize: 12, fontWeight: 600, color: '#92400e', width: '100%', textAlign: 'center' }}>
+                        ⏳ Application Under Review
+                      </div>
+                    )}
+
+                    {/* REJECTED */}
+                    {infStatus?.status === 'rejected' && (
                       <div style={{ background: '#fee2e2', border: '1px solid #fecaca', borderRadius: 10, padding: '10px 14px', fontSize: 12, fontWeight: 600, color: '#991b1b', width: '100%', textAlign: 'center' }}>
                         ❌ Application Rejected
                       </div>
+                    )}
+
+                    {/* NO APPLICATION YET */}
+                    {!infStatus?.has_application && !infStatus?.status && (
+                      <button className="db-business-card-btn" style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white' }}>
+                        Apply as Influencer →
+                      </button>
                     )}
                   </div>
 
@@ -884,7 +889,11 @@ export default function DashboardPage() {
                       </div>
                     )}
                     {spStatus?.has_application && spStatus?.status === 'approved' && (
-                      <button className="db-business-card-btn" style={{ background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white' }} onClick={(e) => { e.stopPropagation(); router.push('/agents/dashboard'); }}>
+                      <button
+                        className="db-business-card-btn"
+                        style={{ background: 'linear-gradient(135deg, #10b981, #059669)', color: 'white' }}
+                        onClick={(e) => { e.stopPropagation(); router.push('/agents/dashboard'); }}
+                      >
                         Go to SP Dashboard →
                       </button>
                     )}
