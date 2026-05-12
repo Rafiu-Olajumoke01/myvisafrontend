@@ -193,6 +193,11 @@ const GlobalStyles = () => (
     @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
     @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     @keyframes spin { to{transform:rotate(360deg)} }
+    @keyframes adParticle { 0%{transform:translateY(0) scale(1);opacity:1} 100%{transform:translateY(-60px) scale(0);opacity:0} }
+    @keyframes adGlow { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.08)} }
+    @keyframes adBadgePop { 0%{transform:scale(0.7);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+    @keyframes adCtaPulse { 0%,100%{box-shadow:0 0 0 0 rgba(7,179,242,0.5)} 50%{box-shadow:0 0 0 12px rgba(7,179,242,0)} }
+    @keyframes adSweep { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
     .skeleton {
       background: linear-gradient(90deg,#f0f2f5 25%,#e4e6ea 50%,#f0f2f5 75%);
       background-size: 200% auto;
@@ -406,24 +411,51 @@ const getCardTitle = (pkg) => {
   if (pkg.category === 'medical' && pkg.hospital_name) return `Treatment at ${pkg.hospital_name}`;
   return pkg.title || pkg.name || pkg.country;
 };
-
 const getServiceId = (pkg) => {
-  const candidates = [
-    pkg.service_id,
-    pkg.serviceId,
-    pkg.service_code,
-    pkg.ref_id,
-    pkg.reference_id,
-    pkg.package_id,
-  ];
+  const candidates = [pkg.service_id, pkg.serviceId, pkg.service_code, pkg.ref_id, pkg.reference_id, pkg.package_id];
   for (const val of candidates) {
-    if (val !== undefined && val !== null && val !== '' && String(val) !== 'NaN') {
-      return String(val);
-    }
+    if (val !== undefined && val !== null && val !== '' && String(val) !== 'NaN') return String(val);
   }
   if (pkg.id !== undefined && pkg.id !== null) return `#${pkg.id}`;
   return 'N/A';
 };
+
+// ─── Ad slide content pool ────────────────────────────────────────────────────
+const AD_MESSAGES = [
+  {
+    emoji: '🎓',
+    tag: 'Education Offer',
+    headline: 'Get Into the University\nof Your Choice',
+    sub: 'We help students land admissions in top universities worldwide — fully guided, stress-free.',
+    cta: 'Explore Student Packages',
+    bg: 'linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
+    accent: '#a78bfa',
+    accentDim: 'rgba(167,139,250,0.18)',
+    particles: ['⭐', '📚', '🏫', '✏️'],
+  },
+  {
+    emoji: '✈️',
+    tag: 'Travel Deal',
+    headline: 'Your Dream Destination\nAwaits You',
+    sub: 'Tourist visas to 50+ countries, processed fast and completely stress-free.',
+    cta: 'See Tourist Packages',
+    bg: 'linear-gradient(160deg, #000428 0%, #004e92 100%)',
+    accent: '#38bdf8',
+    accentDim: 'rgba(56,189,248,0.18)',
+    particles: ['🌍', '🗺️', '🌊', '🏖️'],
+  },
+  {
+    emoji: '💼',
+    tag: 'Career Opportunity',
+    headline: 'Work Abroad &\nBuild Your Future',
+    sub: "Unlock work visa opportunities in the world's fastest-growing economies.",
+    cta: 'View Work Packages',
+    bg: 'linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+    accent: '#facc15',
+    accentDim: 'rgba(250,204,21,0.18)',
+    particles: ['💰', '🏢', '📈', '🌐'],
+  },
+];
 
 // ─── Image Carousel ───────────────────────────────────────────────────────────
 function ImageCarousel({ images, country }) {
@@ -541,26 +573,11 @@ function SlimSidebar() {
   };
   const active = getActive();
   const items = [
-    {
-      key: 'home', label: 'Home', route: '/package',
-      icon: <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg>
-    },
-    {
-      key: 'myvisa', label: 'My Visa', route: '/visa',
-      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
-    },
-    {
-      key: 'saved', label: 'Saved', route: '/bookmarks',
-      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg>
-    },
-    {
-      key: 'alerts', label: 'Alerts', route: '/notification', badge: true,
-      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
-    },
-    {
-      key: 'settings', label: 'Settings', route: '/settings',
-      icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.527-.878 3.31.905 2.432 2.432a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.878 1.527-.905 3.31-2.432 2.432a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.527.878-3.31-.905-2.432-2.432a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.878-1.527.905-3.31 2.432-2.432.996.574 2.296.07 2.573-1.066z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-    },
+    { key: 'home', label: 'Home', route: '/package', icon: <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg> },
+    { key: 'myvisa', label: 'My Visa', route: '/visa', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg> },
+    { key: 'saved', label: 'Saved', route: '/bookmarks', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg> },
+    { key: 'alerts', label: 'Alerts', route: '/notification', badge: true, icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg> },
+    { key: 'settings', label: 'Settings', route: '/settings', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.527-.878 3.31.905 2.432 2.432a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.878 1.527-.905 3.31-2.432 2.432a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.527.878-3.31-.905-2.432-2.432a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.878-1.527.905-3.31 2.432-2.432.996.574 2.296.07 2.573-1.066z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg> },
   ];
   const handleMouseEnter = (e, label) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -569,24 +586,8 @@ function SlimSidebar() {
   return (
     <>
       {tooltip && (
-        <div style={{
-          position: 'fixed', left: 76, top: tooltip.y,
-          transform: 'translateY(-50%)',
-          background: '#0f172a', color: '#fff',
-          fontSize: 11, fontWeight: 500,
-          padding: '5px 10px', borderRadius: 7,
-          whiteSpace: 'nowrap', pointerEvents: 'none',
-          zIndex: 99999,
-          boxShadow: '0 4px 14px rgba(0,0,0,0.22)',
-          fontFamily: 'DM Sans, sans-serif',
-          display: 'flex', alignItems: 'center', gap: 0,
-        }}>
-          <span style={{
-            position: 'absolute', right: '100%', top: '50%',
-            transform: 'translateY(-50%)',
-            borderWidth: 4, borderStyle: 'solid',
-            borderColor: 'transparent #0f172a transparent transparent',
-          }} />
+        <div style={{ position: 'fixed', left: 76, top: tooltip.y, transform: 'translateY(-50%)', background: '#0f172a', color: '#fff', fontSize: 11, fontWeight: 500, padding: '5px 10px', borderRadius: 7, whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 99999, boxShadow: '0 4px 14px rgba(0,0,0,0.22)', fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', gap: 0 }}>
+          <span style={{ position: 'absolute', right: '100%', top: '50%', transform: 'translateY(-50%)', borderWidth: 4, borderStyle: 'solid', borderColor: 'transparent #0f172a transparent transparent' }} />
           {tooltip.label}
         </div>
       )}
@@ -620,15 +621,9 @@ function RightPanel() {
             <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '2px solid rgba(7,179,242,0.15)', animation: 'pulse-ring 2s ease-out infinite' }} />
             <div style={{ position: 'absolute', inset: 8, borderRadius: '50%', border: '2px solid rgba(7,179,242,0.12)', animation: 'pulse-ring 2s ease-out infinite 0.4s' }} />
             <div style={{ position: 'absolute', inset: 18, borderRadius: '50%', background: 'linear-gradient(135deg, #07b3f2, #0284c7)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28, animation: 'float 3s ease-in-out infinite', boxShadow: '0 6px 20px rgba(7,179,242,0.3)' }}>🌍</div>
-            <div style={{ position: 'absolute', inset: 0, animation: 'orbit 4s linear infinite' }}>
-              <div style={{ position: 'absolute', top: '50%', left: '50%', width: 20, height: 20, borderRadius: '50%', background: 'white', border: '1px solid #e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, marginLeft: -10, marginTop: -10 }}>✈️</div>
-            </div>
-            <div style={{ position: 'absolute', inset: 0, animation: 'orbit2 4s linear infinite' }}>
-              <div style={{ position: 'absolute', top: '50%', left: '50%', width: 20, height: 20, borderRadius: '50%', background: 'white', border: '1px solid #e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, marginLeft: -10, marginTop: -10 }}>🎓</div>
-            </div>
-            <div style={{ position: 'absolute', inset: 0, animation: 'orbit3 4s linear infinite' }}>
-              <div style={{ position: 'absolute', top: '50%', left: '50%', width: 20, height: 20, borderRadius: '50%', background: 'white', border: '1px solid #e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, marginLeft: -10, marginTop: -10 }}>💼</div>
-            </div>
+            <div style={{ position: 'absolute', inset: 0, animation: 'orbit 4s linear infinite' }}><div style={{ position: 'absolute', top: '50%', left: '50%', width: 20, height: 20, borderRadius: '50%', background: 'white', border: '1px solid #e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, marginLeft: -10, marginTop: -10 }}>✈️</div></div>
+            <div style={{ position: 'absolute', inset: 0, animation: 'orbit2 4s linear infinite' }}><div style={{ position: 'absolute', top: '50%', left: '50%', width: 20, height: 20, borderRadius: '50%', background: 'white', border: '1px solid #e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, marginLeft: -10, marginTop: -10 }}>🎓</div></div>
+            <div style={{ position: 'absolute', inset: 0, animation: 'orbit3 4s linear infinite' }}><div style={{ position: 'absolute', top: '50%', left: '50%', width: 20, height: 20, borderRadius: '50%', background: 'white', border: '1px solid #e0f2fe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, marginLeft: -10, marginTop: -10 }}>💼</div></div>
           </div>
           <p style={{ fontSize: 13, fontWeight: 700, color: '#0f172a', fontFamily: 'DM Sans', marginBottom: 3 }}>Go Anywhere</p>
           <p style={{ fontSize: 11, color: '#0284c7', fontFamily: 'DM Sans', lineHeight: 1.5 }}>50+ countries. One platform.</p>
@@ -656,9 +651,7 @@ function RightPanel() {
         <div style={{ fontSize: 20, marginBottom: 7 }}>💬</div>
         <p style={{ fontSize: 13, fontWeight: 700, color: 'white', fontFamily: 'DM Sans', marginBottom: 4 }}>Not sure where to start?</p>
         <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.82)', fontFamily: 'DM Sans', lineHeight: 1.5, marginBottom: 11 }}>Talk to a consultant for free.</p>
-        <button style={{ width: '100%', padding: '8px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.15)', color: 'white', fontSize: 12, fontWeight: 700, fontFamily: 'DM Sans', cursor: 'pointer' }}>
-          Book Free Call
-        </button>
+        <button style={{ width: '100%', padding: '8px', borderRadius: 8, border: '1px solid rgba(255,255,255,0.35)', background: 'rgba(255,255,255,0.15)', color: 'white', fontSize: 12, fontWeight: 700, fontFamily: 'DM Sans', cursor: 'pointer' }}>Book Free Call</button>
       </div>
       <div className="rp-card" style={{ padding: '12px 14px 14px' }}>
         <p style={{ fontSize: 10, fontWeight: 700, color: '#65676b', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: 'DM Sans', marginBottom: 10, paddingBottom: 7, borderBottom: '1px solid #e8eaed' }}>How It Works</p>
@@ -676,7 +669,7 @@ function RightPanel() {
   );
 }
 
-// ─── Mobile TikTok Slide ──────────────────────────────────────────────────────
+// ─── Mobile Package Slide ─────────────────────────────────────────────────────
 function MobileSlide({ pkg, isActive, onPackageClick }) {
   const icon = getVisaIcon(pkg.category);
   const purpose = getVisaPurpose(pkg.category);
@@ -689,7 +682,6 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
     : isTourist
       ? { text: pkg.cost || '—', color: '#fbbf24' }
       : { text: `${pkg.currency || 'NGN'} ${pkg.service_fee || '—'}`, color: '#07b3f2' };
-
   const serviceId = getServiceId(pkg);
 
   return (
@@ -709,23 +701,9 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
         <div className="mobile-pkg-desc" style={{ fontWeight: 700 }}>
           {pkg.description || pkg.course_description || `${purpose} package for ${pkg.country}`}
         </div>
-        <div style={{
-          fontSize: 12,
-          color: 'rgba(255,255,255,0.6)',
-          fontFamily: 'DM Sans, sans-serif',
-          marginBottom: 14,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 5,
-        }}>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <rect x="2" y="7" width="20" height="14" rx="2" />
-            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-          </svg>
-          Service ID:{' '}
-          <span style={{ color: 'white', fontWeight: 600, letterSpacing: '0.05em' }}>
-            {serviceId}
-          </span>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontFamily: 'DM Sans, sans-serif', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 5 }}>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" /></svg>
+          Service ID: <span style={{ color: 'white', fontWeight: 600, letterSpacing: '0.05em' }}>{serviceId}</span>
         </div>
         <div className="mobile-cta-row">
           <button className="mobile-cta-primary" onClick={() => onPackageClick(pkg.id)}>
@@ -739,7 +717,92 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
   );
 }
 
-// ─── Mobile Feed ──────────────────────────────────────────────────────────────
+// ─── Mobile Ad Slide ──────────────────────────────────────────────────────────
+function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
+  const ad = AD_MESSAGES[adIndex % AD_MESSAGES.length];
+
+  return (
+    <div className={`mobile-slide${isActive ? ' active' : ''}`}>
+      {/* Gradient background */}
+      <div style={{ position: 'absolute', inset: 0, background: ad.bg }} />
+
+      {/* Glow orbs */}
+      <div style={{ position: 'absolute', top: '15%', left: '10%', width: 200, height: 200, borderRadius: '50%', background: `radial-gradient(circle, ${ad.accentDim} 0%, transparent 70%)`, animation: 'adGlow 4s ease-in-out infinite', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: '25%', right: '5%', width: 160, height: 160, borderRadius: '50%', background: `radial-gradient(circle, ${ad.accentDim} 0%, transparent 70%)`, animation: 'adGlow 4s ease-in-out infinite 2s', pointerEvents: 'none' }} />
+
+      {/* Shimmer sweep */}
+      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', top: 0, bottom: 0, width: '40%', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)', animation: 'adSweep 3.5s ease-in-out infinite' }} />
+      </div>
+
+      {/* Floating particles */}
+      {isActive && ad.particles.map((p, i) => (
+        <div key={i} style={{ position: 'absolute', left: `${18 + i * 22}%`, bottom: `${28 + (i % 2) * 12}%`, fontSize: 18, opacity: 0, animation: `adParticle 2.8s ease-out infinite`, animationDelay: `${i * 0.7}s`, pointerEvents: 'none' }}>{p}</div>
+      ))}
+
+      {/* Top bar — SPONSORED label */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: 'max(env(safe-area-inset-top), 16px) 18px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 10 }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', padding: '4px 11px', borderRadius: 9999, fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.9)', fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.05em' }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: ad.accent, display: 'inline-block' }} />
+          SPONSORED
+        </div>
+        <span style={{ fontSize: 15, fontFamily: 'DM Sans, sans-serif', fontWeight: 500, color: 'rgba(255,255,255,0.5)' }}>Ad</span>
+      </div>
+
+      {/* Bottom content */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 20px', paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 94px)', zIndex: 10 }}>
+
+        {/* Tag badge */}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: ad.accentDim, border: `1px solid ${ad.accent}44`, padding: '4px 12px', borderRadius: 9999, fontSize: 11, fontWeight: 700, color: ad.accent, fontFamily: 'DM Sans, sans-serif', marginBottom: 12, animation: isActive ? 'adBadgePop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s both' : 'none' }}>
+          {ad.emoji} {ad.tag}
+        </div>
+
+        {/* Headline */}
+        <div style={{ fontSize: 26, fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: 10, fontFamily: 'Playfair Display, serif', textShadow: '0 2px 20px rgba(0,0,0,0.4)', whiteSpace: 'pre-line' }}>
+          {ad.headline}
+        </div>
+
+        {/* Sub */}
+        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6, marginBottom: 16, fontFamily: 'DM Sans, sans-serif' }}>
+          {ad.sub}
+        </div>
+
+        {/* Featured package mini card */}
+        {featuredPkg && (
+          <div onClick={() => onPackageClick?.(featuredPkg.id)} style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.09)', border: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', borderRadius: 14, padding: '10px 13px', marginBottom: 14, cursor: 'pointer' }}>
+            {featuredPkg.images?.[0] ? (
+              <img src={featuredPkg.images[0]?.image || featuredPkg.images[0]} alt={featuredPkg.country} style={{ width: 42, height: 42, borderRadius: 9, objectFit: 'cover', flexShrink: 0 }} />
+            ) : (
+              <div style={{ width: 42, height: 42, borderRadius: 9, background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>🌍</div>
+            )}
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: 'white', fontFamily: 'DM Sans, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 2 }}>
+                {featuredPkg.title || featuredPkg.name || `${featuredPkg.country} Package`}
+              </div>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.55)', fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', gap: 3 }}>
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
+                {featuredPkg.country || '—'}
+              </div>
+            </div>
+            <svg style={{ flexShrink: 0 }} width="14" height="14" fill="none" stroke={ad.accent} viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+          </div>
+        )}
+
+        {/* CTA Button */}
+        <button
+          onClick={() => onPackageClick?.(featuredPkg?.id)}
+          style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: `linear-gradient(135deg, ${ad.accent}, ${ad.accent}cc)`, color: '#0f172a', fontSize: 14, fontWeight: 800, fontFamily: 'DM Sans, sans-serif', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, animation: 'adCtaPulse 2.5s ease-in-out infinite', position: 'relative', overflow: 'hidden' }}
+        >
+          <div style={{ position: 'absolute', top: 0, bottom: 0, width: '30%', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)', animation: 'adSweep 2s ease-in-out infinite 1s', pointerEvents: 'none' }} />
+          {ad.cta}
+          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.8"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Mobile Feed (with ad slides every 5 packages) ────────────────────────────
 function MobileFeed({ packages, onPackageClick }) {
   const router = useRouter();
   const [current, setCurrent] = useState(0);
@@ -750,10 +813,23 @@ function MobileFeed({ packages, onPackageClick }) {
   const draggingRef = useRef(false);
   const currentRef = useRef(0);
 
+  // Build mixed feed: inject an ad slide after every 5 real packages
+  const AD_EVERY = 5;
+  const feed = [];
+  let adCount = 0;
+  packages.forEach((pkg, i) => {
+    feed.push({ type: 'package', data: pkg });
+    if ((i + 1) % AD_EVERY === 0 && i < packages.length - 1) {
+      const featuredPkg = packages[i + 1] || packages[0];
+      feed.push({ type: 'ad', adIndex: adCount, featuredPkg });
+      adCount += 1;
+    }
+  });
+
   const slideH = () => wrapRef.current?.offsetHeight || window.innerHeight;
 
   const goTo = (n) => {
-    if (n < 0 || n >= packages.length) return;
+    if (n < 0 || n >= feed.length) return;
     currentRef.current = n;
     setCurrent(n);
     if (trackRef.current) {
@@ -765,125 +841,80 @@ function MobileFeed({ packages, onPackageClick }) {
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-    const onTS = (e) => {
-      startYRef.current = e.touches[0].clientY;
-      draggingRef.current = true;
-      if (trackRef.current) trackRef.current.style.transition = 'none';
-    };
-    const onTM = (e) => {
-      if (!draggingRef.current) return;
-      dragDeltaRef.current = e.touches[0].clientY - startYRef.current;
-      if (trackRef.current)
-        trackRef.current.style.transform = `translateY(${-currentRef.current * slideH() + dragDeltaRef.current}px)`;
-    };
+    const onTS = (e) => { startYRef.current = e.touches[0].clientY; draggingRef.current = true; if (trackRef.current) trackRef.current.style.transition = 'none'; };
+    const onTM = (e) => { if (!draggingRef.current) return; dragDeltaRef.current = e.touches[0].clientY - startYRef.current; if (trackRef.current) trackRef.current.style.transform = `translateY(${-currentRef.current * slideH() + dragDeltaRef.current}px)`; };
     const onTE = () => {
       draggingRef.current = false;
-      if (trackRef.current)
-        trackRef.current.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)';
+      if (trackRef.current) trackRef.current.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)';
       if (dragDeltaRef.current < -50) goTo(currentRef.current + 1);
       else if (dragDeltaRef.current > 50) goTo(currentRef.current - 1);
-      else if (trackRef.current)
-        trackRef.current.style.transform = `translateY(${-currentRef.current * slideH()}px)`;
+      else if (trackRef.current) trackRef.current.style.transform = `translateY(${-currentRef.current * slideH()}px)`;
       dragDeltaRef.current = 0;
     };
-    const onWheel = (e) => {
-      e.preventDefault();
-      if (e.deltaY > 40) goTo(currentRef.current + 1);
-      else if (e.deltaY < -40) goTo(currentRef.current - 1);
-    };
+    const onWheel = (e) => { e.preventDefault(); if (e.deltaY > 40) goTo(currentRef.current + 1); else if (e.deltaY < -40) goTo(currentRef.current - 1); };
     el.addEventListener('touchstart', onTS, { passive: true });
     el.addEventListener('touchmove', onTM, { passive: true });
     el.addEventListener('touchend', onTE);
     el.addEventListener('wheel', onWheel, { passive: false });
-    return () => {
-      el.removeEventListener('touchstart', onTS);
-      el.removeEventListener('touchmove', onTM);
-      el.removeEventListener('touchend', onTE);
-      el.removeEventListener('wheel', onWheel);
-    };
-  }, [packages.length]);
+    return () => { el.removeEventListener('touchstart', onTS); el.removeEventListener('touchmove', onTM); el.removeEventListener('touchend', onTE); el.removeEventListener('wheel', onWheel); };
+  }, [feed.length]);
 
   useEffect(() => {
     const isMobile = window.innerWidth <= 700;
-    if (isMobile) {
-      document.body.style.overflow = 'hidden';
-      document.documentElement.style.overflow = 'hidden';
-    }
-    return () => {
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-    };
+    if (isMobile) { document.body.style.overflow = 'hidden'; document.documentElement.style.overflow = 'hidden'; }
+    return () => { document.body.style.overflow = ''; document.documentElement.style.overflow = ''; };
   }, []);
 
-  if (!packages.length) return null;
+  if (!feed.length) return null;
+
+  // Progress dots: only count real package slides
+  const pkgCount = Math.min(packages.length, 10);
+  const currentPkgIndex = feed.slice(0, current + 1).filter(f => f.type === 'package').length - 1;
 
   return (
     <div className="mobile-feed-wrap" ref={wrapRef}>
       <div className="mobile-feed-track" ref={trackRef}>
-        {packages.map((pkg, i) => (
-          <MobileSlide key={pkg.id} pkg={pkg} isActive={i === current} onPackageClick={onPackageClick} />
-        ))}
+        {feed.map((item, i) =>
+          item.type === 'package' ? (
+            <MobileSlide key={`pkg-${item.data.id}`} pkg={item.data} isActive={i === current} onPackageClick={onPackageClick} />
+          ) : (
+            <MobileAdSlide key={`ad-${i}`} isActive={i === current} adIndex={item.adIndex} onPackageClick={onPackageClick} featuredPkg={item.featuredPkg} />
+          )
+        )}
       </div>
+
+      {/* Progress dots */}
       <div className="mobile-prog-dots">
-        {packages.slice(0, 10).map((_, i) => (
-          <div key={i} className={`mobile-prog-dot${i === current ? ' active' : ''}`} style={{ height: i === current ? 22 : 6 }} />
+        {Array.from({ length: pkgCount }).map((_, i) => (
+          <div key={i} className={`mobile-prog-dot${i === currentPkgIndex ? ' active' : ''}`} style={{ height: i === currentPkgIndex ? 22 : 6 }} />
         ))}
       </div>
 
-      {/* ─── Mobile Bottom Nav: Home / History / Saved / Alerts / Settings ─── */}
+      {/* Bottom Nav */}
       <div className="mobile-bottom-nav">
-
-        {/* Home */}
         <div className="mobile-nav-item active" onClick={() => router.push('/package')}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
           <span className="mobile-nav-label">Home</span>
         </div>
-
-        {/* History (was My Visa) */}
         <div className="mobile-nav-item" onClick={() => router.push('/visa')}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
           <span className="mobile-nav-label">History</span>
         </div>
-
-        {/* Saved */}
         <div className="mobile-nav-item" onClick={() => router.push('/bookmarks')}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-          </svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" /></svg>
           <span className="mobile-nav-label">Saved</span>
         </div>
-
-        {/* Alerts (new — links to /notification) */}
         <div className="mobile-nav-item" onClick={() => router.push('/notification')}>
           <div style={{ position: 'relative', width: 22, height: 22 }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-            </svg>
-            {/* red dot badge */}
-            <span style={{
-              position: 'absolute', top: 0, right: 0,
-              width: 7, height: 7, borderRadius: '50%',
-              background: '#ff3b5c',
-              border: '1.5px solid rgba(0,0,0,0.6)',
-            }} />
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" /></svg>
+            <span style={{ position: 'absolute', top: 0, right: 0, width: 7, height: 7, borderRadius: '50%', background: '#ff3b5c', border: '1.5px solid rgba(0,0,0,0.6)' }} />
           </div>
           <span className="mobile-nav-label">Alerts</span>
         </div>
-
-        {/* Settings (was Profile) */}
         <div className="mobile-nav-item" onClick={() => router.push('/settings')}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.527-.878 3.31.905 2.432 2.432a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.878 1.527-.905 3.31-2.432 2.432a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.527.878-3.31-.905-2.432-2.432a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.878-1.527.905-3.31 2.432-2.432.996.574 2.296.07 2.573-1.066z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.527-.878 3.31.905 2.432 2.432a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.878 1.527-.905 3.31-2.432 2.432a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.527.878-3.31-.905-2.432-2.432a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.878-1.527.905-3.31 2.432-2.432.996.574 2.296.07 2.573-1.066z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
           <span className="mobile-nav-label">Settings</span>
         </div>
-
       </div>
     </div>
   );
@@ -945,23 +976,13 @@ function PackagesContent() {
         ...pkg,
         images: (pkg.images || []).map(img => ({
           ...img,
-          image: img.image?.startsWith('http')
-            ? img.image
-            : `https://res.cloudinary.com/dmbgrroos/${img.image}`
+          image: img.image?.startsWith('http') ? img.image : `https://res.cloudinary.com/dmbgrroos/${img.image}`
         }))
       })));
-      setFetchFailed(false);
-      setLoading(false);
-      setRetrying(false);
+      setFetchFailed(false); setLoading(false); setRetrying(false);
     } catch {
-      if (retriesLeft > 1) {
-        setTimeout(() => fetchPackages(retriesLeft - 1), 3000);
-      } else {
-        setPackages([]);
-        setFetchFailed(true);
-        setLoading(false);
-        setRetrying(false);
-      }
+      if (retriesLeft > 1) { setTimeout(() => fetchPackages(retriesLeft - 1), 3000); }
+      else { setPackages([]); setFetchFailed(true); setLoading(false); setRetrying(false); }
     }
   };
 
@@ -1003,7 +1024,6 @@ function PackagesContent() {
   });
 
   const handlePackageClick = (id) => router.push(`/package/${id}`);
-
   const handleGoToLogin = () => {
     setShowAuthModal(false);
     router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`);
@@ -1032,36 +1052,17 @@ function PackagesContent() {
             ) : fetchFailed ? (
               <div className="retry-banner">
                 <div style={{ fontSize: 40, marginBottom: 12 }}>🌐</div>
-                <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', fontFamily: 'DM Sans, sans-serif', marginBottom: 6 }}>
-                  Unable to load packages
-                </p>
-                <p style={{ fontSize: 13, color: '#94a3b8', fontFamily: 'DM Sans, sans-serif', marginBottom: 18 }}>
-                  The server may be waking up. Please try again.
-                </p>
-                <button
-                  onClick={() => fetchPackages(3, true)}
-                  disabled={retrying}
-                  style={{
-                    padding: '10px 24px', borderRadius: 9, border: 'none',
-                    background: retrying ? '#e4e6ea' : 'linear-gradient(135deg,#07b3f2,#0284c7)',
-                    color: retrying ? '#94a3b8' : 'white',
-                    fontSize: 13, fontWeight: 700,
-                    fontFamily: 'DM Sans, sans-serif', cursor: retrying ? 'not-allowed' : 'pointer',
-                    display: 'inline-flex', alignItems: 'center', gap: 8,
-                  }}
-                >
-                  {retrying
-                    ? <><div style={{ width: 12, height: 12, border: '2px solid #94a3b8', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> Retrying...</>
-                    : '🔄 Try Again'}
+                <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', fontFamily: 'DM Sans, sans-serif', marginBottom: 6 }}>Unable to load packages</p>
+                <p style={{ fontSize: 13, color: '#94a3b8', fontFamily: 'DM Sans, sans-serif', marginBottom: 18 }}>The server may be waking up. Please try again.</p>
+                <button onClick={() => fetchPackages(3, true)} disabled={retrying} style={{ padding: '10px 24px', borderRadius: 9, border: 'none', background: retrying ? '#e4e6ea' : 'linear-gradient(135deg,#07b3f2,#0284c7)', color: retrying ? '#94a3b8' : 'white', fontSize: 13, fontWeight: 700, fontFamily: 'DM Sans, sans-serif', cursor: retrying ? 'not-allowed' : 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  {retrying ? <><div style={{ width: 12, height: 12, border: '2px solid #94a3b8', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} /> Retrying...</> : '🔄 Try Again'}
                 </button>
               </div>
             ) : filteredPackages.length === 0 ? (
               <div className="pkg-empty">
                 <div style={{ fontSize: 40, marginBottom: 12 }}>🌐</div>
                 <p style={{ fontSize: 15, fontWeight: 600, color: '#0f172a', fontFamily: 'DM Sans, sans-serif' }}>No packages found</p>
-                <p style={{ fontSize: 13, color: '#94a3b8', marginTop: 5, fontFamily: 'DM Sans, sans-serif' }}>
-                  {searchQuery ? `No results for "${searchQuery}"` : 'No packages available yet.'}
-                </p>
+                <p style={{ fontSize: 13, color: '#94a3b8', marginTop: 5, fontFamily: 'DM Sans, sans-serif' }}>{searchQuery ? `No results for "${searchQuery}"` : 'No packages available yet.'}</p>
               </div>
             ) : (
               filteredPackages.map((pkg, i) => (
