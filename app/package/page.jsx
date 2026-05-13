@@ -193,11 +193,15 @@ const GlobalStyles = () => (
     @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
     @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     @keyframes spin { to{transform:rotate(360deg)} }
-    @keyframes adParticle { 0%{transform:translateY(0) scale(1);opacity:1} 100%{transform:translateY(-60px) scale(0);opacity:0} }
-    @keyframes adGlow { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.08)} }
-    @keyframes adBadgePop { 0%{transform:scale(0.7);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
-    @keyframes adCtaPulse { 0%,100%{box-shadow:0 0 0 0 rgba(7,179,242,0.5)} 50%{box-shadow:0 0 0 12px rgba(7,179,242,0)} }
     @keyframes adSweep { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
+    @keyframes adCtaPulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,0.4)} 50%{box-shadow:0 0 0 10px rgba(255,255,255,0)} }
+    @keyframes adBadgePop { 0%{transform:scale(0.7) translateY(6px);opacity:0} 70%{transform:scale(1.08) translateY(-1px)} 100%{transform:scale(1) translateY(0);opacity:1} }
+    @keyframes adTextSlide { 0%{opacity:0;transform:translateY(14px)} 100%{opacity:1;transform:translateY(0)} }
+    @keyframes adImgZoom { 0%{transform:scale(1.08)} 100%{transform:scale(1)} }
+    @keyframes adTaglinePop { 0%{letter-spacing:0.3em;opacity:0} 100%{letter-spacing:0.12em;opacity:1} }
+    @keyframes adCardSlide { 0%{opacity:0;transform:translateX(-18px)} 100%{opacity:1;transform:translateX(0)} }
+    @keyframes adCtaFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+    @keyframes adKenBurns { 0%{transform:scale(1.12) translate(2%,1%)} 100%{transform:scale(1) translate(0%,0%)} }
     .skeleton {
       background: linear-gradient(90deg,#f0f2f5 25%,#e4e6ea 50%,#f0f2f5 75%);
       background-size: 200% auto;
@@ -367,6 +371,117 @@ const GlobalStyles = () => (
       .pkg-shell { display: flex !important; }
       .mobile-feed-wrap { display: none !important; }
     }
+
+    /* ── Ad Slide Premium Styles ── */
+    .ad-slide-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      animation: adKenBurns 8s ease-out forwards;
+    }
+    .ad-slide-overlay-gradient {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    .ad-content-panel {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 0 20px;
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
+      z-index: 10;
+    }
+    .ad-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 13px; border-radius: 9999px;
+      font-size: 10px; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 10px;
+      backdrop-filter: blur(10px);
+    }
+    .ad-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; font-weight: 700;
+      color: white; line-height: 1.18;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.55);
+    }
+    .ad-subline {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; color: rgba(255,255,255,0.78);
+      line-height: 1.6; margin-bottom: 16px;
+    }
+    .ad-stat-row {
+      display: flex; gap: 10px; margin-bottom: 16px;
+    }
+    .ad-stat-pill {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 8px 14px; border-radius: 12px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(12px);
+      flex: 1;
+    }
+    .ad-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px; font-weight: 700; color: white;
+      line-height: 1;
+    }
+    .ad-stat-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 9px; color: rgba(255,255,255,0.6);
+      margin-top: 3px; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .ad-pkg-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 14px; border-radius: 16px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(16px);
+      margin-bottom: 14px; cursor: pointer;
+      animation: adCardSlide 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.6s both;
+    }
+    .ad-pkg-thumb {
+      width: 46px; height: 46px; border-radius: 10px;
+      object-fit: cover; flex-shrink: 0;
+      border: 1.5px solid rgba(255,255,255,0.25);
+    }
+    .ad-pkg-thumb-fallback {
+      width: 46px; height: 46px; border-radius: 10px;
+      background: rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .ad-cta-btn {
+      width: 100%; padding: 15px; border-radius: 14px;
+      border: none; font-size: 15px; font-weight: 800;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 8px;
+      position: relative; overflow: hidden;
+      animation: adCtaFloat 3s ease-in-out infinite;
+      letter-spacing: 0.01em;
+    }
+    .ad-cta-sweep {
+      position: absolute; top: 0; bottom: 0; width: 35%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+      animation: adSweep 2.2s ease-in-out infinite 1.2s;
+      pointer-events: none;
+    }
+    .ad-sponsored-tag {
+      position: absolute; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: max(env(safe-area-inset-top), 16px) 18px 0;
+      z-index: 10;
+    }
+    .ad-sponsored-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(10px); padding: 4px 11px;
+      border-radius: 9999px; font-size: 10px; font-weight: 700;
+      color: rgba(255,255,255,0.85); font-family: 'DM Sans, sans-serif';
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
   `}</style>
 );
 
@@ -420,40 +535,75 @@ const getServiceId = (pkg) => {
   return 'N/A';
 };
 
-// ─── Ad slide content pool ────────────────────────────────────────────────────
-const AD_MESSAGES = [
+// ─── Ad slide config — now with real Unsplash images ─────────────────────────
+const AD_CONFIGS = [
   {
-    emoji: '🎓',
-    tag: 'Education Offer',
-    headline: 'Get Into the University\nof Your Choice',
-    sub: 'We help students land admissions in top universities worldwide — fully guided, stress-free.',
-    cta: 'Explore Student Packages',
-    bg: 'linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%)',
-    accent: '#a78bfa',
-    accentDim: 'rgba(167,139,250,0.18)',
-    particles: ['⭐', '📚', '🏫', '✏️'],
+    // Student — university campus
+    image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=900&q=80',
+    overlayGradient: 'linear-gradient(to bottom, rgba(10,5,30,0.45) 0%, rgba(10,5,30,0.1) 30%, rgba(10,5,30,0.6) 65%, rgba(10,5,30,0.97) 100%)',
+    eyebrowBg: 'rgba(167,139,250,0.22)',
+    eyebrowBorder: 'rgba(167,139,250,0.5)',
+    eyebrowColor: '#e9d5ff',
+    eyebrowDot: '#a78bfa',
+    eyebrowText: '🎓 Education',
+    headline: 'Study Abroad &\nShape Your Future',
+    subline: 'We handle your admission, visa & everything — so you can focus on becoming great.',
+    stats: [{ n: '500+', l: 'Universities' }, { n: '98%', l: 'Admission Rate' }, { n: '30+', l: 'Countries' }],
+    ctaBg: 'linear-gradient(135deg, #a78bfa, #7c3aed)',
+    ctaColor: '#ffffff',
+    ctaText: 'Explore Student Packages',
+    ctaShadow: 'rgba(167,139,250,0.5)',
   },
   {
-    emoji: '✈️',
-    tag: 'Travel Deal',
-    headline: 'Your Dream Destination\nAwaits You',
-    sub: 'Tourist visas to 50+ countries, processed fast and completely stress-free.',
-    cta: 'See Tourist Packages',
-    bg: 'linear-gradient(160deg, #000428 0%, #004e92 100%)',
-    accent: '#38bdf8',
-    accentDim: 'rgba(56,189,248,0.18)',
-    particles: ['🌍', '🗺️', '🌊', '🏖️'],
+    // Tourist — stunning travel scenery
+    image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&q=80',
+    overlayGradient: 'linear-gradient(to bottom, rgba(0,20,50,0.5) 0%, rgba(0,20,50,0.1) 30%, rgba(0,20,50,0.65) 60%, rgba(0,20,50,0.97) 100%)',
+    eyebrowBg: 'rgba(56,189,248,0.2)',
+    eyebrowBorder: 'rgba(56,189,248,0.45)',
+    eyebrowColor: '#bae6fd',
+    eyebrowDot: '#38bdf8',
+    eyebrowText: '✈️ Travel',
+    headline: 'Your Dream Trip\nStarts Right Here',
+    subline: 'Tourist visas to 50+ countries processed fast, completely stress-free.',
+    stats: [{ n: '50+', l: 'Countries' }, { n: '3 Days', l: 'Avg. Processing' }, { n: '2,000+', l: 'Happy Travellers' }],
+    ctaBg: 'linear-gradient(135deg, #38bdf8, #0284c7)',
+    ctaColor: '#ffffff',
+    ctaText: 'See Tourist Packages',
+    ctaShadow: 'rgba(56,189,248,0.5)',
   },
   {
-    emoji: '💼',
-    tag: 'Career Opportunity',
-    headline: 'Work Abroad &\nBuild Your Future',
-    sub: "Unlock work visa opportunities in the world's fastest-growing economies.",
-    cta: 'View Work Packages',
-    bg: 'linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-    accent: '#facc15',
-    accentDim: 'rgba(250,204,21,0.18)',
-    particles: ['💰', '🏢', '📈', '🌐'],
+    // Work — city skyline / professional
+    image: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=80',
+    overlayGradient: 'linear-gradient(to bottom, rgba(5,15,5,0.5) 0%, rgba(5,15,5,0.1) 30%, rgba(5,15,5,0.65) 60%, rgba(5,15,5,0.97) 100%)',
+    eyebrowBg: 'rgba(250,204,21,0.18)',
+    eyebrowBorder: 'rgba(250,204,21,0.45)',
+    eyebrowColor: '#fef08a',
+    eyebrowDot: '#facc15',
+    eyebrowText: '💼 Career',
+    headline: 'Work Abroad &\nBuild Your Legacy',
+    subline: "Unlock work visa opportunities in the world's fastest-growing economies.",
+    stats: [{ n: '25+', l: 'Countries' }, { n: '95%', l: 'Visa Success' }, { n: '24/7', l: 'Support' }],
+    ctaBg: 'linear-gradient(135deg, #facc15, #d97706)',
+    ctaColor: '#1a1000',
+    ctaText: 'View Work Packages',
+    ctaShadow: 'rgba(250,204,21,0.45)',
+  },
+  {
+    // Medical — modern hospital / healthcare
+    image: 'https://images.unsplash.com/photo-1504813184591-01572f98c85f?w=900&q=80',
+    overlayGradient: 'linear-gradient(to bottom, rgba(5,0,15,0.5) 0%, rgba(5,0,15,0.1) 30%, rgba(5,0,15,0.65) 60%, rgba(5,0,15,0.97) 100%)',
+    eyebrowBg: 'rgba(248,113,113,0.18)',
+    eyebrowBorder: 'rgba(248,113,113,0.45)',
+    eyebrowColor: '#fecaca',
+    eyebrowDot: '#f87171',
+    eyebrowText: '🏥 Medical',
+    headline: 'World-Class Care\nWithin Your Reach',
+    subline: 'Access top hospitals abroad with full visa support, travel coordination & aftercare.',
+    stats: [{ n: '200+', l: 'Hospitals' }, { n: '15+', l: 'Countries' }, { n: '99%', l: 'Satisfaction' }],
+    ctaBg: 'linear-gradient(135deg, #f87171, #dc2626)',
+    ctaColor: '#ffffff',
+    ctaText: 'See Medical Packages',
+    ctaShadow: 'rgba(248,113,113,0.5)',
   },
 ];
 
@@ -717,92 +867,162 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
   );
 }
 
-// ─── Mobile Ad Slide ──────────────────────────────────────────────────────────
+// ─── Mobile Ad Slide (PREMIUM — image background + stats + featured package) ──
 function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
-  const ad = AD_MESSAGES[adIndex % AD_MESSAGES.length];
+  const ad = AD_CONFIGS[adIndex % AD_CONFIGS.length];
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   return (
-    <div className={`mobile-slide${isActive ? ' active' : ''}`}>
-      {/* Gradient background */}
-      <div style={{ position: 'absolute', inset: 0, background: ad.bg }} />
+    <div className={`mobile-slide${isActive ? ' active' : ''}`} style={{ background: '#0a0a12' }}>
 
-      {/* Glow orbs */}
-      <div style={{ position: 'absolute', top: '15%', left: '10%', width: 200, height: 200, borderRadius: '50%', background: `radial-gradient(circle, ${ad.accentDim} 0%, transparent 70%)`, animation: 'adGlow 4s ease-in-out infinite', pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', bottom: '25%', right: '5%', width: 160, height: 160, borderRadius: '50%', background: `radial-gradient(circle, ${ad.accentDim} 0%, transparent 70%)`, animation: 'adGlow 4s ease-in-out infinite 2s', pointerEvents: 'none' }} />
+      {/* Background image with Ken Burns animation */}
+      <img
+        className="ad-slide-img"
+        src={ad.image}
+        alt=""
+        onLoad={() => setImgLoaded(true)}
+        style={{
+          opacity: imgLoaded ? 1 : 0,
+          transition: 'opacity 0.6s ease',
+          animation: isActive ? 'adKenBurns 9s ease-out forwards' : 'none',
+        }}
+      />
 
-      {/* Shimmer sweep */}
-      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-        <div style={{ position: 'absolute', top: 0, bottom: 0, width: '40%', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)', animation: 'adSweep 3.5s ease-in-out infinite' }} />
-      </div>
+      {/* Gradient overlay — category-tuned */}
+      <div className="ad-slide-overlay-gradient" style={{ background: ad.overlayGradient }} />
 
-      {/* Floating particles */}
-      {isActive && ad.particles.map((p, i) => (
-        <div key={i} style={{ position: 'absolute', left: `${18 + i * 22}%`, bottom: `${28 + (i % 2) * 12}%`, fontSize: 18, opacity: 0, animation: `adParticle 2.8s ease-out infinite`, animationDelay: `${i * 0.7}s`, pointerEvents: 'none' }}>{p}</div>
-      ))}
+      {/* Noise texture overlay for premium feel */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E")`,
+        opacity: 0.4,
+      }} />
 
-      {/* Top bar — SPONSORED label */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, padding: 'max(env(safe-area-inset-top), 16px) 18px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 10 }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)', padding: '4px 11px', borderRadius: 9999, fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.9)', fontFamily: 'DM Sans, sans-serif', letterSpacing: '0.05em' }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: ad.accent, display: 'inline-block' }} />
-          SPONSORED
+      {/* Sponsored tag — top bar */}
+      <div className="ad-sponsored-tag" style={{ zIndex: 12 }}>
+        <div className="ad-sponsored-pill">
+          <span style={{ width: 5, height: 5, borderRadius: '50%', background: ad.eyebrowDot, display: 'inline-block' }} />
+          Sponsored
         </div>
-        <span style={{ fontSize: 15, fontFamily: 'DM Sans, sans-serif', fontWeight: 500, color: 'rgba(255,255,255,0.5)' }}>Ad</span>
+        <span style={{ fontSize: 13, fontFamily: 'DM Sans, sans-serif', fontWeight: 500, color: 'rgba(255,255,255,0.4)' }}>Ad</span>
       </div>
 
       {/* Bottom content */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 20px', paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 94px)', zIndex: 10 }}>
+      <div className="ad-content-panel" style={{ zIndex: 12 }}>
 
-        {/* Tag badge */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: ad.accentDim, border: `1px solid ${ad.accent}44`, padding: '4px 12px', borderRadius: 9999, fontSize: 11, fontWeight: 700, color: ad.accent, fontFamily: 'DM Sans, sans-serif', marginBottom: 12, animation: isActive ? 'adBadgePop 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.2s both' : 'none' }}>
-          {ad.emoji} {ad.tag}
+        {/* Eyebrow badge */}
+        <div
+          className="ad-eyebrow"
+          style={{
+            background: ad.eyebrowBg,
+            border: `1px solid ${ad.eyebrowBorder}`,
+            color: ad.eyebrowColor,
+            animation: isActive ? 'adBadgePop 0.55s cubic-bezier(0.34,1.56,0.64,1) 0.15s both' : 'none',
+          }}
+        >
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: ad.eyebrowDot, display: 'inline-block', flexShrink: 0 }} />
+          {ad.eyebrowText}
         </div>
 
         {/* Headline */}
-        <div style={{ fontSize: 26, fontWeight: 800, color: 'white', lineHeight: 1.2, marginBottom: 10, fontFamily: 'Playfair Display, serif', textShadow: '0 2px 20px rgba(0,0,0,0.4)', whiteSpace: 'pre-line' }}>
+        <div
+          className="ad-headline"
+          style={{ animation: isActive ? 'adTextSlide 0.5s ease 0.25s both' : 'none', whiteSpace: 'pre-line' }}
+        >
           {ad.headline}
         </div>
 
-        {/* Sub */}
-        <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', lineHeight: 1.6, marginBottom: 16, fontFamily: 'DM Sans, sans-serif' }}>
-          {ad.sub}
+        {/* Sub copy */}
+        <div
+          className="ad-subline"
+          style={{ animation: isActive ? 'adTextSlide 0.5s ease 0.35s both' : 'none' }}
+        >
+          {ad.subline}
+        </div>
+
+        {/* Stat pills row */}
+        <div
+          className="ad-stat-row"
+          style={{ animation: isActive ? 'adTextSlide 0.5s ease 0.45s both' : 'none' }}
+        >
+          {ad.stats.map((s, i) => (
+            <div key={i} className="ad-stat-pill">
+              <div className="ad-stat-num">{s.n}</div>
+              <div className="ad-stat-label">{s.l}</div>
+            </div>
+          ))}
         </div>
 
         {/* Featured package mini card */}
         {featuredPkg && (
-          <div onClick={() => onPackageClick?.(featuredPkg.id)} style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.09)', border: '1px solid rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', borderRadius: 14, padding: '10px 13px', marginBottom: 14, cursor: 'pointer' }}>
+          <div className="ad-pkg-card" onClick={() => onPackageClick?.(featuredPkg.id)}>
             {featuredPkg.images?.[0] ? (
-              <img src={featuredPkg.images[0]?.image || featuredPkg.images[0]} alt={featuredPkg.country} style={{ width: 42, height: 42, borderRadius: 9, objectFit: 'cover', flexShrink: 0 }} />
+              <img
+                className="ad-pkg-thumb"
+                src={featuredPkg.images[0]?.image || featuredPkg.images[0]}
+                alt={featuredPkg.country}
+              />
             ) : (
-              <div style={{ width: 42, height: 42, borderRadius: 9, background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>🌍</div>
+              <div className="ad-pkg-thumb-fallback">🌍</div>
             )}
             <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'white', fontFamily: 'DM Sans, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 2 }}>
+              <div style={{
+                fontSize: 13, fontWeight: 700, color: 'white',
+                fontFamily: 'DM Sans, sans-serif',
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 3,
+              }}>
                 {featuredPkg.title || featuredPkg.name || `${featuredPkg.country} Package`}
               </div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.55)', fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', gap: 3 }}>
-                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" /></svg>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                </svg>
                 {featuredPkg.country || '—'}
+                {featuredPkg.category && (
+                  <span style={{
+                    marginLeft: 4, padding: '1px 7px', borderRadius: 999,
+                    background: ad.eyebrowBg, color: ad.eyebrowColor,
+                    border: `1px solid ${ad.eyebrowBorder}`,
+                    fontSize: 9, fontWeight: 700, letterSpacing: '0.05em',
+                  }}>
+                    {getVisaPurpose(featuredPkg.category)}
+                  </span>
+                )}
               </div>
             </div>
-            <svg style={{ flexShrink: 0 }} width="14" height="14" fill="none" stroke={ad.accent} viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+            <div style={{ flexShrink: 0, width: 28, height: 28, borderRadius: 8, background: ad.eyebrowBg, border: `1px solid ${ad.eyebrowBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg width="13" height="13" fill="none" stroke={ad.eyebrowDot} viewBox="0 0 24 24" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </div>
           </div>
         )}
 
         {/* CTA Button */}
         <button
+          className="ad-cta-btn"
           onClick={() => onPackageClick?.(featuredPkg?.id)}
-          style={{ width: '100%', padding: '14px', borderRadius: 12, border: 'none', background: `linear-gradient(135deg, ${ad.accent}, ${ad.accent}cc)`, color: '#0f172a', fontSize: 14, fontWeight: 800, fontFamily: 'DM Sans, sans-serif', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, animation: 'adCtaPulse 2.5s ease-in-out infinite', position: 'relative', overflow: 'hidden' }}
+          style={{
+            background: ad.ctaBg,
+            color: ad.ctaColor,
+            boxShadow: `0 6px 28px ${ad.ctaShadow}`,
+            animation: isActive ? 'adCtaFloat 3s ease-in-out 1s infinite' : 'none',
+          }}
         >
-          <div style={{ position: 'absolute', top: 0, bottom: 0, width: '30%', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)', animation: 'adSweep 2s ease-in-out infinite 1s', pointerEvents: 'none' }} />
-          {ad.cta}
-          <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.8"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+          <div className="ad-cta-sweep" />
+          {ad.ctaText}
+          <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.8">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+          </svg>
         </button>
+
       </div>
     </div>
   );
 }
 
-// ─── Mobile Feed (with ad slides every 5 packages) ────────────────────────────
+// ─── Mobile Feed (ad slide injected every 5 real packages) ────────────────────
 function MobileFeed({ packages, onPackageClick }) {
   const router = useRouter();
   const [current, setCurrent] = useState(0);
@@ -813,7 +1033,6 @@ function MobileFeed({ packages, onPackageClick }) {
   const draggingRef = useRef(false);
   const currentRef = useRef(0);
 
-  // Build mixed feed: inject an ad slide after every 5 real packages
   const AD_EVERY = 5;
   const feed = [];
   let adCount = 0;
@@ -867,7 +1086,6 @@ function MobileFeed({ packages, onPackageClick }) {
 
   if (!feed.length) return null;
 
-  // Progress dots: only count real package slides
   const pkgCount = Math.min(packages.length, 10);
   const currentPkgIndex = feed.slice(0, current + 1).filter(f => f.type === 'package').length - 1;
 
@@ -883,14 +1101,12 @@ function MobileFeed({ packages, onPackageClick }) {
         )}
       </div>
 
-      {/* Progress dots */}
       <div className="mobile-prog-dots">
         {Array.from({ length: pkgCount }).map((_, i) => (
           <div key={i} className={`mobile-prog-dot${i === currentPkgIndex ? ' active' : ''}`} style={{ height: i === currentPkgIndex ? 22 : 6 }} />
         ))}
       </div>
 
-      {/* Bottom Nav */}
       <div className="mobile-bottom-nav">
         <div className="mobile-nav-item active" onClick={() => router.push('/package')}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="white" stroke="white" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
