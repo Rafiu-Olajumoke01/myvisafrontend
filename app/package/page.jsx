@@ -268,17 +268,9 @@ const GlobalStyles = () => (
       position: absolute; top: 0; left: 0; right: 0;
       padding: env(safe-area-inset-top, 16px) 18px 0;
       padding-top: max(env(safe-area-inset-top), 16px);
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: center; justify-content: flex-end;
       z-index: 10;
     }
-    .mobile-top-tabs { display: flex; gap: 18px; }
-    .mobile-top-tab {
-      font-size: 15px; font-weight: 500;
-      color: rgba(255,255,255,0.5); cursor: pointer;
-      padding-bottom: 5px; border-bottom: 2px solid transparent;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .mobile-top-tab.active { color: white; border-bottom-color: white; }
     .mobile-pkg-info {
       position: absolute; bottom: 0; left: 0; right: 16px;
       padding: 0 16px;
@@ -535,10 +527,9 @@ const getServiceId = (pkg) => {
   return 'N/A';
 };
 
-// ─── Ad slide config — now with real Unsplash images ─────────────────────────
+// ─── Ad slide config ──────────────────────────────────────────────────────────
 const AD_CONFIGS = [
   {
-    // Student — university campus
     image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=900&q=80',
     overlayGradient: 'linear-gradient(to bottom, rgba(10,5,30,0.45) 0%, rgba(10,5,30,0.1) 30%, rgba(10,5,30,0.6) 65%, rgba(10,5,30,0.97) 100%)',
     eyebrowBg: 'rgba(167,139,250,0.22)',
@@ -551,11 +542,10 @@ const AD_CONFIGS = [
     stats: [{ n: '500+', l: 'Universities' }, { n: '98%', l: 'Admission Rate' }, { n: '30+', l: 'Countries' }],
     ctaBg: 'linear-gradient(135deg, #a78bfa, #7c3aed)',
     ctaColor: '#ffffff',
-    ctaText: 'Explore Student Packages',
+    ctaText: 'Get Started — It\'s Free',
     ctaShadow: 'rgba(167,139,250,0.5)',
   },
   {
-    // Tourist — stunning travel scenery
     image: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&q=80',
     overlayGradient: 'linear-gradient(to bottom, rgba(0,20,50,0.5) 0%, rgba(0,20,50,0.1) 30%, rgba(0,20,50,0.65) 60%, rgba(0,20,50,0.97) 100%)',
     eyebrowBg: 'rgba(56,189,248,0.2)',
@@ -568,11 +558,10 @@ const AD_CONFIGS = [
     stats: [{ n: '50+', l: 'Countries' }, { n: '3 Days', l: 'Avg. Processing' }, { n: '2,000+', l: 'Happy Travellers' }],
     ctaBg: 'linear-gradient(135deg, #38bdf8, #0284c7)',
     ctaColor: '#ffffff',
-    ctaText: 'See Tourist Packages',
+    ctaText: 'Create Free Account',
     ctaShadow: 'rgba(56,189,248,0.5)',
   },
   {
-    // Work — city skyline / professional
     image: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=80',
     overlayGradient: 'linear-gradient(to bottom, rgba(5,15,5,0.5) 0%, rgba(5,15,5,0.1) 30%, rgba(5,15,5,0.65) 60%, rgba(5,15,5,0.97) 100%)',
     eyebrowBg: 'rgba(250,204,21,0.18)',
@@ -585,11 +574,10 @@ const AD_CONFIGS = [
     stats: [{ n: '25+', l: 'Countries' }, { n: '95%', l: 'Visa Success' }, { n: '24/7', l: 'Support' }],
     ctaBg: 'linear-gradient(135deg, #facc15, #d97706)',
     ctaColor: '#1a1000',
-    ctaText: 'View Work Packages',
+    ctaText: 'Register for Free',
     ctaShadow: 'rgba(250,204,21,0.45)',
   },
   {
-    // Medical — modern hospital / healthcare
     image: 'https://images.unsplash.com/photo-1504813184591-01572f98c85f?w=900&q=80',
     overlayGradient: 'linear-gradient(to bottom, rgba(5,0,15,0.5) 0%, rgba(5,0,15,0.1) 30%, rgba(5,0,15,0.65) 60%, rgba(5,0,15,0.97) 100%)',
     eyebrowBg: 'rgba(248,113,113,0.18)',
@@ -602,7 +590,7 @@ const AD_CONFIGS = [
     stats: [{ n: '200+', l: 'Hospitals' }, { n: '15+', l: 'Countries' }, { n: '99%', l: 'Satisfaction' }],
     ctaBg: 'linear-gradient(135deg, #f87171, #dc2626)',
     ctaColor: '#ffffff',
-    ctaText: 'See Medical Packages',
+    ctaText: 'Sign Up Free Today',
     ctaShadow: 'rgba(248,113,113,0.5)',
   },
 ];
@@ -820,6 +808,7 @@ function RightPanel() {
 }
 
 // ─── Mobile Package Slide ─────────────────────────────────────────────────────
+// ✅ CHANGE: Removed "For You" and "Following" tabs from top bar
 function MobileSlide({ pkg, isActive, onPackageClick }) {
   const icon = getVisaIcon(pkg.category);
   const purpose = getVisaPurpose(pkg.category);
@@ -838,13 +827,12 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
     <div className={`mobile-slide${isActive ? ' active' : ''}`}>
       <div className="mobile-slide-bg" style={{ backgroundImage: `url('${bgImage}')` }} />
       <div className="mobile-slide-overlay" />
+
+      {/* ✅ Top bar now only has search icon — no Following/For You tabs */}
       <div className="mobile-top-bar">
-        <div className="mobile-top-tabs">
-          <span className="mobile-top-tab">Following</span>
-          <span className="mobile-top-tab active">For You</span>
-        </div>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
       </div>
+
       <div className="mobile-pkg-info">
         <div className="mobile-pkg-badge" style={{ background: badgeColor.bg, color: badgeColor.color, border: `1px solid ${badgeColor.border}` }}>{icon} {purpose}</div>
         <div className="mobile-pkg-title">{getCardTitle(pkg)}</div>
@@ -867,10 +855,22 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
   );
 }
 
-// ─── Mobile Ad Slide (PREMIUM — image background + stats + featured package) ──
+// ─── Mobile Ad Slide ──────────────────────────────────────────────────────────
+// ✅ CHANGE: Ads now go to /register if not logged in, or package page if logged in
 function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
+  const router = useRouter();
   const ad = AD_CONFIGS[adIndex % AD_CONFIGS.length];
   const [imgLoaded, setImgLoaded] = useState(false);
+
+  // ✅ Smart redirect: register if not logged in, package page if logged in
+  const handleAdClick = () => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    if (!token) {
+      router.push('/register');
+    } else {
+      onPackageClick?.(featuredPkg?.id);
+    }
+  };
 
   return (
     <div className={`mobile-slide${isActive ? ' active' : ''}`} style={{ background: '#0a0a12' }}>
@@ -888,17 +888,17 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
         }}
       />
 
-      {/* Gradient overlay — category-tuned */}
+      {/* Gradient overlay */}
       <div className="ad-slide-overlay-gradient" style={{ background: ad.overlayGradient }} />
 
-      {/* Noise texture overlay for premium feel */}
+      {/* Noise texture overlay */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2,
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E")`,
         opacity: 0.4,
       }} />
 
-      {/* Sponsored tag — top bar */}
+      {/* Sponsored tag */}
       <div className="ad-sponsored-tag" style={{ zIndex: 12 }}>
         <div className="ad-sponsored-pill">
           <span style={{ width: 5, height: 5, borderRadius: '50%', background: ad.eyebrowDot, display: 'inline-block' }} />
@@ -940,7 +940,7 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
           {ad.subline}
         </div>
 
-        {/* Stat pills row */}
+        {/* Stat pills */}
         <div
           className="ad-stat-row"
           style={{ animation: isActive ? 'adTextSlide 0.5s ease 0.45s both' : 'none' }}
@@ -953,9 +953,9 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
           ))}
         </div>
 
-        {/* Featured package mini card */}
+        {/* ✅ Featured package mini card — uses handleAdClick */}
         {featuredPkg && (
-          <div className="ad-pkg-card" onClick={() => onPackageClick?.(featuredPkg.id)}>
+          <div className="ad-pkg-card" onClick={handleAdClick}>
             {featuredPkg.images?.[0] ? (
               <img
                 className="ad-pkg-thumb"
@@ -999,10 +999,10 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
           </div>
         )}
 
-        {/* CTA Button */}
+        {/* ✅ CTA Button — uses handleAdClick */}
         <button
           className="ad-cta-btn"
-          onClick={() => onPackageClick?.(featuredPkg?.id)}
+          onClick={handleAdClick}
           style={{
             background: ad.ctaBg,
             color: ad.ctaColor,
@@ -1022,7 +1022,7 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
   );
 }
 
-// ─── Mobile Feed (ad slide injected every 5 real packages) ────────────────────
+// ─── Mobile Feed ──────────────────────────────────────────────────────────────
 function MobileFeed({ packages, onPackageClick }) {
   const router = useRouter();
   const [current, setCurrent] = useState(0);
