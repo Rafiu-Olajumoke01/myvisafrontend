@@ -857,6 +857,7 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
   const ad = AD_CONFIGS[adIndex % AD_CONFIGS.length];
   const [imgLoaded, setImgLoaded] = useState(false);
 
+  // ✅ FIX: Ads go to /dashboard if logged in, /signup if not
   const handleAdClick = () => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     if (!token) {
@@ -966,9 +967,8 @@ function MobileFeed({ packages, onPackageClick }) {
     }
   });
 
-  // Triple the feed for infinite loop — middle copy is the "real" one
   const feed = [...baseFeed, ...baseFeed, ...baseFeed];
-  const OFFSET = baseFeed.length; // start in the middle copy
+  const OFFSET = baseFeed.length;
 
   const [current, setCurrent] = useState(OFFSET);
   const trackRef = useRef(null);
@@ -992,19 +992,16 @@ function MobileFeed({ packages, onPackageClick }) {
     }
   };
 
-  // After every slide change, silently jump back to middle copy if at edges
   useEffect(() => {
     if (baseFeed.length === 0) return;
     const c = currentRef.current;
-    // If we've gone past the end of the second copy, jump back to matching pos in middle copy
     if (c >= baseFeed.length * 2) {
       setTimeout(() => {
         isJumpingRef.current = true;
         goTo(c - baseFeed.length, false);
         isJumpingRef.current = false;
-      }, 420); // wait for slide animation to finish
+      }, 420);
     }
-    // If we've gone before the start of the middle copy, jump forward
     if (c < baseFeed.length) {
       setTimeout(() => {
         isJumpingRef.current = true;
@@ -1014,7 +1011,6 @@ function MobileFeed({ packages, onPackageClick }) {
     }
   }, [current, baseFeed.length]);
 
-  // Set initial position to middle copy (no animation)
   useEffect(() => {
     if (trackRef.current) {
       trackRef.current.style.transition = 'none';
@@ -1068,7 +1064,6 @@ function MobileFeed({ packages, onPackageClick }) {
 
   if (!feed.length) return null;
 
-  // For progress dots, map current index back to base feed
   const baseCurrent = ((current % baseFeed.length) + baseFeed.length) % baseFeed.length;
   const pkgCount = Math.min(packages.length, 10);
   const currentPkgIndex = baseFeed.slice(0, baseCurrent + 1).filter(f => f.type === 'package').length - 1;
@@ -1138,7 +1133,6 @@ function PackagesContent() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingRoute, setPendingRoute] = useState(null);
 
-  // ── Desktop infinite scroll refs ──────────────────────────────────────────
   const gridRef = useRef(null);
   const isResettingRef = useRef(false);
 
@@ -1155,10 +1149,6 @@ function PackagesContent() {
 
   useEffect(() => { fetchPackages(); }, []);
 
-  // ── Desktop infinite scroll effect ───────────────────────────────────────
-  // Strategy: render 3 copies of packages. When user scrolls past the
-  // first copy (33% of total height), silently jump to the same position
-  // in the second copy. The third copy ensures there's always content below.
   useEffect(() => {
     if (loading || fetchFailed || packages.length === 0) return;
 
@@ -1169,27 +1159,22 @@ function PackagesContent() {
       const oneThird = totalHeight / 3;
       const twoThirds = (totalHeight / 3) * 2;
 
-      // Scrolled into third copy → jump back to matching pos in second copy
       if (scrollTop >= twoThirds) {
         isResettingRef.current = true;
         window.scrollTo({ top: scrollTop - oneThird, behavior: 'instant' });
         setTimeout(() => { isResettingRef.current = false; }, 50);
-      }
-      // Scrolled above second copy (somehow) → jump forward
-      else if (scrollTop < oneThird - 100 && scrollTop > 0) {
+      } else if (scrollTop < oneThird - 100 && scrollTop > 0) {
         isResettingRef.current = true;
         window.scrollTo({ top: scrollTop + oneThird, behavior: 'instant' });
         setTimeout(() => { isResettingRef.current = false; }, 50);
       }
     };
 
-    // Start at the top of the second copy so user can scroll both up and down
     const init = () => {
       const totalHeight = document.documentElement.scrollHeight;
       window.scrollTo({ top: totalHeight / 3, behavior: 'instant' });
     };
 
-    // Small delay to let the DOM paint all 3 copies first
     const t = setTimeout(init, 100);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
@@ -1270,17 +1255,17 @@ function PackagesContent() {
       .some(f => f?.toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
-  // Build the infinite desktop list: 3 copies
   const infinitePackages = filteredPackages.length > 0
     ? [...filteredPackages, ...filteredPackages, ...filteredPackages]
     : [];
 
+  // ✅ FIX: Packages go to /package/${id} if logged in, /signup if not
   const handlePackageClick = (id) => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     if (!token) {
       router.push('/signup');
     } else {
-      router.push('/dashboard');
+      router.push(`/package/${id}`);
     }
   };
 
@@ -1325,7 +1310,6 @@ function PackagesContent() {
                 <p style={{ fontSize: 13, color: '#94a3b8', marginTop: 5, fontFamily: 'DM Sans, sans-serif' }}>{searchQuery ? `No results for "${searchQuery}"` : 'No packages available yet.'}</p>
               </div>
             ) : (
-              // ── 3 copies rendered for infinite scroll ──────────────────
               infinitePackages.map((pkg, i) => (
                 <PackageCard
                   key={`${pkg.id}-${i}`}
