@@ -639,7 +639,7 @@ function PackageCard({ pkg, index, isBookmarked, isBookmarkLoading, convertedFee
   const colors = getCategoryColors(pkg.category);
   const location = pkg.course_city || pkg.hospital_city || pkg.country || '—';
   return (
-    <div className="pkg-card card-appear" style={{ animationDelay: `${index * 50}ms` }} onClick={() => onPackageClick(pkg.id)}>
+    <div className="pkg-card card-appear" style={{ animationDelay: `${(index % 6) * 50}ms` }} onClick={() => onPackageClick(pkg.id)}>
       <ImageCarousel images={pkg.images} country={pkg.country} />
       <div className="pkg-card-body">
         <div className="pkg-card-top">
@@ -808,7 +808,6 @@ function RightPanel() {
 }
 
 // ─── Mobile Package Slide ─────────────────────────────────────────────────────
-// ✅ CHANGE: Removed "For You" and "Following" tabs from top bar
 function MobileSlide({ pkg, isActive, onPackageClick }) {
   const icon = getVisaIcon(pkg.category);
   const purpose = getVisaPurpose(pkg.category);
@@ -827,12 +826,9 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
     <div className={`mobile-slide${isActive ? ' active' : ''}`}>
       <div className="mobile-slide-bg" style={{ backgroundImage: `url('${bgImage}')` }} />
       <div className="mobile-slide-overlay" />
-
-      {/* ✅ Top bar now only has search icon — no Following/For You tabs */}
       <div className="mobile-top-bar">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" /></svg>
       </div>
-
       <div className="mobile-pkg-info">
         <div className="mobile-pkg-badge" style={{ background: badgeColor.bg, color: badgeColor.color, border: `1px solid ${badgeColor.border}` }}>{icon} {purpose}</div>
         <div className="mobile-pkg-title">{getCardTitle(pkg)}</div>
@@ -856,13 +852,11 @@ function MobileSlide({ pkg, isActive, onPackageClick }) {
 }
 
 // ─── Mobile Ad Slide ──────────────────────────────────────────────────────────
-// ✅ CHANGE: Ads now go to /register if not logged in, or package page if logged in
 function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
   const router = useRouter();
   const ad = AD_CONFIGS[adIndex % AD_CONFIGS.length];
   const [imgLoaded, setImgLoaded] = useState(false);
 
-  // ✅ Smart redirect: register if not logged in, package page if logged in
   const handleAdClick = () => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     if (!token) {
@@ -874,8 +868,6 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
 
   return (
     <div className={`mobile-slide${isActive ? ' active' : ''}`} style={{ background: '#0a0a12' }}>
-
-      {/* Background image with Ken Burns animation */}
       <img
         className="ad-slide-img"
         src={ad.image}
@@ -887,18 +879,12 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
           animation: isActive ? 'adKenBurns 9s ease-out forwards' : 'none',
         }}
       />
-
-      {/* Gradient overlay */}
       <div className="ad-slide-overlay-gradient" style={{ background: ad.overlayGradient }} />
-
-      {/* Noise texture overlay */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2,
         backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E")`,
         opacity: 0.4,
       }} />
-
-      {/* Sponsored tag */}
       <div className="ad-sponsored-tag" style={{ zIndex: 12 }}>
         <div className="ad-sponsored-pill">
           <span style={{ width: 5, height: 5, borderRadius: '50%', background: ad.eyebrowDot, display: 'inline-block' }} />
@@ -906,45 +892,14 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
         </div>
         <span style={{ fontSize: 13, fontFamily: 'DM Sans, sans-serif', fontWeight: 500, color: 'rgba(255,255,255,0.4)' }}>Ad</span>
       </div>
-
-      {/* Bottom content */}
       <div className="ad-content-panel" style={{ zIndex: 12 }}>
-
-        {/* Eyebrow badge */}
-        <div
-          className="ad-eyebrow"
-          style={{
-            background: ad.eyebrowBg,
-            border: `1px solid ${ad.eyebrowBorder}`,
-            color: ad.eyebrowColor,
-            animation: isActive ? 'adBadgePop 0.55s cubic-bezier(0.34,1.56,0.64,1) 0.15s both' : 'none',
-          }}
-        >
+        <div className="ad-eyebrow" style={{ background: ad.eyebrowBg, border: `1px solid ${ad.eyebrowBorder}`, color: ad.eyebrowColor, animation: isActive ? 'adBadgePop 0.55s cubic-bezier(0.34,1.56,0.64,1) 0.15s both' : 'none' }}>
           <span style={{ width: 6, height: 6, borderRadius: '50%', background: ad.eyebrowDot, display: 'inline-block', flexShrink: 0 }} />
           {ad.eyebrowText}
         </div>
-
-        {/* Headline */}
-        <div
-          className="ad-headline"
-          style={{ animation: isActive ? 'adTextSlide 0.5s ease 0.25s both' : 'none', whiteSpace: 'pre-line' }}
-        >
-          {ad.headline}
-        </div>
-
-        {/* Sub copy */}
-        <div
-          className="ad-subline"
-          style={{ animation: isActive ? 'adTextSlide 0.5s ease 0.35s both' : 'none' }}
-        >
-          {ad.subline}
-        </div>
-
-        {/* Stat pills */}
-        <div
-          className="ad-stat-row"
-          style={{ animation: isActive ? 'adTextSlide 0.5s ease 0.45s both' : 'none' }}
-        >
+        <div className="ad-headline" style={{ animation: isActive ? 'adTextSlide 0.5s ease 0.25s both' : 'none', whiteSpace: 'pre-line' }}>{ad.headline}</div>
+        <div className="ad-subline" style={{ animation: isActive ? 'adTextSlide 0.5s ease 0.35s both' : 'none' }}>{ad.subline}</div>
+        <div className="ad-stat-row" style={{ animation: isActive ? 'adTextSlide 0.5s ease 0.45s both' : 'none' }}>
           {ad.stats.map((s, i) => (
             <div key={i} className="ad-stat-pill">
               <div className="ad-stat-num">{s.n}</div>
@@ -952,25 +907,15 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
             </div>
           ))}
         </div>
-
-        {/* ✅ Featured package mini card — uses handleAdClick */}
         {featuredPkg && (
           <div className="ad-pkg-card" onClick={handleAdClick}>
             {featuredPkg.images?.[0] ? (
-              <img
-                className="ad-pkg-thumb"
-                src={featuredPkg.images[0]?.image || featuredPkg.images[0]}
-                alt={featuredPkg.country}
-              />
+              <img className="ad-pkg-thumb" src={featuredPkg.images[0]?.image || featuredPkg.images[0]} alt={featuredPkg.country} />
             ) : (
               <div className="ad-pkg-thumb-fallback">🌍</div>
             )}
             <div style={{ minWidth: 0, flex: 1 }}>
-              <div style={{
-                fontSize: 13, fontWeight: 700, color: 'white',
-                fontFamily: 'DM Sans, sans-serif',
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 3,
-              }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'white', fontFamily: 'DM Sans, sans-serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginBottom: 3 }}>
                 {featuredPkg.title || featuredPkg.name || `${featuredPkg.country} Package`}
               </div>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)', fontFamily: 'DM Sans, sans-serif', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -980,12 +925,7 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
                 </svg>
                 {featuredPkg.country || '—'}
                 {featuredPkg.category && (
-                  <span style={{
-                    marginLeft: 4, padding: '1px 7px', borderRadius: 999,
-                    background: ad.eyebrowBg, color: ad.eyebrowColor,
-                    border: `1px solid ${ad.eyebrowBorder}`,
-                    fontSize: 9, fontWeight: 700, letterSpacing: '0.05em',
-                  }}>
+                  <span style={{ marginLeft: 4, padding: '1px 7px', borderRadius: 999, background: ad.eyebrowBg, color: ad.eyebrowColor, border: `1px solid ${ad.eyebrowBorder}`, fontSize: 9, fontWeight: 700, letterSpacing: '0.05em' }}>
                     {getVisaPurpose(featuredPkg.category)}
                   </span>
                 )}
@@ -998,70 +938,103 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
             </div>
           </div>
         )}
-
-        {/* ✅ CTA Button — uses handleAdClick */}
-        <button
-          className="ad-cta-btn"
-          onClick={handleAdClick}
-          style={{
-            background: ad.ctaBg,
-            color: ad.ctaColor,
-            boxShadow: `0 6px 28px ${ad.ctaShadow}`,
-            animation: isActive ? 'adCtaFloat 3s ease-in-out 1s infinite' : 'none',
-          }}
-        >
+        <button className="ad-cta-btn" onClick={handleAdClick} style={{ background: ad.ctaBg, color: ad.ctaColor, boxShadow: `0 6px 28px ${ad.ctaShadow}`, animation: isActive ? 'adCtaFloat 3s ease-in-out 1s infinite' : 'none' }}>
           <div className="ad-cta-sweep" />
           {ad.ctaText}
           <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.8">
             <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
           </svg>
         </button>
-
       </div>
     </div>
   );
 }
 
-// ─── Mobile Feed ──────────────────────────────────────────────────────────────
+// ─── Mobile Feed (with infinite loop) ────────────────────────────────────────
 function MobileFeed({ packages, onPackageClick }) {
   const router = useRouter();
-  const [current, setCurrent] = useState(0);
+
+  const AD_EVERY = 5;
+  const baseFeed = [];
+  let adCount = 0;
+  packages.forEach((pkg, i) => {
+    baseFeed.push({ type: 'package', data: pkg });
+    if ((i + 1) % AD_EVERY === 0 && i < packages.length - 1) {
+      const featuredPkg = packages[i + 1] || packages[0];
+      baseFeed.push({ type: 'ad', adIndex: adCount, featuredPkg });
+      adCount += 1;
+    }
+  });
+
+  // Triple the feed for infinite loop — middle copy is the "real" one
+  const feed = [...baseFeed, ...baseFeed, ...baseFeed];
+  const OFFSET = baseFeed.length; // start in the middle copy
+
+  const [current, setCurrent] = useState(OFFSET);
   const trackRef = useRef(null);
   const wrapRef = useRef(null);
   const startYRef = useRef(0);
   const dragDeltaRef = useRef(0);
   const draggingRef = useRef(false);
-  const currentRef = useRef(0);
-
-  const AD_EVERY = 5;
-  const feed = [];
-  let adCount = 0;
-  packages.forEach((pkg, i) => {
-    feed.push({ type: 'package', data: pkg });
-    if ((i + 1) % AD_EVERY === 0 && i < packages.length - 1) {
-      const featuredPkg = packages[i + 1] || packages[0];
-      feed.push({ type: 'ad', adIndex: adCount, featuredPkg });
-      adCount += 1;
-    }
-  });
+  const currentRef = useRef(OFFSET);
+  const isJumpingRef = useRef(false);
 
   const slideH = () => wrapRef.current?.offsetHeight || window.innerHeight;
 
-  const goTo = (n) => {
-    if (n < 0 || n >= feed.length) return;
+  const goTo = (n, animate = true) => {
     currentRef.current = n;
     setCurrent(n);
     if (trackRef.current) {
-      trackRef.current.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)';
+      trackRef.current.style.transition = animate
+        ? 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)'
+        : 'none';
       trackRef.current.style.transform = `translateY(${-n * slideH()}px)`;
     }
   };
 
+  // After every slide change, silently jump back to middle copy if at edges
+  useEffect(() => {
+    if (baseFeed.length === 0) return;
+    const c = currentRef.current;
+    // If we've gone past the end of the second copy, jump back to matching pos in middle copy
+    if (c >= baseFeed.length * 2) {
+      setTimeout(() => {
+        isJumpingRef.current = true;
+        goTo(c - baseFeed.length, false);
+        isJumpingRef.current = false;
+      }, 420); // wait for slide animation to finish
+    }
+    // If we've gone before the start of the middle copy, jump forward
+    if (c < baseFeed.length) {
+      setTimeout(() => {
+        isJumpingRef.current = true;
+        goTo(c + baseFeed.length, false);
+        isJumpingRef.current = false;
+      }, 420);
+    }
+  }, [current, baseFeed.length]);
+
+  // Set initial position to middle copy (no animation)
+  useEffect(() => {
+    if (trackRef.current) {
+      trackRef.current.style.transition = 'none';
+      trackRef.current.style.transform = `translateY(${-OFFSET * slideH()}px)`;
+    }
+  }, [OFFSET]);
+
   useEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
-    const onTS = (e) => { startYRef.current = e.touches[0].clientY; draggingRef.current = true; if (trackRef.current) trackRef.current.style.transition = 'none'; };
-    const onTM = (e) => { if (!draggingRef.current) return; dragDeltaRef.current = e.touches[0].clientY - startYRef.current; if (trackRef.current) trackRef.current.style.transform = `translateY(${-currentRef.current * slideH() + dragDeltaRef.current}px)`; };
+    const onTS = (e) => {
+      startYRef.current = e.touches[0].clientY;
+      draggingRef.current = true;
+      if (trackRef.current) trackRef.current.style.transition = 'none';
+    };
+    const onTM = (e) => {
+      if (!draggingRef.current) return;
+      dragDeltaRef.current = e.touches[0].clientY - startYRef.current;
+      if (trackRef.current) trackRef.current.style.transform = `translateY(${-currentRef.current * slideH() + dragDeltaRef.current}px)`;
+    };
     const onTE = () => {
       draggingRef.current = false;
       if (trackRef.current) trackRef.current.style.transition = 'transform 0.42s cubic-bezier(0.25,0.46,0.45,0.94)';
@@ -1070,12 +1043,21 @@ function MobileFeed({ packages, onPackageClick }) {
       else if (trackRef.current) trackRef.current.style.transform = `translateY(${-currentRef.current * slideH()}px)`;
       dragDeltaRef.current = 0;
     };
-    const onWheel = (e) => { e.preventDefault(); if (e.deltaY > 40) goTo(currentRef.current + 1); else if (e.deltaY < -40) goTo(currentRef.current - 1); };
+    const onWheel = (e) => {
+      e.preventDefault();
+      if (e.deltaY > 40) goTo(currentRef.current + 1);
+      else if (e.deltaY < -40) goTo(currentRef.current - 1);
+    };
     el.addEventListener('touchstart', onTS, { passive: true });
     el.addEventListener('touchmove', onTM, { passive: true });
     el.addEventListener('touchend', onTE);
     el.addEventListener('wheel', onWheel, { passive: false });
-    return () => { el.removeEventListener('touchstart', onTS); el.removeEventListener('touchmove', onTM); el.removeEventListener('touchend', onTE); el.removeEventListener('wheel', onWheel); };
+    return () => {
+      el.removeEventListener('touchstart', onTS);
+      el.removeEventListener('touchmove', onTM);
+      el.removeEventListener('touchend', onTE);
+      el.removeEventListener('wheel', onWheel);
+    };
   }, [feed.length]);
 
   useEffect(() => {
@@ -1086,15 +1068,17 @@ function MobileFeed({ packages, onPackageClick }) {
 
   if (!feed.length) return null;
 
+  // For progress dots, map current index back to base feed
+  const baseCurrent = ((current % baseFeed.length) + baseFeed.length) % baseFeed.length;
   const pkgCount = Math.min(packages.length, 10);
-  const currentPkgIndex = feed.slice(0, current + 1).filter(f => f.type === 'package').length - 1;
+  const currentPkgIndex = baseFeed.slice(0, baseCurrent + 1).filter(f => f.type === 'package').length - 1;
 
   return (
     <div className="mobile-feed-wrap" ref={wrapRef}>
       <div className="mobile-feed-track" ref={trackRef}>
         {feed.map((item, i) =>
           item.type === 'package' ? (
-            <MobileSlide key={`pkg-${item.data.id}`} pkg={item.data} isActive={i === current} onPackageClick={onPackageClick} />
+            <MobileSlide key={`pkg-${item.data.id}-${i}`} pkg={item.data} isActive={i === current} onPackageClick={onPackageClick} />
           ) : (
             <MobileAdSlide key={`ad-${i}`} isActive={i === current} adIndex={item.adIndex} onPackageClick={onPackageClick} featuredPkg={item.featuredPkg} />
           )
@@ -1154,6 +1138,10 @@ function PackagesContent() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [pendingRoute, setPendingRoute] = useState(null);
 
+  // ── Desktop infinite scroll refs ──────────────────────────────────────────
+  const gridRef = useRef(null);
+  const isResettingRef = useRef(false);
+
   const API_BASE = 'https://web-production-f50dc.up.railway.app/api/packages';
   const BOOKMARKS_API = 'https://web-production-f50dc.up.railway.app/api/bookmarks';
 
@@ -1166,6 +1154,49 @@ function PackagesContent() {
   }, []);
 
   useEffect(() => { fetchPackages(); }, []);
+
+  // ── Desktop infinite scroll effect ───────────────────────────────────────
+  // Strategy: render 3 copies of packages. When user scrolls past the
+  // first copy (33% of total height), silently jump to the same position
+  // in the second copy. The third copy ensures there's always content below.
+  useEffect(() => {
+    if (loading || fetchFailed || packages.length === 0) return;
+
+    const handleScroll = () => {
+      if (isResettingRef.current) return;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const totalHeight = document.documentElement.scrollHeight;
+      const oneThird = totalHeight / 3;
+      const twoThirds = (totalHeight / 3) * 2;
+
+      // Scrolled into third copy → jump back to matching pos in second copy
+      if (scrollTop >= twoThirds) {
+        isResettingRef.current = true;
+        window.scrollTo({ top: scrollTop - oneThird, behavior: 'instant' });
+        setTimeout(() => { isResettingRef.current = false; }, 50);
+      }
+      // Scrolled above second copy (somehow) → jump forward
+      else if (scrollTop < oneThird - 100 && scrollTop > 0) {
+        isResettingRef.current = true;
+        window.scrollTo({ top: scrollTop + oneThird, behavior: 'instant' });
+        setTimeout(() => { isResettingRef.current = false; }, 50);
+      }
+    };
+
+    // Start at the top of the second copy so user can scroll both up and down
+    const init = () => {
+      const totalHeight = document.documentElement.scrollHeight;
+      window.scrollTo({ top: totalHeight / 3, behavior: 'instant' });
+    };
+
+    // Small delay to let the DOM paint all 3 copies first
+    const t = setTimeout(init, 100);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [loading, fetchFailed, packages.length]);
 
   const detectCurrency = async () => {
     setLoadingRate(true);
@@ -1239,6 +1270,11 @@ function PackagesContent() {
       .some(f => f?.toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
+  // Build the infinite desktop list: 3 copies
+  const infinitePackages = filteredPackages.length > 0
+    ? [...filteredPackages, ...filteredPackages, ...filteredPackages]
+    : [];
+
   const handlePackageClick = (id) => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     if (!token) {
@@ -1247,6 +1283,7 @@ function PackagesContent() {
       router.push('/dashboard');
     }
   };
+
   const handleGoToLogin = () => {
     setShowAuthModal(false);
     router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`);
@@ -1259,7 +1296,7 @@ function PackagesContent() {
       <div className="pkg-shell">
         <SlimSidebar />
         <main className="pkg-main">
-          <div className="pkg-grid">
+          <div className="pkg-grid" ref={gridRef}>
             {loading ? (
               [...Array(6)].map((_, i) => (
                 <div key={i} style={{ background: '#fff', borderRadius: 14, border: '1px solid #e8eaed', overflow: 'hidden' }}>
@@ -1288,13 +1325,19 @@ function PackagesContent() {
                 <p style={{ fontSize: 13, color: '#94a3b8', marginTop: 5, fontFamily: 'DM Sans, sans-serif' }}>{searchQuery ? `No results for "${searchQuery}"` : 'No packages available yet.'}</p>
               </div>
             ) : (
-              filteredPackages.map((pkg, i) => (
+              // ── 3 copies rendered for infinite scroll ──────────────────
+              infinitePackages.map((pkg, i) => (
                 <PackageCard
-                  key={pkg.id} pkg={pkg} index={i}
+                  key={`${pkg.id}-${i}`}
+                  pkg={pkg}
+                  index={i}
                   isBookmarked={bookmarkedPackages.has(pkg.id)}
                   isBookmarkLoading={bookmarkLoading[pkg.id]}
-                  convertedFee={convertedFee} userCurrency={userCurrency} loadingRate={loadingRate}
-                  onBookmark={toggleBookmark} onPackageClick={handlePackageClick}
+                  convertedFee={convertedFee}
+                  userCurrency={userCurrency}
+                  loadingRate={loadingRate}
+                  onBookmark={toggleBookmark}
+                  onPackageClick={handlePackageClick}
                 />
               ))
             )}
