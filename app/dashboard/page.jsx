@@ -1024,17 +1024,35 @@ export default function DashboardPage() {
                       <input className="sp-input" placeholder="+234 801 234 5678" required value={infForm.phone} onChange={e => setInfForm({ ...infForm, phone: e.target.value })} disabled={infLoading} />
                     </div>
                     <div className="sp-field">
-                      <label className="sp-label">Main Platform *</label>
-                      <select className="sp-select" required value={infForm.platform} onChange={e => setInfForm({ ...infForm, platform: e.target.value })} disabled={infLoading}>
-                        <option value="">Select platform...</option>
-                        <option value="instagram">Instagram</option>
-                        <option value="tiktok">TikTok</option>
-                        <option value="youtube">YouTube</option>
-                        <option value="twitter">X (Twitter)</option>
-                        <option value="facebook">Facebook</option>
-                        <option value="linkedin">LinkedIn</option>
-                        <option value="other">Other</option>
-                      </select>
+                      <label className="sp-label">Platforms * <span style={{ color: '#94a3b8', fontWeight: 400 }}>(select all that apply)</span></label>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                        {['Instagram', 'TikTok', 'YouTube', 'X (Twitter)', 'Facebook', 'LinkedIn', 'Other'].map(p => {
+                          const val = p.toLowerCase().replace(' (twitter)', '').replace(' ', '');
+                          const selected = (infForm.platform || '').split(',').includes(val);
+                          return (
+                            <button
+                              key={val}
+                              type="button"
+                              disabled={infLoading}
+                              onClick={() => {
+                                const current = infForm.platform ? infForm.platform.split(',') : [];
+                                const updated = selected ? current.filter(x => x !== val) : [...current, val];
+                                setInfForm({ ...infForm, platform: updated.join(',') });
+                              }}
+                              style={{
+                                padding: '7px 14px', borderRadius: 999, border: '1.5px solid',
+                                borderColor: selected ? '#07b3f2' : '#e8eaed',
+                                background: selected ? '#e0f7fe' : '#fafafa',
+                                color: selected ? '#07b3f2' : '#64748b',
+                                fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                                fontFamily: 'DM Sans, sans-serif', transition: 'all 0.15s',
+                              }}
+                            >
+                              {selected ? '✓ ' : ''}{p}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                   <div className="sp-modal-row">

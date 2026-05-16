@@ -866,9 +866,9 @@ function MobileAdSlide({ isActive, adIndex, onPackageClick, featuredPkg }) {
   const handleAdClick = () => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     if (!token) {
-      router.push('/register');
+      router.push('/signup');
     } else {
-      onPackageClick?.(featuredPkg?.id);
+      router.push('/dashboard');
     }
   };
 
@@ -1239,7 +1239,14 @@ function PackagesContent() {
       .some(f => f?.toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
-  const handlePackageClick = (id) => router.push(`/package/${id}`);
+  const handlePackageClick = (id) => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    if (!token) {
+      router.push('/signup');
+    } else {
+      router.push('/dashboard');
+    }
+  };
   const handleGoToLogin = () => {
     setShowAuthModal(false);
     router.push(`/login${pendingRoute ? `?redirect=${encodeURIComponent(pendingRoute)}` : ''}`);
