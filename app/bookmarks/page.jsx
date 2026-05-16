@@ -98,7 +98,7 @@ function BookmarksPage() {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
 
-  const API = 'https://web-production-f50dc.up.railway.app/api/bookmarks/'
+  const BOOKMARKS_API = 'https://web-production-f50dc.up.railway.app/api/bookmarks'
 
   useEffect(() => {
     fetchBookmarks();
