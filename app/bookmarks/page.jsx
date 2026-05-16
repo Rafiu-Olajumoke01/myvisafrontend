@@ -74,8 +74,8 @@ const ProfileIcon = ({ active }) => (
 
 const TrashIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-    <path d="M3 6H5H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M19 6V20C19 21.1046 18.1046 22 17 22H7C5.89543 22 5 21.1046 5 20V6M8 6V4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M3 6H5H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    <path d="M19 6V20C19 21.1046 18.1046 22 17 22H7C5.89543 22 5 21.1046 5 20V6M8 6V4C8 2.89543 8.89543 2 10 2H14C15.1046 2 16 2.89543 16 4V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
@@ -91,14 +91,14 @@ const BookmarkIcon = () => (
   </svg>
 );
 
+const BOOKMARKS_API = 'https://web-production-f50dc.up.railway.app/api/bookmarks';
+
 function BookmarksPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('saved');
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState(null);
-
-  const BOOKMARKS_API = 'https://web-production-f50dc.up.railway.app/api/bookmarks'
 
   useEffect(() => {
     fetchBookmarks();
@@ -108,7 +108,7 @@ function BookmarksPage() {
     try {
       setLoading(true);
       const token = localStorage.getItem('access_token');
-      
+
       if (!token) {
         router.push('/login?redirect=/bookmarks');
         return;
@@ -138,8 +138,8 @@ function BookmarksPage() {
           ...bookmark.package,
           images: (bookmark.package.images || []).map(img => ({
             ...img,
-            image: img.image.startsWith('http') 
-              ? img.image 
+            image: img.image.startsWith('http')
+              ? img.image
               : `http://localhost:8000${img.image}`
           }))
         }
@@ -170,7 +170,7 @@ function BookmarksPage() {
 
       // Remove from UI
       setBookmarks(prev => prev.filter(b => b.package.id !== packageId));
-      
+
     } catch (error) {
       console.error('❌ Error removing bookmark:', error);
       alert('Failed to remove bookmark');
@@ -226,14 +226,14 @@ function BookmarksPage() {
               {bookmarks.map((bookmark) => {
                 const pkg = bookmark.package;
                 const isDeleting = deletingId === pkg.id;
-                
+
                 return (
                   <div
                     key={bookmark.id}
                     className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
                   >
                     {/* Package Image */}
-                    <div 
+                    <div
                       onClick={() => handlePackageClick(pkg.id)}
                       className="relative h-48 overflow-hidden cursor-pointer"
                     >
@@ -248,7 +248,7 @@ function BookmarksPage() {
                           <p className="text-gray-400">No image</p>
                         </div>
                       )}
-                      
+
                       {/* Gradient overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
@@ -268,7 +268,7 @@ function BookmarksPage() {
                         {pkg.country}
                       </h3>
                       <p className="text-sm text-gray-500 mb-3">{pkg.visa_type}</p>
-                      
+
                       <div className="flex items-center justify-between mb-3">
                         <p className="text-2xl font-black text-blue-600">
                           ${pkg.price}
@@ -333,9 +333,8 @@ function BookmarksPage() {
                     <Icon active={isActive} />
                   </div>
                   <span
-                    className={`text-xs font-medium ${
-                      isActive ? 'text-blue-600' : 'text-gray-500'
-                    }`}
+                    className={`text-xs font-medium ${isActive ? 'text-blue-600' : 'text-gray-500'
+                      }`}
                   >
                     {item.label}
                   </span>
