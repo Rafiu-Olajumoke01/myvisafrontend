@@ -23,6 +23,7 @@ export default function ApplyPage({ params }) {
     address: '',
     city: '',
     country: '',
+    promo_code: '',
   });
 
   useEffect(() => {
@@ -57,12 +58,12 @@ export default function ApplyPage({ params }) {
         const updates = {};
 
         // Read first_name and last_name directly from the API
-        if (data.first_name) updates.first_name  = data.first_name;
-        if (data.last_name)  updates.last_name   = data.last_name;
-        if (data.email)      updates.email        = data.email;
-        if (data.phone)      updates.phone        = data.phone;
-        if (data.country)    updates.country      = data.country;
-        if (data.country)    updates.nationality  = data.country;
+        if (data.first_name) updates.first_name = data.first_name;
+        if (data.last_name) updates.last_name = data.last_name;
+        if (data.email) updates.email = data.email;
+        if (data.phone) updates.phone = data.phone;
+        if (data.country) updates.country = data.country;
+        if (data.country) updates.nationality = data.country;
 
         setFormData(prev => ({ ...prev, ...updates }));
       }
@@ -171,7 +172,7 @@ export default function ApplyPage({ params }) {
                 {/* Passport notice — bold and prominent */}
                 <div className="flex items-start gap-2 bg-[#07b3f2]/8 border border-[#07b3f2]/20 rounded-xl px-4 py-3 mb-6">
                   <svg className="w-4 h-4 text-[#07b3f2] mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
                   <p className="text-xs text-[#0284c7] leading-relaxed">
                     <span className="font-black text-[#0284c7]">Enter your name exactly as written in your passport.</span>{' '}
@@ -240,6 +241,19 @@ export default function ApplyPage({ params }) {
                       className={`${inputClass} text-gray-700`} />
                   </div>
 
+                  <div className="col-span-2">
+                    <label className="text-xs font-bold text-gray-600 block mb-1.5">
+                      Promo Code <span className="text-gray-400 font-normal">(Optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="promo_code"
+                      value={formData.promo_code}
+                      onChange={handleChange}
+                      placeholder="Enter your promo code"
+                      className={inputClass}
+                    />
+                  </div>
                 </div>
               </div>
             )}
